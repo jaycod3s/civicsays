@@ -39,7 +39,6 @@
       padding: 20px;
     }
     
-    /* View Toggle */
     .view-toggle {
       display: flex;
       gap: 10px;
@@ -64,7 +63,6 @@
       color: white;
     }
     
-    /* Cards */
     .card {
       background: white;
       border-radius: 20px;
@@ -96,6 +94,10 @@
       margin-bottom: 8px;
       font-weight: 600;
       color: #333;
+    }
+    
+    label .required {
+      color: #dc3545;
     }
     
     input, select, textarea {
@@ -182,8 +184,9 @@
       font-weight: 600;
     }
     
-    .status-submitted { background: #fff3cd; color: #856404; }
-    .status-investigating { background: #cfe2ff; color: #004085; }
+    .status-request { background: #cfe2ff; color: #004085; }
+    .status-complaint { background: #f8d7da; color: #721c24; }
+    .status-investigating { background: #fff3cd; color: #856404; }
     .status-in_progress { background: #d1ecf1; color: #0c5460; }
     .status-resolved { background: #d4edda; color: #155724; }
     
@@ -269,39 +272,38 @@
       margin-left: 8px;
     }
     
-    .reply-form {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #e9ecef;
+    .media-preview {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
     }
     
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #333;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 12px;
-      z-index: 1100;
-      animation: slideIn 0.3s ease;
+    .media-preview img, .media-preview video {
+      max-width: 150px;
+      max-height: 150px;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
     }
     
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+    .file-input-wrapper {
+      position: relative;
+      margin-bottom: 10px;
     }
     
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #888;
+    .file-input-label {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #e9ecef;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    
+    .file-name {
+      font-size: 12px;
+      color: #666;
+      margin-left: 10px;
     }
     
     .stats-grid {
@@ -330,6 +332,30 @@
       margin-top: 4px;
     }
     
+    .type-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .type-request {
+      background: #cfe2ff;
+      color: #004085;
+    }
+    
+    .type-complaint {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+    }
+    
     @media (max-width: 768px) {
       .grid-2 {
         grid-template-columns: 1fr;
@@ -338,16 +364,38 @@
         grid-template-columns: repeat(2, 1fr);
       }
     }
+    
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      z-index: 1100;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>🏛️ Local Government Request Tracker</h1>
-    <p class="subtitle">Submit complaints | Track tickets | Officials respond | Residents reply</p>
+    <p class="subtitle">Submit Requests or Complaints | Attach Photos & Videos | Track Progress</p>
   </div>
   
   <div class="container">
-    <!-- View Toggle -->
     <div class="view-toggle">
       <button class="view-btn active" onclick="setView('resident')">👤 Resident View</button>
       <button class="view-btn" onclick="setView('official')">👔 Official View</button>
@@ -358,41 +406,56 @@
       <div class="grid-2">
         <!-- Submit New Ticket -->
         <div class="card">
-          <h2>📝 Submit New Request / Complaint</h2>
+          <h2>📝 Submit Request or Complaint</h2>
           <form id="ticketForm">
             <div class="form-group">
-              <label>Your Name *</label>
+              <label>Your Full Name <span class="required">*</span></label>
               <input type="text" id="residentName" required placeholder="Enter your full name">
             </div>
             <div class="form-group">
-              <label>Your Email *</label>
+              <label>Phone Number <span class="required">*</span></label>
+              <input type="tel" id="residentPhone" required placeholder="e.g., (555) 123-4567">
+            </div>
+            <div class="form-group">
+              <label>Email Address <span class="required">*</span></label>
               <input type="email" id="residentEmail" required placeholder="For tracking updates">
             </div>
             <div class="form-group">
-              <label>Issue Category *</label>
-              <select id="ticketCategory" required>
-                <option value="pothole">🕳️ Pothole</option>
-                <option value="streetlight">💡 Broken Streetlight</option>
-                <option value="noise">🔊 Noise Complaint</option>
-                <option value="garbage">🗑️ Missed Garbage</option>
-                <option value="graffiti">🎨 Graffiti</option>
-                <option value="tree">🌳 Fallen Tree</option>
-                <option value="water">💧 Water Leak</option>
-                <option value="other">📋 Other</option>
+              <label>Type <span class="required">*</span></label>
+              <select id="ticketType" required>
+                <option value="request">📋 Request (Service, Information, Assistance)</option>
+                <option value="complaint">⚠️ Complaint (Issue, Problem, Violation)</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Location / Address *</label>
+              <label>Location / Address <span class="required">*</span></label>
               <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
             </div>
             <div class="form-group">
-              <label>Title / Subject *</label>
-              <input type="text" id="ticketTitle" required placeholder="Brief summary of the issue">
+              <label>Title / Subject <span class="required">*</span></label>
+              <input type="text" id="ticketTitle" required placeholder="Brief summary">
             </div>
             <div class="form-group">
-              <label>Description *</label>
-              <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description of the issue..."></textarea>
+              <label>Description <span class="required">*</span></label>
+              <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
             </div>
+            <div class="form-group">
+              <label>Upload Photo (Optional)</label>
+              <div class="file-input-wrapper">
+                <label class="file-input-label">📷 Choose Image</label>
+                <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp" style="display: none;">
+                <span id="photoFileName" class="file-name">No file chosen</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Upload Video (Optional, max 50MB)</label>
+              <div class="file-input-wrapper">
+                <label class="file-input-label">🎥 Choose Video</label>
+                <input type="file" id="videoUpload" accept="video/mp4,video/quicktime,video/webm" style="display: none;">
+                <span id="videoFileName" class="file-name">No file chosen</span>
+              </div>
+            </div>
+            <div id="mediaPreview" class="media-preview"></div>
             <button type="submit" class="btn btn-primary">Submit Ticket →</button>
           </form>
         </div>
@@ -400,8 +463,13 @@
         <!-- My Tickets -->
         <div class="card">
           <h2>📋 My Requests & Complaints</h2>
+          <div class="form-group">
+            <label>Enter your email to view your tickets</label>
+            <input type="email" id="viewTicketsEmail" placeholder="Your email address">
+            <button class="btn btn-outline" onclick="loadMyTickets()" style="margin-top: 10px;">View My Tickets</button>
+          </div>
           <div id="myTicketsList" class="ticket-list">
-            <div class="empty-state">No tickets yet. Submit your first request!</div>
+            <div class="empty-state">Enter your email above to see your tickets</div>
           </div>
         </div>
       </div>
@@ -413,9 +481,9 @@
         <h2>📊 Dashboard Overview</h2>
         <div class="stats-grid" id="statsGrid">
           <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
-          <div class="stat-card"><div class="stat-number" id="statOpen">0</div><div class="stat-label">Open Tickets</div></div>
-          <div class="stat-card"><div class="stat-number" id="statInProgress">0</div><div class="stat-label">In Progress</div></div>
-          <div class="stat-card"><div class="stat-number" id="statResolved">0</div><div class="stat-label">Resolved</div></div>
+          <div class="stat-card"><div class="stat-number" id="statRequests">0</div><div class="stat-label">Requests</div></div>
+          <div class="stat-card"><div class="stat-number" id="statComplaints">0</div><div class="stat-label">Complaints</div></div>
+          <div class="stat-card"><div class="stat-number" id="statOpen">0</div><div class="stat-label">Open</div></div>
         </div>
       </div>
       
@@ -437,39 +505,67 @@
   </div>
   
   <script>
-    // IndexedDB Setup
     let db = null;
     let currentView = 'resident';
-    let currentUserEmail = '';
+    let currentMediaFiles = { photo: null, video: null };
     
-    // Cities data
-    const cities = ['Springfield, IL', 'Shelbyville, IL', 'Capital City, IL', 'Oakland, CA', 'Austin, TX'];
+    // File input handlers
+    document.getElementById('photoUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        currentMediaFiles.photo = file;
+        document.getElementById('photoFileName').textContent = file.name;
+        previewMedia();
+      }
+    });
+    
+    document.getElementById('videoUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        currentMediaFiles.video = file;
+        document.getElementById('videoFileName').textContent = file.name;
+        previewMedia();
+      }
+    });
+    
+    function previewMedia() {
+      const preview = document.getElementById('mediaPreview');
+      preview.innerHTML = '';
+      
+      if (currentMediaFiles.photo) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML += `<img src="${e.target.result}" alt="Preview">`;
+        };
+        reader.readAsDataURL(currentMediaFiles.photo);
+      }
+      
+      if (currentMediaFiles.video) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML += `<video controls src="${e.target.result}"></video>`;
+        };
+        reader.readAsDataURL(currentMediaFiles.video);
+      }
+    }
     
     function openDatabase() {
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open('GovTicketDB', 2);
-        
+        const request = indexedDB.open('GovTicketDB', 3);
         request.onerror = () => reject(request.error);
-        
         request.onsuccess = () => {
           db = request.result;
           resolve(db);
         };
-        
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
-          
           if (!db.objectStoreNames.contains('tickets')) {
-            const store = db.createObjectStore('tickets', { keyPath: 'id' });
-            store.createIndex('email', 'email', { unique: false });
-            store.createIndex('status', 'status', { unique: false });
-            store.createIndex('createdAt', 'createdAt', { unique: false });
+            db.createObjectStore('tickets', { keyPath: 'id' });
           }
         };
       });
     }
     
-    // Generate ticket ID
     function generateTicketId() {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let id = 'TKT-';
@@ -479,107 +575,108 @@
       return id;
     }
     
-    // Save ticket to IndexedDB
-    async function saveTicket(ticket) {
+    function saveTicket(ticket) {
       return new Promise((resolve, reject) => {
         const transaction = db.transaction(['tickets'], 'readwrite');
         const store = transaction.objectStore('tickets');
-        const request = store.put(ticket);
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
+        store.put(ticket).onsuccess = () => resolve();
+        store.put(ticket).onerror = () => reject();
       });
     }
     
-    // Get all tickets
-    async function getAllTickets() {
+    function getAllTickets() {
       return new Promise((resolve, reject) => {
         const transaction = db.transaction(['tickets'], 'readonly');
         const store = transaction.objectStore('tickets');
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        store.getAll().onsuccess = (e) => resolve(e.target.result);
       });
     }
     
-    // Get tickets by email
-    async function getTicketsByEmail(email) {
-      const all = await getAllTickets();
-      return all.filter(t => t.email === email);
-    }
-    
-    // Get ticket by ID
-    async function getTicketById(id) {
+    function getTicketById(id) {
       return new Promise((resolve, reject) => {
         const transaction = db.transaction(['tickets'], 'readonly');
         const store = transaction.objectStore('tickets');
-        const request = store.get(id);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        store.get(id).onsuccess = (e) => resolve(e.target.result);
       });
     }
     
-    // Submit new ticket
+    // Submit ticket
     document.getElementById('ticketForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const name = document.getElementById('residentName').value;
+      const phone = document.getElementById('residentPhone').value;
       const email = document.getElementById('residentEmail').value;
-      const category = document.getElementById('ticketCategory').value;
+      const type = document.getElementById('ticketType').value;
       const location = document.getElementById('ticketLocation').value;
       const title = document.getElementById('ticketTitle').value;
       const description = document.getElementById('ticketDescription').value;
       
-      const categoryNames = {
-        pothole: '🕳️ Pothole', streetlight: '💡 Broken Streetlight', noise: '🔊 Noise Complaint',
-        garbage: '🗑️ Missed Garbage', graffiti: '🎨 Graffiti', tree: '🌳 Fallen Tree',
-        water: '💧 Water Leak', other: '📋 Other'
-      };
+      if (!name || !phone || !email || !type || !location || !title || !description) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      let photoData = null;
+      let videoData = null;
+      
+      if (currentMediaFiles.photo) {
+        photoData = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(currentMediaFiles.photo);
+        });
+      }
+      
+      if (currentMediaFiles.video) {
+        videoData = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(currentMediaFiles.video);
+        });
+      }
       
       const newTicket = {
         id: generateTicketId(),
         name,
+        phone,
         email,
-        category: categoryNames[category],
-        categoryId: category,
+        type: type === 'request' ? 'Request' : 'Complaint',
+        typeId: type,
         location,
         title,
         description,
-        status: 'submitted',
-        statusHistory: [{ status: 'submitted', timestamp: new Date().toISOString(), note: 'Ticket submitted' }],
+        photo: photoData,
+        video: videoData,
+        status: type === 'request' ? 'request' : 'complaint',
+        statusHistory: [{ status: type === 'request' ? 'Request Submitted' : 'Complaint Filed', timestamp: new Date().toISOString() }],
         updates: [],
         createdAt: new Date().toISOString(),
-        resolvedAt: null,
-        responseTime: null
+        resolvedAt: null
       };
       
       await saveTicket(newTicket);
       
-      showToast(`✅ Ticket submitted! Your tracking ID: ${newTicket.id}`);
+      showToast(`✅ Ticket submitted! Tracking ID: ${newTicket.id}`);
       
       document.getElementById('ticketForm').reset();
+      currentMediaFiles = { photo: null, video: null };
+      document.getElementById('photoFileName').textContent = 'No file chosen';
+      document.getElementById('videoFileName').textContent = 'No file chosen';
+      document.getElementById('mediaPreview').innerHTML = '';
       
-      if (currentUserEmail !== email) {
-        currentUserEmail = email;
-      }
-      
-      loadMyTickets();
-      if (currentView === 'official') {
-        loadAllTickets();
-      }
+      if (currentView === 'official') loadAllTickets();
     });
     
-    // Load my tickets (resident view)
     async function loadMyTickets() {
-      const emailInput = document.getElementById('residentEmail');
-      const email = emailInput.value;
-      
+      const email = document.getElementById('viewTicketsEmail').value;
       if (!email) {
-        document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">Enter your email above to see your tickets</div>';
+        alert('Please enter your email');
         return;
       }
       
-      currentUserEmail = email;
-      const tickets = await getTicketsByEmail(email);
+      const allTickets = await getAllTickets();
+      const tickets = allTickets.filter(t => t.email === email);
       tickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       
       if (tickets.length === 0) {
@@ -591,32 +688,32 @@
         <div class="ticket-item" onclick="viewTicket('${ticket.id}')">
           <div class="ticket-header">
             <span class="ticket-id">${ticket.id}</span>
+            <span class="type-badge type-${ticket.typeId}">${ticket.type}</span>
             <span class="ticket-status status-${ticket.status}">${ticket.status.replace('_', ' ')}</span>
           </div>
           <div class="ticket-title">${ticket.title}</div>
           <div class="ticket-meta">
             <span>📅 ${new Date(ticket.createdAt).toLocaleDateString()}</span>
             <span>📍 ${ticket.location}</span>
-            <span>🏷️ ${ticket.category}</span>
+            <span>📞 ${ticket.phone}</span>
           </div>
         </div>
       `).join('');
     }
     
-    // Load all tickets (official view)
     async function loadAllTickets() {
       const tickets = await getAllTickets();
       tickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       
       const total = tickets.length;
-      const open = tickets.filter(t => t.status === 'submitted').length;
-      const inProgress = tickets.filter(t => t.status === 'in_progress').length;
-      const resolved = tickets.filter(t => t.status === 'resolved').length;
+      const requests = tickets.filter(t => t.typeId === 'request').length;
+      const complaints = tickets.filter(t => t.typeId === 'complaint').length;
+      const open = tickets.filter(t => t.status !== 'resolved').length;
       
       document.getElementById('statTotal').textContent = total;
+      document.getElementById('statRequests').textContent = requests;
+      document.getElementById('statComplaints').textContent = complaints;
       document.getElementById('statOpen').textContent = open;
-      document.getElementById('statInProgress').textContent = inProgress;
-      document.getElementById('statResolved').textContent = resolved;
       
       if (tickets.length === 0) {
         document.getElementById('allTicketsList').innerHTML = '<div class="empty-state">No tickets submitted yet</div>';
@@ -627,6 +724,7 @@
         <div class="ticket-item" onclick="viewTicket('${ticket.id}')">
           <div class="ticket-header">
             <span class="ticket-id">${ticket.id}</span>
+            <span class="type-badge type-${ticket.typeId}">${ticket.type}</span>
             <span class="ticket-status status-${ticket.status}">${ticket.status.replace('_', ' ')}</span>
           </div>
           <div class="ticket-title">${ticket.title}</div>
@@ -639,15 +737,21 @@
       `).join('');
     }
     
-    // View ticket details
     async function viewTicket(ticketId) {
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
       
       const isOfficial = currentView === 'official';
-      const daysPending = !ticket.resolvedAt 
-        ? Math.ceil((new Date() - new Date(ticket.createdAt)) / (1000 * 60 * 60 * 24))
-        : null;
+      
+      const mediaHtml = (ticket.photo || ticket.video) ? `
+        <div style="margin: 16px 0;">
+          <h4>📎 Attachments:</h4>
+          <div class="media-preview">
+            ${ticket.photo ? `<img src="${ticket.photo}" alt="Uploaded photo" style="max-width: 200px; border-radius: 8px;">` : ''}
+            ${ticket.video ? `<video controls src="${ticket.video}" style="max-width: 100%; border-radius: 8px;"></video>` : ''}
+          </div>
+        </div>
+      ` : '';
       
       const updatesHtml = ticket.updates.length > 0 ? ticket.updates.map(update => `
         <div class="update-item">
@@ -665,18 +769,20 @@
           <h2>${ticket.title}</h2>
           <p style="color: #666; margin: 8px 0;">Ticket ID: ${ticket.id}</p>
           <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0;">
+            <span class="type-badge type-${ticket.typeId}">${ticket.type}</span>
             <span class="ticket-status status-${ticket.status}">${ticket.status.replace('_', ' ')}</span>
-            <span>📅 Submitted: ${new Date(ticket.createdAt).toLocaleString()}</span>
-            ${daysPending ? `<span>⏳ Pending: ${daysPending} days</span>` : ''}
+            <span>📅 ${new Date(ticket.createdAt).toLocaleString()}</span>
           </div>
         </div>
         
         <div style="background: #f8f9fa; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+          <p><strong>👤 Name:</strong> ${ticket.name}</p>
+          <p><strong>📞 Phone:</strong> ${ticket.phone}</p>
+          <p><strong>📧 Email:</strong> ${ticket.email}</p>
           <p><strong>📍 Location:</strong> ${ticket.location}</p>
-          <p><strong>🏷️ Category:</strong> ${ticket.category}</p>
-          <p><strong>👤 Submitted by:</strong> ${ticket.name} (${ticket.email})</p>
           <p><strong>📝 Description:</strong></p>
           <p style="margin-top: 8px;">${ticket.description}</p>
+          ${mediaHtml}
         </div>
         
         <div style="margin-bottom: 20px;">
@@ -689,14 +795,13 @@
         ${isOfficial ? `
           <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
             <h3>👔 Official Response</h3>
-            <select id="statusSelect" style="margin-bottom: 12px;">
-              <option value="submitted" ${ticket.status === 'submitted' ? 'selected' : ''}>📝 Submitted</option>
+            <select id="statusSelect" style="margin-bottom: 12px; width: 100%; padding: 10px;">
               <option value="investigating" ${ticket.status === 'investigating' ? 'selected' : ''}>🔍 Investigating</option>
               <option value="in_progress" ${ticket.status === 'in_progress' ? 'selected' : ''}>⚙️ In Progress</option>
               <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>✅ Resolved</option>
             </select>
-            <textarea id="officialUpdateMessage" rows="3" placeholder="Enter official update/response..." style="margin-bottom: 12px;"></textarea>
-            <button class="btn btn-primary" onclick="addOfficialUpdate('${ticket.id}')">Post Update & Update Status</button>
+            <textarea id="officialUpdateMessage" rows="3" placeholder="Enter official update/response..." style="margin-bottom: 12px; width: 100%;"></textarea>
+            <button class="btn btn-primary" onclick="addOfficialUpdate('${ticket.id}')">Post Update</button>
           </div>
         ` : `
           <div class="reply-form">
@@ -711,7 +816,6 @@
       document.getElementById('ticketModal').style.display = 'flex';
     }
     
-    // Add official update
     async function addOfficialUpdate(ticketId) {
       const status = document.getElementById('statusSelect').value;
       const message = document.getElementById('officialUpdateMessage').value;
@@ -724,47 +828,30 @@
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
       
-      const statusNames = {
-        submitted: 'Submitted', investigating: 'Investigating', in_progress: 'In Progress', resolved: 'Resolved'
-      };
-      
-      const update = {
+      ticket.updates.push({
         id: Date.now().toString(),
         author: 'official',
         authorName: 'Government Official',
         message,
         isOfficial: true,
-        timestamp: new Date().toISOString(),
-        statusChange: ticket.status !== status ? `Status changed to ${statusNames[status]}` : null
-      };
+        timestamp: new Date().toISOString()
+      });
       
-      ticket.updates.push(update);
       ticket.status = status;
-      ticket.statusHistory.push({ status, timestamp: new Date().toISOString(), note: message });
       
       if (status === 'resolved' && !ticket.resolvedAt) {
         ticket.resolvedAt = new Date().toISOString();
-        const created = new Date(ticket.createdAt);
-        const resolved = new Date(ticket.resolvedAt);
-        ticket.responseTime = Math.ceil((resolved - created) / (1000 * 60 * 60 * 24));
       }
       
       await saveTicket(ticket);
-      
       showToast('Official update posted!');
       closeModal();
-      
-      if (currentView === 'resident') {
-        loadMyTickets();
-      } else {
-        loadAllTickets();
-      }
+      if (currentView === 'official') loadAllTickets();
+      else loadMyTickets();
     }
     
-    // Add resident reply
     async function addResidentReply(ticketId) {
       const message = document.getElementById('residentReplyMessage').value;
-      
       if (!message) {
         alert('Please enter your reply');
         return;
@@ -773,25 +860,21 @@
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
       
-      const update = {
+      ticket.updates.push({
         id: Date.now().toString(),
         author: 'resident',
         authorName: ticket.name,
         message,
         isOfficial: false,
         timestamp: new Date().toISOString()
-      };
+      });
       
-      ticket.updates.push(update);
       await saveTicket(ticket);
-      
-      showToast('Reply sent! Officials will see your update.');
+      showToast('Reply sent!');
       closeModal();
-      
       loadMyTickets();
     }
     
-    // View toggle
     function setView(view) {
       currentView = view;
       const residentView = document.getElementById('residentView');
@@ -804,7 +887,6 @@
         residentView.style.display = 'block';
         officialView.style.display = 'none';
         btns[0].classList.add('active');
-        loadMyTickets();
       } else {
         residentView.style.display = 'none';
         officialView.style.display = 'block';
@@ -825,17 +907,8 @@
       setTimeout(() => toast.remove(), 3000);
     }
     
-    // Auto-load tickets when email changes
-    document.getElementById('residentEmail').addEventListener('input', () => {
-      if (currentView === 'resident') {
-        loadMyTickets();
-      }
-    });
-    
-    // Initialize
     async function init() {
       await openDatabase();
-      loadMyTickets();
     }
     
     init();
