@@ -12,23 +12,23 @@
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #fef7e8;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .header {
       background: #f5e6d3;
       padding: 32px 24px;
       text-align: center;
-      border-bottom: 1px solid #e8d9c4;
+      border-bottom: 2px solid #e8d9c4;
     }
     
     .logo-icon {
       font-size: 48px;
       letter-spacing: 4px;
       font-weight: 700;
-      color: #d45a1a;
+      color: #c97e3a;
     }
     
     .logo-icon span {
@@ -43,7 +43,7 @@
     }
     
     .container {
-      max-width: 1600px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 32px 24px;
     }
@@ -58,12 +58,12 @@
     .view-btn {
       padding: 12px 32px;
       border: none;
-      border-radius: 100px;
+      border-radius: 40px;
       font-weight: 600;
       font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s ease;
-      background: #fff5eb;
+      transition: all 0.2s;
+      background: white;
       color: #e67e22;
       border: 1px solid #f5c6a0;
     }
@@ -75,7 +75,7 @@
     }
     
     .view-btn:hover:not(.active) {
-      background: #fff0e2;
+      background: #fff5eb;
     }
     
     .card {
@@ -83,7 +83,7 @@
       border-radius: 24px;
       padding: 28px;
       margin-bottom: 32px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       border: 1px solid #f0e2d0;
     }
     
@@ -96,7 +96,7 @@
     .card-header h2 {
       font-size: 20px;
       font-weight: 600;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .grid-2 {
@@ -114,7 +114,7 @@
       margin-bottom: 8px;
       font-weight: 500;
       font-size: 14px;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .required {
@@ -128,8 +128,8 @@
       border-radius: 12px;
       font-size: 14px;
       font-family: inherit;
-      background: #ffffff;
-      color: #1a1a1a;
+      background: white;
+      color: #2c3e2f;
     }
     
     input:focus, select:focus, textarea:focus {
@@ -196,7 +196,7 @@
     
     .ticket-item:hover {
       border-color: #e67e22;
-      box-shadow: 0 4px 12px rgba(230,126,34,0.1);
+      box-shadow: 0 2px 8px rgba(230,126,34,0.1);
     }
     
     .ticket-header {
@@ -225,10 +225,25 @@
       font-weight: 600;
     }
     
-    .status-pending { background: #fef0e0; color: #e67e22; }
-    .status-in_process { background: #fef0e0; color: #f5a65b; }
-    .status-hold { background: #f5efe8; color: #a67c52; }
-    .status-solved { background: #e8f0e5; color: #6b8c5c; }
+    .status-pending {
+      background: #fef0e0;
+      color: #e67e22;
+    }
+    
+    .status-in_process {
+      background: #fef0e0;
+      color: #f5a65b;
+    }
+    
+    .status-hold {
+      background: #f5efe8;
+      color: #a67c52;
+    }
+    
+    .status-solved {
+      background: #e8f0e5;
+      color: #6b8c5c;
+    }
     
     .type-badge {
       padding: 4px 12px;
@@ -243,7 +258,7 @@
       font-weight: 600;
       font-size: 15px;
       margin-bottom: 8px;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .ticket-meta {
@@ -273,7 +288,6 @@
       color: #b87a4a;
       transition: all 0.2s;
       border-radius: 40px;
-      position: relative;
     }
     
     .tab:hover {
@@ -284,6 +298,7 @@
     .tab.active {
       color: #e67e22;
       background: #fff5eb;
+      position: relative;
     }
     
     .tab.active::after {
@@ -294,7 +309,6 @@
       right: 25%;
       height: 2px;
       background: #e67e22;
-      border-radius: 2px;
     }
     
     .stats-grid {
@@ -315,24 +329,38 @@
       transform: translateY(-2px);
     }
     
-    .stat-card.total { background: #e3f2fd; border: 1px solid #bbdef5; }
-    .stat-card.pending { background: #fff3e0; border: 1px solid #ffcc80; }
-    .stat-card.inprocess { background: #fff8e7; border: 1px solid #ffe0a3; }
-    .stat-card.solved { background: #e8f5e9; border: 1px solid #c8e6c9; }
+    .stat-card.total {
+      background: #e3f2fd;
+      border: 1px solid #bbdef5;
+    }
+    
+    .stat-card.pending {
+      background: #fff3e0;
+      border: 1px solid #ffcc80;
+    }
+    
+    .stat-card.inprocess {
+      background: #fff8e7;
+      border: 1px solid #ffe0a3;
+    }
+    
+    .stat-card.solved {
+      background: #e8f5e9;
+      border: 1px solid #c8e6c9;
+    }
     
     .stat-number {
       font-size: 32px;
       font-weight: 700;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .stat-label {
       font-size: 13px;
       font-weight: 500;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
-    /* Three Column Layout */
     .fullscreen-modal {
       display: none;
       position: fixed;
@@ -346,7 +374,7 @@
     }
     
     .fullscreen-content {
-      max-width: 1600px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 24px;
     }
@@ -363,7 +391,7 @@
     .fullscreen-header h2 {
       font-size: 24px;
       font-weight: 700;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .fullscreen-close {
@@ -407,7 +435,7 @@
     .column-header h3 {
       font-size: 16px;
       font-weight: 600;
-      color: #1a1a1a;
+      color: #2c3e2f;
       margin: 0;
     }
     
@@ -420,18 +448,17 @@
     }
     
     .info-label {
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 11px;
+      font-weight: 600;
       color: #b87a4a;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     
     .info-value {
       font-size: 15px;
-      font-weight: 500;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .status-select {
@@ -442,7 +469,7 @@
       font-size: 14px;
       background: white;
       margin-bottom: 16px;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .comment-list {
@@ -462,7 +489,7 @@
     .comment-author {
       font-weight: 600;
       font-size: 13px;
-      color: #1a1a1a;
+      color: #e67e22;
       margin-bottom: 6px;
     }
     
@@ -474,7 +501,7 @@
     
     .comment-message {
       font-size: 13px;
-      color: #1a1a1a;
+      color: #2c3e2f;
       line-height: 1.5;
     }
     
@@ -506,19 +533,7 @@
       max-width: 400px;
       width: 90%;
       text-align: center;
-      animation: fadeInScale 0.3s ease;
       border: 1px solid #f0dfcc;
-    }
-    
-    @keyframes fadeInScale {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
     }
     
     .success-icon {
@@ -538,7 +553,7 @@
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 10px;
-      color: #1a1a1a;
+      color: #2c3e2f;
     }
     
     .success-message {
@@ -585,22 +600,10 @@
       padding: 12px 20px;
       border-radius: 12px;
       z-index: 2000;
-      animation: slideIn 0.3s ease;
       font-size: 13px;
     }
     
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    
-    @media (max-width: 1100px) {
+    @media (max-width: 1000px) {
       .three-column {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -674,8 +677,8 @@
             </div>
             <div class="form-group">
               <label>Video Link (Optional)</label>
-              <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link for large videos">
-              <small style="color: #b87a4a;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
+              <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
+              <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
             </div>
             <button type="submit" class="btn btn-primary">Submit Ticket</button>
           </form>
@@ -765,7 +768,7 @@
   </div>
   
   <script>
-    // ==================== SUPABASE CONFIGURATION ====================
+    // Supabase Configuration
     const SUPABASE_URL = 'https://gdovxbzzggdjwkbwskop.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
     
@@ -803,7 +806,7 @@
       setTimeout(() => toast.remove(), 3000);
     }
     
-    // Submit new ticket
+    // Submit ticket
     document.getElementById('ticketForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -823,7 +826,6 @@
       
       const ticketId = generateTicketId();
       
-      // Handle photo upload
       let photoUrl = null;
       const photoFile = document.getElementById('photoUpload').files[0];
       
@@ -848,7 +850,6 @@
         }
       }
       
-      // Save to database
       const { error } = await supabase
         .from('tickets')
         .insert({
@@ -863,8 +864,7 @@
         });
       
       if (error) {
-        console.error('Error:', error);
-        alert('Error submitting ticket: ' + error.message);
+        alert('Error: ' + error.message);
         return;
       }
       
@@ -882,7 +882,6 @@
       document.getElementById('successModal').style.display = 'none';
     }
     
-    // Search ticket by ID
     async function searchTicketById() {
       const ticketId = document.getElementById('searchTicketId').value.trim().toUpperCase();
       if (!ticketId) {
@@ -899,7 +898,7 @@
       const resultDiv = document.getElementById('searchResult');
       
       if (error || !ticket) {
-        resultDiv.innerHTML = '<div class="empty-state" style="background: #fff5eb; border: 1px solid #f0dfcc; border-radius: 16px; padding: 16px;">❌ Ticket not found. Please check your Ticket ID.</div>';
+        resultDiv.innerHTML = '<div class="empty-state" style="background: #fff5eb; padding: 16px; border-radius: 16px;">❌ Ticket not found</div>';
         document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">Enter a Ticket ID above to search</div>';
         return;
       }
@@ -921,7 +920,6 @@
       `;
     }
     
-    // Load tickets by email
     async function loadTicketsByEmail() {
       const email = document.getElementById('viewTicketsEmail').value;
       if (!email) {
@@ -956,17 +954,13 @@
       `).join('');
     }
     
-    // Load official tickets
     async function loadOfficialTickets() {
       let { data: tickets, error } = await supabase
         .from('tickets')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) {
-        console.error('Error:', error);
-        return;
-      }
+      if (error) return;
       
       const searchTerm = document.getElementById('officialSearchInput')?.value.toLowerCase() || '';
       if (searchTerm) {
@@ -982,15 +976,10 @@
         tickets = tickets.filter(t => t.status === currentOfficialTab);
       }
       
-      const total = tickets.length;
-      const pending = tickets.filter(t => t.status === 'pending').length;
-      const inProcess = tickets.filter(t => t.status === 'in_process').length;
-      const solved = tickets.filter(t => t.status === 'solved').length;
-      
-      document.getElementById('statTotal').textContent = total;
-      document.getElementById('statPending').textContent = pending;
-      document.getElementById('statInProcess').textContent = inProcess;
-      document.getElementById('statSolved').textContent = solved;
+      document.getElementById('statTotal').textContent = tickets.length;
+      document.getElementById('statPending').textContent = tickets.filter(t => t.status === 'pending').length;
+      document.getElementById('statInProcess').textContent = tickets.filter(t => t.status === 'in_process').length;
+      document.getElementById('statSolved').textContent = tickets.filter(t => t.status === 'solved').length;
       
       if (tickets.length === 0) {
         document.getElementById('officialTicketsList').innerHTML = '<div class="empty-state">No tickets found</div>';
@@ -1023,15 +1012,14 @@
       loadOfficialTickets();
     }
     
-    // Open fullscreen ticket
     async function openFullscreenTicket(ticketId) {
-      const { data: ticket, error } = await supabase
+      const { data: ticket } = await supabase
         .from('tickets')
         .select('*')
         .eq('id', ticketId)
         .single();
       
-      if (error || !ticket) return;
+      if (!ticket) return;
       
       const { data: comments } = await supabase
         .from('comments')
@@ -1041,30 +1029,16 @@
       
       const isOfficial = currentView === 'official';
       
-      const mediaHtml = ticket.photo_url ? `
-        <div style="margin-top: 16px;">
-          <div class="info-label">Photo</div>
-          <img src="${ticket.photo_url}" style="max-width: 100%; border-radius: 12px;">
-        </div>
-      ` : '';
-      
-      const videoHtml = ticket.video_url ? `
-        <div style="margin-top: 16px;">
-          <div class="info-label">Video</div>
-          <a href="${ticket.video_url}" target="_blank" class="btn btn-outline" style="display: inline-block;">Watch Video →</a>
-        </div>
-      ` : '';
+      const mediaHtml = ticket.photo_url ? `<div style="margin-top: 16px;"><div class="info-label">Photo</div><img src="${ticket.photo_url}" style="max-width: 100%; border-radius: 12px;"></div>` : '';
+      const videoHtml = ticket.video_url ? `<div style="margin-top: 16px;"><div class="info-label">Video</div><a href="${ticket.video_url}" target="_blank" class="btn btn-outline" style="display: inline-block;">Watch Video →</a></div>` : '';
       
       const commentsHtml = comments && comments.length > 0 ? comments.map(c => `
         <div class="comment-item">
-          <div class="comment-author">
-            ${c.is_official ? '👔 Official' : '👤 ' + escapeHtml(c.author_name)}
-            ${c.is_official ? '<span class="official-badge">Government Official</span>' : ''}
-          </div>
+          <div class="comment-author">${c.is_official ? '👔 Official' : '👤 ' + escapeHtml(c.author_name)}${c.is_official ? '<span class="official-badge">Government Official</span>' : ''}</div>
           <div class="comment-time">${new Date(c.created_at).toLocaleString()}</div>
           <div class="comment-message">${escapeHtml(c.message)}</div>
         </div>
-      `).join('') : '<p style="color: #c97e3a; text-align: center; padding: 20px;">No comments yet</p>';
+      `).join('') : '<p style="color: #c97e3a; text-align: center;">No comments yet</p>';
       
       const leftColumn = `
         <div class="column">
@@ -1075,7 +1049,7 @@
             <div class="info-row"><div class="info-label">Status</div><div class="info-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div></div>
             <div class="info-row"><div class="info-label">Submitted</div><div class="info-value">${new Date(ticket.created_at).toLocaleString()}</div></div>
             ${isOfficial ? `
-              <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #f0dfcc;">
+              <div style="margin-top: 24px; border-top: 1px solid #f0dfcc; padding-top: 20px;">
                 <div class="info-label">Update Status</div>
                 <select id="fullscreenStatusSelect" class="status-select">
                   <option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option>
@@ -1097,10 +1071,9 @@
             <div class="info-row"><div class="info-label">Location</div><div class="info-value">${escapeHtml(ticket.location)}</div></div>
             <div class="info-row"><div class="info-label">Title</div><div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div></div>
             <div class="info-row"><div class="info-label">Description</div><div class="info-value">${escapeHtml(ticket.description)}</div></div>
-            ${mediaHtml}
-            ${videoHtml}
+            ${mediaHtml}${videoHtml}
           </div>
-          <div class="column-header" style="border-top: 1px solid #f0dfcc;"><h3>Comments & Updates</h3></div>
+          <div class="column-header"><h3>Comments & Updates</h3></div>
           <div class="column-content">
             <div class="comment-list" style="max-height: 250px;">${commentsHtml}</div>
             <textarea id="fullscreenComment" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
@@ -1121,32 +1094,15 @@
       `;
       
       document.getElementById('fullscreenTitle').textContent = ticket.title;
-      document.getElementById('fullscreenContent').innerHTML = `
-        <div class="three-column">
-          ${leftColumn}
-          ${centerColumn}
-          ${rightColumn}
-        </div>
-      `;
+      document.getElementById('fullscreenContent').innerHTML = `<div class="three-column">${leftColumn}${centerColumn}${rightColumn}</div>`;
       document.getElementById('fullscreenModal').style.display = 'block';
       document.body.style.overflow = 'hidden';
     }
     
     async function updateFullscreenStatus(ticketId) {
       const status = document.getElementById('fullscreenStatusSelect').value;
-      
-      await supabase
-        .from('tickets')
-        .update({ status: status })
-        .eq('id', ticketId);
-      
-      await supabase.from('comments').insert({
-        ticket_id: ticketId,
-        author_name: 'System',
-        message: `Status updated to: ${getStatusText(status)}`,
-        is_official: true
-      });
-      
+      await supabase.from('tickets').update({ status }).eq('id', ticketId);
+      await supabase.from('comments').insert({ ticket_id: ticketId, author_name: 'System', message: `Status updated to: ${getStatusText(status)}`, is_official: true });
       showToast(`Status updated to ${getStatusText(status)}`);
       closeFullscreenModal();
       if (currentView === 'official') loadOfficialTickets();
@@ -1155,17 +1111,9 @@
     async function addFullscreenComment(ticketId) {
       const message = document.getElementById('fullscreenComment')?.value;
       if (!message) { alert('Please enter a comment'); return; }
-      
       const isOfficial = currentView === 'official';
       const authorName = isOfficial ? 'Government Official' : 'Resident';
-      
-      await supabase.from('comments').insert({
-        ticket_id: ticketId,
-        author_name: authorName,
-        message: message,
-        is_official: isOfficial
-      });
-      
+      await supabase.from('comments').insert({ ticket_id: ticketId, author_name: authorName, message: message, is_official: isOfficial });
       showToast('Comment posted');
       closeFullscreenModal();
       openFullscreenTicket(ticketId);
@@ -1197,10 +1145,8 @@
     }
     
     window.onclick = (e) => {
-      const successModal = document.getElementById('successModal');
-      const fullscreenModal = document.getElementById('fullscreenModal');
-      if (e.target === successModal) closeSuccessModal();
-      if (e.target === fullscreenModal) closeFullscreenModal();
+      if (e.target === document.getElementById('successModal')) closeSuccessModal();
+      if (e.target === document.getElementById('fullscreenModal')) closeFullscreenModal();
     };
     
     loadOfficialTickets();
