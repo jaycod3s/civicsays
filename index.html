@@ -1000,4 +1000,69 @@
         authorName: 'Government Official',
         message: decision === 'accept' ? 'Your request has been accepted and is now being processed.' : 'Your request has been declined. Please contact the office for more information.',
         isOfficial: true,
-        timestamp: new Date().to
+        timestamp: new Date().toISOString()
+      });
+      
+      await saveTicket(ticket);
+      showToast(`Ticket ${decision === 'accept' ? 'accepted' : 'declined'}`);
+      closeModal();
+      loadOfficialTickets();
+    }
+    
+    // Resident reply
+    async function addResidentReply(ticketId) {
+      const message = document.getElementById('residentReplyMsg')?.value;
+      if (!message) { alert('Please enter your reply'); return; }
+      
+      const ticket = await getTicketById(ticketId);
+      if (!ticket) return;
+      
+      ticket.updates.push({
+        id: Date.now().toString(),
+        author: 'resident',
+        authorName: ticket.name,
+        message,
+        isOfficial: false,
+        timestamp: new Date().toISOString()
+      });
+      
+      await saveTicket(ticket);
+      showToast('Reply sent');
+      closeModal();
+      loadMyTickets();
+    }
+    
+    function switchOfficialTab(tab) {
+      currentOfficialTab = tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      loadOfficialTickets();
+    }
+    
+    function setView(view) {
+      currentView = view;
+      document.getElementById('residentView').style.display = view === 'resident' ? 'block' : 'none';
+      document.getElementById('officialView').style.display = view === 'official' ? 'block' : 'none';
+      document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      if (view === 'official') loadOfficialTickets();
+    }
+    
+    function closeModal() {
+      document.getElementById('ticketModal').style.display = 'none';
+    }
+    
+    function showToast(msg) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+    
+    openDatabase().then(() => {
+      if (currentView === 'official') loadOfficialTickets();
+    });
+  </script>
+</body>
+</html>
