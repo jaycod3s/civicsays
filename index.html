@@ -618,19 +618,21 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    // Wait for DOM to fully load before running scripts
     document.addEventListener('DOMContentLoaded', function() {
+      // ==================== SUPABASE CONFIGURATION ====================
+      // ⚠️ IMPORTANT: Replace these with your actual Supabase project URL and anon key!
+      // You can find them in your Supabase dashboard under Project Settings → API.
+      const SUPABASE_URL = 'https://YOUR_PROJECT_REF.supabase.co';  // <-- REPLACE THIS
+      const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';          // <-- REPLACE THIS
+      // ================================================================
       
-      // Supabase Configuration
-      const SUPABASE_URL = 'https://gdovxbzzggdjwkbwskop.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
-      
+      // Create Supabase client
       const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       
       let currentView = 'resident';
       let currentOfficialTab = 'all';
       
-      // Helper functions
+      // Helper Functions
       function generateTicketId() {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
         let id = 'CIV-';
@@ -652,20 +654,21 @@
         return div.innerHTML;
       }
       
-      function showToast(msg) {
+      function showToast(message) {
         const toast = document.createElement('div');
         toast.className = 'toast';
-        toast.textContent = msg;
+        toast.textContent = message;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
       }
       
-      // Submit ticket
+      // Submit Ticket
       const ticketForm = document.getElementById('ticketForm');
       if (ticketForm) {
         ticketForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           
+          // Get form values
           const name = document.getElementById('residentName').value;
           const phone = document.getElementById('residentPhone').value;
           const email = document.getElementById('residentEmail').value;
@@ -681,10 +684,10 @@
           }
           
           const ticketId = generateTicketId();
-          
           let photoUrl = null;
           const photoFile = document.getElementById('photoUpload').files[0];
           
+          // Upload photo to Supabase Storage if provided
           if (photoFile) {
             const fileExt = photoFile.name.split('.').pop();
             const fileName = `${ticketId}_photo.${fileExt}`;
@@ -706,6 +709,7 @@
             }
           }
           
+          // Insert ticket into database
           const { error } = await supabaseClient
             .from('tickets')
             .insert({
@@ -720,7 +724,7 @@
             });
           
           if (error) {
-            alert('Error: ' + error.message);
+            alert('Error submitting ticket: ' + error.message);
             return;
           }
           
@@ -733,6 +737,7 @@
           document.getElementById('photoUpload').value = '';
           document.getElementById('videoLink').value = '';
           
+          // Refresh views
           if (currentView === 'official') loadOfficialTickets();
         });
       }
@@ -741,7 +746,8 @@
         document.getElementById('successModal').style.display = 'none';
       }
       
-      async function searchTicketById() {
+      // Resident: Search by Ticket ID
+      window.searchTicketById = async function() {
         const ticketId = document.getElementById('searchTicketId').value.trim().toUpperCase();
         if (!ticketId) {
           alert('Please enter a Ticket ID');
@@ -757,7 +763,7 @@
         const resultDiv = document.getElementById('searchResult');
         
         if (error || !ticket) {
-          resultDiv.innerHTML = '<div class="empty-state" style="background: #fff5eb; padding: 16px; border-radius: 16px;">❌ Ticket not found</div>';
+          resultDiv.innerHTML = '<div class="empty-state">❌ Ticket not found. Please check your Ticket ID.</div>';
           document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">Enter a Ticket ID above to search</div>';
           return;
         }
@@ -777,9 +783,10 @@
             </div>
           </div>
         `;
-      }
+      };
       
-      async function loadTicketsByEmail() {
+      // Resident: Load tickets by email
+      window.loadTicketsByEmail = async function() {
         const email = document.getElementById('viewTicketsEmail').value;
         if (!email) {
           alert('Please enter your email');
@@ -792,7 +799,7 @@
           .eq('email', email)
           .order('created_at', { ascending: false });
         
-        if (error || tickets.length === 0) {
+        if (error || !tickets || tickets.length === 0) {
           document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">No tickets found for this email</div>';
           return;
         }
@@ -811,15 +818,19 @@
             </div>
           </div>
         `).join('');
-      }
+      };
       
+      // Official: Load all tickets
       async function loadOfficialTickets() {
         let { data: tickets, error } = await supabaseClient
           .from('tickets')
           .select('*')
           .order('created_at', { ascending: false });
         
-        if (error) return;
+        if (error) {
+          console.error('Error loading tickets:', error);
+          return;
+        }
         
         const searchTerm = document.getElementById('officialSearchInput')?.value.toLowerCase() || '';
         if (searchTerm) {
@@ -835,6 +846,7 @@
           tickets = tickets.filter(t => t.status === currentOfficialTab);
         }
         
+        // Update stats
         document.getElementById('statTotal').textContent = tickets.length;
         document.getElementById('statPending').textContent = tickets.filter(t => t.status === 'pending').length;
         document.getElementById('statInProcess').textContent = tickets.filter(t => t.status === 'in_process').length;
@@ -862,16 +874,21 @@
         `).join('');
       }
       
-      function searchOfficialTickets() {
-        loadOfficialTickets();
-      }
-      
-      function clearOfficialSearch() {
+      window.searchOfficialTickets = function() { loadOfficialTickets(); };
+      window.clearOfficialSearch = function() {
         document.getElementById('officialSearchInput').value = '';
         loadOfficialTickets();
-      }
+      };
       
-      async function openFullscreenTicket(ticketId) {
+      window.switchOfficialTab = function(event, tab) {
+        currentOfficialTab = tab;
+        document.querySelectorAll('#officialView .tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        loadOfficialTickets();
+      };
+      
+      // Fullscreen Ticket View with Three Columns
+      window.openFullscreenTicket = async function(ticketId) {
         const { data: ticket } = await supabaseClient
           .from('tickets')
           .select('*')
@@ -891,13 +908,15 @@
         const mediaHtml = ticket.photo_url ? `<div style="margin-top: 16px;"><div class="info-label">Photo</div><img src="${ticket.photo_url}" style="max-width: 100%; border-radius: 12px;"></div>` : '';
         const videoHtml = ticket.video_url ? `<div style="margin-top: 16px;"><div class="info-label">Video</div><a href="${ticket.video_url}" target="_blank" class="btn btn-outline" style="display: inline-block;">Watch Video →</a></div>` : '';
         
-        const commentsHtml = comments && comments.length > 0 ? comments.map(c => `
-          <div class="comment-item">
-            <div class="comment-author">${c.is_official ? '👔 Official' : '👤 ' + escapeHtml(c.author_name)}${c.is_official ? '<span class="official-badge">Government Official</span>' : ''}</div>
-            <div class="comment-time">${new Date(c.created_at).toLocaleString()}</div>
-            <div class="comment-message">${escapeHtml(c.message)}</div>
-          </div>
-        `).join('') : '<p style="color: #c97e3a; text-align: center;">No comments yet</p>';
+        const commentsHtml = comments && comments.length > 0 
+          ? comments.map(c => `
+              <div class="comment-item">
+                <div class="comment-author">${c.is_official ? '👔 Official' : '👤 ' + escapeHtml(c.author_name)}${c.is_official ? '<span class="official-badge">Government Official</span>' : ''}</div>
+                <div class="comment-time">${new Date(c.created_at).toLocaleString()}</div>
+                <div class="comment-message">${escapeHtml(c.message)}</div>
+              </div>
+            `).join('')
+          : '<p style="color: #c97e3a; text-align: center; padding: 20px;">No comments yet</p>';
         
         const leftColumn = `
           <div class="column">
@@ -956,41 +975,48 @@
         document.getElementById('fullscreenContent').innerHTML = `<div class="three-column">${leftColumn}${centerColumn}${rightColumn}</div>`;
         document.getElementById('fullscreenModal').style.display = 'block';
         document.body.style.overflow = 'hidden';
-      }
+      };
       
-      async function updateFullscreenStatus(ticketId) {
+      window.updateFullscreenStatus = async function(ticketId) {
         const status = document.getElementById('fullscreenStatusSelect').value;
         await supabaseClient.from('tickets').update({ status }).eq('id', ticketId);
-        await supabaseClient.from('comments').insert({ ticket_id: ticketId, author_name: 'System', message: `Status updated to: ${getStatusText(status)}`, is_official: true });
+        await supabaseClient.from('comments').insert({
+          ticket_id: ticketId,
+          author_name: 'System',
+          message: `Status updated to: ${getStatusText(status)}`,
+          is_official: true
+        });
         showToast(`Status updated to ${getStatusText(status)}`);
         closeFullscreenModal();
         if (currentView === 'official') loadOfficialTickets();
-      }
+      };
       
-      async function addFullscreenComment(ticketId) {
+      window.addFullscreenComment = async function(ticketId) {
         const message = document.getElementById('fullscreenComment')?.value;
         if (!message) { alert('Please enter a comment'); return; }
         const isOfficial = currentView === 'official';
         const authorName = isOfficial ? 'Government Official' : 'Resident';
-        await supabaseClient.from('comments').insert({ ticket_id: ticketId, author_name: authorName, message: message, is_official: isOfficial });
+        await supabaseClient.from('comments').insert({
+          ticket_id: ticketId,
+          author_name: authorName,
+          message: message,
+          is_official: isOfficial
+        });
         showToast('Comment posted');
         closeFullscreenModal();
-        openFullscreenTicket(ticketId);
-      }
+        window.openFullscreenTicket(ticketId);
+      };
       
       function closeFullscreenModal() {
         document.getElementById('fullscreenModal').style.display = 'none';
         document.body.style.overflow = 'auto';
       }
       
-      function switchOfficialTab(event, tab) {
-        currentOfficialTab = tab;
-        document.querySelectorAll('#officialView .tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-        loadOfficialTickets();
-      }
+      window.closeFullscreenModal = closeFullscreenModal;
+      window.closeSuccessModal = closeSuccessModal;
       
-      function setView(view) {
+      // View Toggle
+      window.setView = function(view) {
         currentView = view;
         const residentView = document.getElementById('residentView');
         const officialView = document.getElementById('officialView');
@@ -1008,22 +1034,9 @@
           btns[1].classList.add('active');
           loadOfficialTickets();
         }
-      }
+      };
       
-      // Make functions global for onclick handlers
-      window.searchTicketById = searchTicketById;
-      window.loadTicketsByEmail = loadTicketsByEmail;
-      window.searchOfficialTickets = searchOfficialTickets;
-      window.clearOfficialSearch = clearOfficialSearch;
-      window.switchOfficialTab = switchOfficialTab;
-      window.setView = setView;
-      window.openFullscreenTicket = openFullscreenTicket;
-      window.updateFullscreenStatus = updateFullscreenStatus;
-      window.addFullscreenComment = addFullscreenComment;
-      window.closeFullscreenModal = closeFullscreenModal;
-      window.closeSuccessModal = closeSuccessModal;
-      
-      // Close modals when clicking outside
+      // Close modals on outside click
       window.onclick = (e) => {
         const successModal = document.getElementById('successModal');
         const fullscreenModal = document.getElementById('fullscreenModal');
@@ -1031,7 +1044,7 @@
         if (e.target === fullscreenModal) closeFullscreenModal();
       };
       
-      // Initialize
+      // Initial load
       loadOfficialTickets();
     });
   </script>
