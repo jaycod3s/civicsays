@@ -17,7 +17,6 @@
       color: #0f172a;
     }
     
-    /* Header */
     .header {
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       color: white;
@@ -39,14 +38,12 @@
       font-weight: 400;
     }
     
-    /* Container */
     .container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 32px 24px;
     }
     
-    /* View Toggle */
     .view-toggle {
       display: flex;
       gap: 12px;
@@ -79,7 +76,6 @@
       border-color: #cbd5e1;
     }
     
-    /* Cards */
     .card {
       background: white;
       border-radius: 24px;
@@ -107,7 +103,6 @@
       gap: 32px;
     }
     
-    /* Form */
     .form-group {
       margin-bottom: 24px;
     }
@@ -141,7 +136,6 @@
       box-shadow: 0 0 0 3px rgba(15,23,42,0.1);
     }
     
-    /* File Upload */
     .file-upload-area {
       border: 2px dashed #e2e8f0;
       border-radius: 16px;
@@ -155,11 +149,6 @@
     .file-upload-area:hover {
       border-color: #0f172a;
       background: #f8fafc;
-    }
-    
-    .file-upload-area.drag-over {
-      border-color: #0f172a;
-      background: #f1f5f9;
     }
     
     .upload-icon {
@@ -203,7 +192,6 @@
       border: 1px solid #e2e8f0;
     }
     
-    /* Buttons */
     .btn {
       padding: 12px 24px;
       border: none;
@@ -253,7 +241,6 @@
       background: #dc2626;
     }
     
-    /* Ticket List */
     .ticket-list {
       max-height: 600px;
       overflow-y: auto;
@@ -306,22 +293,17 @@
       color: #d97706;
     }
     
-    .status-accepted {
-      background: #d1fae5;
-      color: #059669;
-    }
-    
-    .status-declined {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-    
-    .status-in_progress {
+    .status-in_process {
       background: #dbeafe;
       color: #2563eb;
     }
     
-    .status-resolved {
+    .status-hold {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    
+    .status-solved {
       background: #d1fae5;
       color: #059669;
     }
@@ -350,12 +332,12 @@
       flex-wrap: wrap;
     }
     
-    /* Tabs */
     .tabs {
       display: flex;
       gap: 8px;
       margin-bottom: 24px;
       border-bottom: 1px solid #eef2ff;
+      flex-wrap: wrap;
     }
     
     .tab {
@@ -374,7 +356,6 @@
       border-bottom: 2px solid #0f172a;
     }
     
-    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -426,6 +407,62 @@
       overflow-y: auto;
     }
     
+    /* Success Modal */
+    .success-modal {
+      background: white;
+      border-radius: 32px;
+      padding: 48px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      animation: fadeInScale 0.3s ease;
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 48px;
+      color: white;
+    }
+    
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    
+    .success-message {
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+    
+    .tracking-id {
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 16px 0;
+    }
+    
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -474,37 +511,55 @@
       color: #0f172a;
     }
     
-    .update-item {
-      background: #f8fafc;
+    .comment-item {
+      background: white;
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 12px;
-      border-left: 3px solid #0f172a;
+      border: 1px solid #eef2ff;
     }
     
-    .update-author {
+    .comment-author {
       font-weight: 600;
       font-size: 13px;
       color: #0f172a;
       margin-bottom: 6px;
     }
     
-    .update-time {
+    .comment-time {
       font-size: 11px;
       color: #94a3b8;
       margin-bottom: 8px;
     }
     
-    .update-message {
+    .comment-message {
       font-size: 14px;
       color: #334155;
       line-height: 1.5;
+    }
+    
+    .official-badge {
+      background: #0f172a;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      margin-left: 8px;
     }
     
     .action-buttons {
       display: flex;
       gap: 12px;
       margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .status-select {
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      font-size: 14px;
     }
     
     .empty-state {
@@ -550,6 +605,9 @@
       .card {
         padding: 20px;
       }
+      .tabs {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -568,7 +626,6 @@
     <!-- Resident View -->
     <div id="residentView">
       <div class="grid-2">
-        <!-- Submit Ticket -->
         <div class="card">
           <div class="card-header">
             <h2>Submit New Request or Complaint</h2>
@@ -620,7 +677,6 @@
           </form>
         </div>
         
-        <!-- My Tickets -->
         <div class="card">
           <div class="card-header">
             <h2>My Tickets</h2>
@@ -645,8 +701,8 @@
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
           <div class="stat-card"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
-          <div class="stat-card"><div class="stat-number" id="statAccepted">0</div><div class="stat-label">Accepted</div></div>
-          <div class="stat-card"><div class="stat-number" id="statDeclined">0</div><div class="stat-label">Declined</div></div>
+          <div class="stat-card"><div class="stat-number" id="statInProcess">0</div><div class="stat-label">In Process</div></div>
+          <div class="stat-card"><div class="stat-number" id="statSolved">0</div><div class="stat-label">Solved</div></div>
         </div>
       </div>
       
@@ -655,10 +711,11 @@
           <h2>Manage Tickets</h2>
         </div>
         <div class="tabs">
-          <button class="tab active" onclick="switchOfficialTab('pending')">Pending</button>
-          <button class="tab" onclick="switchOfficialTab('accepted')">Accepted</button>
-          <button class="tab" onclick="switchOfficialTab('declined')">Declined</button>
-          <button class="tab" onclick="switchOfficialTab('all')">All Tickets</button>
+          <button class="tab active" onclick="switchOfficialTab(event, 'pending')">Pending</button>
+          <button class="tab" onclick="switchOfficialTab(event, 'in_process')">In Process</button>
+          <button class="tab" onclick="switchOfficialTab(event, 'hold')">On Hold</button>
+          <button class="tab" onclick="switchOfficialTab(event, 'solved')">Solved</button>
+          <button class="tab" onclick="switchOfficialTab(event, 'all')">All Tickets</button>
         </div>
         <div id="officialTicketsList" class="ticket-list">
           <div class="empty-state">Loading tickets...</div>
@@ -667,7 +724,19 @@
     </div>
   </div>
   
-  <!-- Modal -->
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="success-modal">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Ticket Submitted!</div>
+      <div class="success-message">Your request has been successfully submitted.</div>
+      <div class="tracking-id" id="successTrackingId"></div>
+      <div class="success-message">Please save this tracking ID to check your ticket status.</div>
+      <button class="btn btn-primary" onclick="closeSuccessModal()" style="margin-top: 16px;">OK</button>
+    </div>
+  </div>
+  
+  <!-- Ticket Detail Modal -->
   <div id="ticketModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -738,7 +807,7 @@
     // IndexedDB
     function openDatabase() {
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open('CivicSaysDB', 4);
+        const request = indexedDB.open('CivicSaysDB', 5);
         request.onerror = () => reject(request.error);
         request.onsuccess = () => {
           db = request.result;
@@ -786,7 +855,7 @@
       });
     }
     
-    // Submit ticket
+    // Submit ticket with success modal
     document.getElementById('ticketForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -804,33 +873,39 @@
       }
       
       let mediaData = null;
+      let mediaType = null;
       if (currentMediaFile) {
         mediaData = await new Promise((resolve) => {
           const reader = new FileReader();
           reader.onload = (e) => resolve(e.target.result);
           reader.readAsDataURL(currentMediaFile);
         });
+        mediaType = currentMediaFile.type.startsWith('image/') ? 'image' : 'video';
       }
       
+      const ticketId = generateTicketId();
+      
       const newTicket = {
-        id: generateTicketId(),
+        id: ticketId,
         name, phone, email,
         type: type === 'request' ? 'Request' : 'Complaint',
         typeId: type,
         location, title, description,
         media: mediaData,
-        mediaType: currentMediaFile?.type.startsWith('image/') ? 'image' : currentMediaFile?.type.startsWith('video/') ? 'video' : null,
+        mediaType: mediaType,
         status: 'pending',
-        adminDecision: null,
-        statusHistory: [{ status: 'Pending Review', timestamp: new Date().toISOString() }],
-        updates: [],
+        comments: [],
         createdAt: new Date().toISOString(),
         resolvedAt: null
       };
       
       await saveTicket(newTicket);
-      showToast(`Ticket submitted! ID: ${newTicket.id}`);
       
+      // Show success modal
+      document.getElementById('successTrackingId').textContent = ticketId;
+      document.getElementById('successModal').style.display = 'flex';
+      
+      // Reset form
       document.getElementById('ticketForm').reset();
       currentMediaFile = null;
       document.getElementById('fileName').style.display = 'none';
@@ -838,6 +913,10 @@
       
       if (currentView === 'official') loadOfficialTickets();
     });
+    
+    function closeSuccessModal() {
+      document.getElementById('successModal').style.display = 'none';
+    }
     
     // Load my tickets
     async function loadMyTickets() {
@@ -857,37 +936,48 @@
           <div class="ticket-header">
             <span class="ticket-id">${t.id}</span>
             <span class="type-badge">${t.type}</span>
-            <span class="status-badge status-${t.status}">${t.status === 'pending' ? 'Pending Review' : t.status === 'accepted' ? 'Accepted' : t.status === 'declined' ? 'Declined' : t.status}</span>
+            <span class="status-badge status-${t.status}">${getStatusText(t.status)}</span>
           </div>
-          <div class="ticket-title">${t.title}</div>
+          <div class="ticket-title">${escapeHtml(t.title)}</div>
           <div class="ticket-meta">
             <span>${new Date(t.createdAt).toLocaleDateString()}</span>
-            <span>${t.location}</span>
+            <span>${escapeHtml(t.location)}</span>
           </div>
         </div>
       `).join('');
     }
     
-    // Load official tickets with tab filter
+    function getStatusText(status) {
+      const statusMap = {
+        'pending': 'Pending',
+        'in_process': 'In Process',
+        'hold': 'On Hold',
+        'solved': 'Solved'
+      };
+      return statusMap[status] || status;
+    }
+    
+    // Load official tickets
     async function loadOfficialTickets() {
       const all = await getAllTickets();
       let filtered = all;
       
       if (currentOfficialTab === 'pending') filtered = all.filter(t => t.status === 'pending');
-      else if (currentOfficialTab === 'accepted') filtered = all.filter(t => t.status === 'accepted');
-      else if (currentOfficialTab === 'declined') filtered = all.filter(t => t.status === 'declined');
+      else if (currentOfficialTab === 'in_process') filtered = all.filter(t => t.status === 'in_process');
+      else if (currentOfficialTab === 'hold') filtered = all.filter(t => t.status === 'hold');
+      else if (currentOfficialTab === 'solved') filtered = all.filter(t => t.status === 'solved');
       
       filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
       
       const total = all.length;
       const pending = all.filter(t => t.status === 'pending').length;
-      const accepted = all.filter(t => t.status === 'accepted').length;
-      const declined = all.filter(t => t.status === 'declined').length;
+      const inProcess = all.filter(t => t.status === 'in_process').length;
+      const solved = all.filter(t => t.status === 'solved').length;
       
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statPending').textContent = pending;
-      document.getElementById('statAccepted').textContent = accepted;
-      document.getElementById('statDeclined').textContent = declined;
+      document.getElementById('statInProcess').textContent = inProcess;
+      document.getElementById('statSolved').textContent = solved;
       
       if (filtered.length === 0) {
         document.getElementById('officialTicketsList').innerHTML = '<div class="empty-state">No tickets in this category</div>';
@@ -899,19 +989,19 @@
           <div class="ticket-header">
             <span class="ticket-id">${t.id}</span>
             <span class="type-badge">${t.type}</span>
-            <span class="status-badge status-${t.status}">${t.status === 'pending' ? 'Pending Review' : t.status === 'accepted' ? 'Accepted' : 'Declined'}</span>
+            <span class="status-badge status-${t.status}">${getStatusText(t.status)}</span>
           </div>
-          <div class="ticket-title">${t.title}</div>
+          <div class="ticket-title">${escapeHtml(t.title)}</div>
           <div class="ticket-meta">
             <span>${t.name}</span>
             <span>${new Date(t.createdAt).toLocaleDateString()}</span>
-            <span>${t.location}</span>
+            <span>${escapeHtml(t.location)}</span>
           </div>
         </div>
       `).join('');
     }
     
-    // View ticket detail
+    // View ticket detail with comments
     async function viewTicket(ticketId) {
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
@@ -925,20 +1015,29 @@
         </div>
       ` : '';
       
-      const updatesHtml = ticket.updates.length > 0 ? ticket.updates.map(u => `
-        <div class="update-item">
-          <div class="update-author">${u.isOfficial ? 'Official Response' : u.authorName}</div>
-          <div class="update-time">${new Date(u.timestamp).toLocaleString()}</div>
-          <div class="update-message">${u.message}</div>
+      const commentsHtml = ticket.comments && ticket.comments.length > 0 ? ticket.comments.map(c => `
+        <div class="comment-item">
+          <div class="comment-author">
+            ${c.isOfficial ? '👔 Official' : '👤 ' + escapeHtml(c.authorName)}
+            ${c.isOfficial ? '<span class="official-badge">Government Official</span>' : ''}
+          </div>
+          <div class="comment-time">${new Date(c.timestamp).toLocaleString()}</div>
+          <div class="comment-message">${escapeHtml(c.message)}</div>
         </div>
-      `).join('') : '<p style="color: #94a3b8;">No updates yet</p>';
+      `).join('') : '<p style="color: #94a3b8;">No comments yet</p>';
       
-      let actionButtons = '';
-      if (isOfficial && ticket.status === 'pending') {
-        actionButtons = `
-          <div class="action-buttons">
-            <button class="btn btn-accept" onclick="decideTicket('${ticket.id}', 'accept')">Accept Request</button>
-            <button class="btn btn-decline" onclick="decideTicket('${ticket.id}', 'decline')">Decline Request</button>
+      let statusOptions = '';
+      if (isOfficial) {
+        statusOptions = `
+          <div class="detail-section">
+            <div class="detail-label">Update Status</div>
+            <select id="statusSelect" class="status-select">
+              <option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="in_process" ${ticket.status === 'in_process' ? 'selected' : ''}>In Process</option>
+              <option value="hold" ${ticket.status === 'hold' ? 'selected' : ''}>On Hold</option>
+              <option value="solved" ${ticket.status === 'solved' ? 'selected' : ''}>Solved</option>
+            </select>
+            <button class="btn btn-primary" onclick="updateStatus('${ticket.id}')" style="margin-top: 12px;">Update Status</button>
           </div>
         `;
       }
@@ -947,94 +1046,96 @@
         <div class="detail-section">
           <div class="detail-row"><div class="detail-label">Ticket ID</div><div class="detail-value">${ticket.id}</div></div>
           <div class="detail-row"><div class="detail-label">Type</div><div class="detail-value">${ticket.type}</div></div>
-          <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-${ticket.status}">${ticket.status === 'pending' ? 'Pending Review' : ticket.status === 'accepted' ? 'Accepted' : 'Declined'}</span></div></div>
+          <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div></div>
           <div class="detail-row"><div class="detail-label">Submitted</div><div class="detail-value">${new Date(ticket.createdAt).toLocaleString()}</div></div>
         </div>
         
         <div class="detail-section">
           <div class="detail-label">Contact Information</div>
-          <div class="detail-row"><div class="detail-label">Name</div><div class="detail-value">${ticket.name}</div></div>
-          <div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">${ticket.phone}</div></div>
-          <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">${ticket.email}</div></div>
+          <div class="detail-row"><div class="detail-label">Name</div><div class="detail-value">${escapeHtml(ticket.name)}</div></div>
+          <div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">${escapeHtml(ticket.phone)}</div></div>
+          <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">${escapeHtml(ticket.email)}</div></div>
         </div>
         
         <div class="detail-section">
           <div class="detail-label">Issue Details</div>
-          <div class="detail-row"><div class="detail-label">Location</div><div class="detail-value">${ticket.location}</div></div>
-          <div class="detail-row"><div class="detail-label">Title</div><div class="detail-value">${ticket.title}</div></div>
-          <div class="detail-row"><div class="detail-label">Description</div><div class="detail-value">${ticket.description}</div></div>
+          <div class="detail-row"><div class="detail-label">Location</div><div class="detail-value">${escapeHtml(ticket.location)}</div></div>
+          <div class="detail-row"><div class="detail-label">Title</div><div class="detail-value">${escapeHtml(ticket.title)}</div></div>
+          <div class="detail-row"><div class="detail-label">Description</div><div class="detail-value">${escapeHtml(ticket.description)}</div></div>
           ${mediaHtml}
         </div>
         
         <div class="detail-section">
-          <div class="detail-label">Updates & Responses</div>
-          <div style="margin-top: 12px;">${updatesHtml}</div>
+          <div class="detail-label">Comments & Updates</div>
+          <div style="max-height: 300px; overflow-y: auto; margin-top: 12px;">
+            ${commentsHtml}
+          </div>
         </div>
         
-        ${actionButtons}
+        ${statusOptions}
         
-        ${!isOfficial ? `
-          <div style="margin-top: 20px;">
-            <textarea id="residentReplyMsg" rows="3" placeholder="Add a reply or follow-up..." style="width: 100%; margin-bottom: 12px;"></textarea>
-            <button class="btn btn-primary" onclick="addResidentReply('${ticket.id}')">Send Reply</button>
-          </div>
-        ` : ''}
+        <div class="detail-section">
+          <div class="detail-label">Add Comment</div>
+          <textarea id="commentMessage" rows="3" placeholder="Write your comment here..." style="width: 100%; margin-bottom: 12px;"></textarea>
+          <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
+        </div>
       `;
       
       document.getElementById('modalContent').innerHTML = modalContent;
       document.getElementById('ticketModal').style.display = 'flex';
     }
     
-    // Official decision
-    async function decideTicket(ticketId, decision) {
+    // Update status
+    async function updateStatus(ticketId) {
+      const status = document.getElementById('statusSelect').value;
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
       
-      const status = decision === 'accept' ? 'accepted' : 'declined';
       ticket.status = status;
-      ticket.adminDecision = decision;
-      ticket.statusHistory.push({ status: decision === 'accept' ? 'Accepted' : 'Declined', timestamp: new Date().toISOString() });
-      ticket.updates.push({
+      ticket.comments = ticket.comments || [];
+      ticket.comments.push({
         id: Date.now().toString(),
-        author: 'official',
-        authorName: 'Government Official',
-        message: decision === 'accept' ? 'Your request has been accepted and is now being processed.' : 'Your request has been declined. Please contact the office for more information.',
+        authorName: 'System',
+        message: `Status updated to: ${getStatusText(status)}`,
         isOfficial: true,
         timestamp: new Date().toISOString()
       });
       
       await saveTicket(ticket);
-      showToast(`Ticket ${decision === 'accept' ? 'accepted' : 'declined'}`);
+      showToast(`Status updated to ${getStatusText(status)}`);
       closeModal();
-      loadOfficialTickets();
+      if (currentView === 'official') loadOfficialTickets();
+      else loadMyTickets();
     }
     
-    // Resident reply
-    async function addResidentReply(ticketId) {
-      const message = document.getElementById('residentReplyMsg')?.value;
-      if (!message) { alert('Please enter your reply'); return; }
+    // Add comment
+    async function addComment(ticketId) {
+      const message = document.getElementById('commentMessage')?.value;
+      if (!message) { alert('Please enter a comment'); return; }
       
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
       
-      ticket.updates.push({
+      const isOfficial = currentView === 'official';
+      
+      ticket.comments = ticket.comments || [];
+      ticket.comments.push({
         id: Date.now().toString(),
-        author: 'resident',
-        authorName: ticket.name,
-        message,
-        isOfficial: false,
+        authorName: isOfficial ? 'Government Official' : ticket.name,
+        message: message,
+        isOfficial: isOfficial,
         timestamp: new Date().toISOString()
       });
       
       await saveTicket(ticket);
-      showToast('Reply sent');
+      showToast('Comment posted');
       closeModal();
-      loadMyTickets();
+      viewTicket(ticketId);
     }
     
-    function switchOfficialTab(tab) {
+    function switchOfficialTab(event, tab) {
       currentOfficialTab = tab;
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#officialView .tab').forEach(t => t.classList.remove('active'));
       event.target.classList.add('active');
       loadOfficialTickets();
     }
@@ -1044,8 +1145,12 @@
       document.getElementById('residentView').style.display = view === 'resident' ? 'block' : 'none';
       document.getElementById('officialView').style.display = view === 'official' ? 'block' : 'none';
       document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      if (view === 'official') loadOfficialTickets();
+      if (view === 'resident') {
+        document.querySelectorAll('.view-btn')[0].classList.add('active');
+      } else {
+        document.querySelectorAll('.view-btn')[1].classList.add('active');
+        loadOfficialTickets();
+      }
     }
     
     function closeModal() {
@@ -1059,6 +1164,21 @@
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
+    
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    // Close modals on outside click
+    window.onclick = (e) => {
+      const successModal = document.getElementById('successModal');
+      const ticketModal = document.getElementById('ticketModal');
+      if (e.target === successModal) closeSuccessModal();
+      if (e.target === ticketModal) closeModal();
+    };
     
     openDatabase().then(() => {
       if (currentView === 'official') loadOfficialTickets();
