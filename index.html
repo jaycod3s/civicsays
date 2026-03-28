@@ -617,162 +617,12 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-</head>
-<body>
-  <div class="header">
-    <div class="logo-icon">
-      CIVIC<span>SAYS</span>
-    </div>
-    <div class="logo-text">YOUR VOICE WILL BE HEARD</div>
-  </div>
-  
-  <div class="container">
-    <div class="view-toggle">
-      <button class="view-btn active" onclick="setView('resident')">Resident View</button>
-      <button class="view-btn" onclick="setView('official')">Official View</button>
-    </div>
-    
-    <!-- Resident View -->
-    <div id="residentView">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <h2>Submit New Request or Complaint</h2>
-          </div>
-          <form id="ticketForm">
-            <div class="form-group">
-              <label>Full Name <span class="required">*</span></label>
-              <input type="text" id="residentName" required placeholder="Enter your full name">
-            </div>
-            <div class="form-group">
-              <label>Phone Number <span class="required">*</span></label>
-              <input type="tel" id="residentPhone" required placeholder="(555) 123-4567">
-            </div>
-            <div class="form-group">
-              <label>Email Address <span class="required">*</span></label>
-              <input type="email" id="residentEmail" required placeholder="your@email.com">
-            </div>
-            <div class="form-group">
-              <label>Type <span class="required">*</span></label>
-              <select id="ticketType" required>
-                <option value="request">Request</option>
-                <option value="complaint">Complaint</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Location / Address <span class="required">*</span></label>
-              <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
-            </div>
-            <div class="form-group">
-              <label>Title <span class="required">*</span></label>
-              <input type="text" id="ticketTitle" required placeholder="Brief summary">
-            </div>
-            <div class="form-group">
-              <label>Description <span class="required">*</span></label>
-              <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>Photo (Optional)</label>
-              <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
-            </div>
-            <div class="form-group">
-              <label>Video Link (Optional)</label>
-              <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
-              <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Ticket</button>
-          </form>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <h2>Track Your Ticket</h2>
-          </div>
-          <div class="form-group">
-            <label>Enter Ticket ID</label>
-            <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
-            <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px;">Track Ticket</button>
-          </div>
-          <div id="searchResult" style="margin-top: 20px;"></div>
-          <div class="card-header" style="margin-top: 28px;">
-            <h2>Your Tickets</h2>
-          </div>
-          <div id="myTicketsList" class="ticket-list">
-            <div class="empty-state">Enter your email below to see your tickets</div>
-          </div>
-          <div class="form-group" style="margin-top: 16px;">
-            <input type="email" id="viewTicketsEmail" placeholder="Enter your email to view all your tickets">
-            <button class="btn btn-outline" onclick="loadTicketsByEmail()" style="margin-top: 8px;">View My Tickets</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Official View -->
-    <div id="officialView" style="display: none;">
-      <div class="card">
-        <div class="card-header">
-          <h2>Dashboard</h2>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card total"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
-          <div class="stat-card pending"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
-          <div class="stat-card inprocess"><div class="stat-number" id="statInProcess">0</div><div class="stat-label">In Process</div></div>
-          <div class="stat-card solved"><div class="stat-number" id="statSolved">0</div><div class="stat-label">Solved</div></div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <h2>Manage Tickets</h2>
-        </div>
-        <div class="search-box">
-          <input type="text" id="officialSearchInput" placeholder="Search by Ticket ID, Name, Email, or Title..." onkeyup="searchOfficialTickets()">
-          <button class="btn btn-outline" onclick="clearOfficialSearch()">Clear</button>
-        </div>
-        <div class="tabs">
-          <button class="tab active" onclick="switchOfficialTab(event, 'all')">All Tickets</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'pending')">Pending</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'in_process')">In Process</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'hold')">On Hold</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'solved')">Solved</button>
-        </div>
-        <div id="officialTicketsList" class="ticket-list">
-          <div class="empty-state">Loading tickets...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Success Modal -->
-  <div id="successModal" class="modal-overlay">
-    <div class="success-modal">
-      <div class="success-icon">✓</div>
-      <div class="success-title">Ticket Submitted!</div>
-      <div class="success-message">Your request has been successfully submitted.</div>
-      <div class="tracking-id" id="successTrackingId"></div>
-      <div class="success-message">Please save this tracking ID to check your ticket status.</div>
-      <button class="btn btn-primary" onclick="closeSuccessModal()" style="margin-top: 16px;">OK</button>
-    </div>
-  </div>
-  
-  <!-- Full Screen Ticket Modal -->
-  <div id="fullscreenModal" class="fullscreen-modal">
-    <div class="fullscreen-content">
-      <div class="fullscreen-header">
-        <h2 id="fullscreenTitle">Ticket Details</h2>
-        <button class="fullscreen-close" onclick="closeFullscreenModal()">✕</button>
-      </div>
-      <div id="fullscreenContent"></div>
-    </div>
-  </div>
-  
   <script>
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://gdovxbzzggdjwkbwskop.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
+    // Supabase Configuration - Global variable
+    window.SUPABASE_URL = 'https://gdovxbzzggdjwkbwskop.supabase.co';
+    window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
     
     let currentView = 'resident';
     let currentOfficialTab = 'all';
@@ -835,12 +685,12 @@
         const filePath = `ticket_photos/${fileName}`;
         
         try {
-          const { error: uploadError } = await supabase.storage
+          const { error: uploadError } = await window.supabaseClient.storage
             .from('ticket-photos')
             .upload(filePath, photoFile);
           
           if (!uploadError) {
-            const { data: urlData } = supabase.storage
+            const { data: urlData } = window.supabaseClient.storage
               .from('ticket-photos')
               .getPublicUrl(filePath);
             photoUrl = urlData.publicUrl;
@@ -850,7 +700,7 @@
         }
       }
       
-      const { error } = await supabase
+      const { error } = await window.supabaseClient
         .from('tickets')
         .insert({
           id: ticketId,
@@ -868,9 +718,11 @@
         return;
       }
       
+      // Show success modal with ticket ID
       document.getElementById('successTrackingId').textContent = ticketId;
       document.getElementById('successModal').style.display = 'flex';
       
+      // Reset form
       document.getElementById('ticketForm').reset();
       document.getElementById('photoUpload').value = '';
       document.getElementById('videoLink').value = '';
@@ -889,7 +741,7 @@
         return;
       }
       
-      const { data: ticket, error } = await supabase
+      const { data: ticket, error } = await window.supabaseClient
         .from('tickets')
         .select('*')
         .eq('id', ticketId)
@@ -927,7 +779,7 @@
         return;
       }
       
-      const { data: tickets, error } = await supabase
+      const { data: tickets, error } = await window.supabaseClient
         .from('tickets')
         .select('*')
         .eq('email', email)
@@ -955,7 +807,7 @@
     }
     
     async function loadOfficialTickets() {
-      let { data: tickets, error } = await supabase
+      let { data: tickets, error } = await window.supabaseClient
         .from('tickets')
         .select('*')
         .order('created_at', { ascending: false });
@@ -1013,7 +865,7 @@
     }
     
     async function openFullscreenTicket(ticketId) {
-      const { data: ticket } = await supabase
+      const { data: ticket } = await window.supabaseClient
         .from('tickets')
         .select('*')
         .eq('id', ticketId)
@@ -1021,7 +873,7 @@
       
       if (!ticket) return;
       
-      const { data: comments } = await supabase
+      const { data: comments } = await window.supabaseClient
         .from('comments')
         .select('*')
         .eq('ticket_id', ticketId)
@@ -1101,8 +953,8 @@
     
     async function updateFullscreenStatus(ticketId) {
       const status = document.getElementById('fullscreenStatusSelect').value;
-      await supabase.from('tickets').update({ status }).eq('id', ticketId);
-      await supabase.from('comments').insert({ ticket_id: ticketId, author_name: 'System', message: `Status updated to: ${getStatusText(status)}`, is_official: true });
+      await window.supabaseClient.from('tickets').update({ status }).eq('id', ticketId);
+      await window.supabaseClient.from('comments').insert({ ticket_id: ticketId, author_name: 'System', message: `Status updated to: ${getStatusText(status)}`, is_official: true });
       showToast(`Status updated to ${getStatusText(status)}`);
       closeFullscreenModal();
       if (currentView === 'official') loadOfficialTickets();
@@ -1113,7 +965,7 @@
       if (!message) { alert('Please enter a comment'); return; }
       const isOfficial = currentView === 'official';
       const authorName = isOfficial ? 'Government Official' : 'Resident';
-      await supabase.from('comments').insert({ ticket_id: ticketId, author_name: authorName, message: message, is_official: isOfficial });
+      await window.supabaseClient.from('comments').insert({ ticket_id: ticketId, author_name: authorName, message: message, is_official: isOfficial });
       showToast('Comment posted');
       closeFullscreenModal();
       openFullscreenTicket(ticketId);
@@ -1133,22 +985,33 @@
     
     function setView(view) {
       currentView = view;
-      document.getElementById('residentView').style.display = view === 'resident' ? 'block' : 'none';
-      document.getElementById('officialView').style.display = view === 'official' ? 'block' : 'none';
-      document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+      const residentView = document.getElementById('residentView');
+      const officialView = document.getElementById('officialView');
+      const btns = document.querySelectorAll('.view-btn');
+      
       if (view === 'resident') {
-        document.querySelectorAll('.view-btn')[0].classList.add('active');
+        residentView.style.display = 'block';
+        officialView.style.display = 'none';
+        btns[0].classList.add('active');
+        btns[1].classList.remove('active');
       } else {
-        document.querySelectorAll('.view-btn')[1].classList.add('active');
+        residentView.style.display = 'none';
+        officialView.style.display = 'block';
+        btns[0].classList.remove('active');
+        btns[1].classList.add('active');
         loadOfficialTickets();
       }
     }
     
+    // Close modals when clicking outside
     window.onclick = (e) => {
-      if (e.target === document.getElementById('successModal')) closeSuccessModal();
-      if (e.target === document.getElementById('fullscreenModal')) closeFullscreenModal();
+      const successModal = document.getElementById('successModal');
+      const fullscreenModal = document.getElementById('fullscreenModal');
+      if (e.target === successModal) closeSuccessModal();
+      if (e.target === fullscreenModal) closeFullscreenModal();
     };
     
+    // Initialize
     loadOfficialTickets();
   </script>
 </body>
