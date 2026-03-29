@@ -641,70 +641,107 @@
       container.innerHTML = `<div class="ticket-layout">${leftColumnHtml}${middleColumnHtml}${rightColumnHtml}</div>`;
     }
     
-    async function updateStatus(ticketId) {
-      const status = document.getElementById('statusSelect').value;
-      const ticket = await getTicketById(ticketId);
-      if (!ticket) return;
-      
-      ticket.status = status;
-      ticket.comments = ticket.comments || [];
-      
-      // Get the official's name from localStorage
-      const officialNameFromStorage = localStorage.getItem('officialName') || 'System';
-      
-      ticket.comments.push({
-        id: Date.now().toString(),
-        authorName: officialNameFromStorage,
-        message: `Status updated to: ${getStatusText(status)}`,
-        isOfficial: true,
-        timestamp: new Date().toISOString()
-      });
-      
-      try {
-        await saveTicket(ticket);
-        showToast(`Status updated to ${getStatusText(status)}`);
-        renderTicket();
-      } catch (error) {
-        showToast('Error updating status');
-      }
-    }
+ async function updateStatus(ticketId) {
+  const status = document.getElementById('statusSelect').value;
+  const ticket = await getTicketById(ticketId);
+  if (!ticket) return;
+  
+  ticket.status = status;
+  ticket.comments = ticket.comments || [];
+  
+  // Get the official's name from localStorage
+  const officialNameFromStorage = localStorage.getItem('officialName') || 'System';
+  
+  ticket.comments.push({
+    id: Date.now().toString(),
+    authorName: officialNameFromStorage,
+    message: `Status updated to: ${getStatusText(status)}`,
+    isOfficial: true,
+    timestamp: new Date().toISOString()
+  });
+  
+  try {
+    await saveTicket(ticket);
+    showToast(`Status updated to ${getStatusText(status)}`);
     
-    async function addComment(ticketId) {
-      const message = document.getElementById('commentInput')?.value;
-      if (!message) {
-        showToast('Please enter a comment');
-        return;
-      }
-      
-      const ticket = await getTicketById(ticketId);
-      if (!ticket) return;
-      
-      // Get the official's name from localStorage if logged in
-      let authorName = ticket.name; // Default to resident name
-      if (isOfficialLoggedIn) {
-        const officialNameFromStorage = localStorage.getItem('officialName');
-        authorName = officialNameFromStorage || 'Government Official';
-        console.log('Commenting as official:', authorName);
-      }
-      
-      ticket.comments = ticket.comments || [];
-      ticket.comments.push({
-        id: Date.now().toString(),
-        authorName: authorName,
-        message: message,
-        isOfficial: isOfficialLoggedIn,
-        timestamp: new Date().toISOString()
+    // Save scroll position before re-rendering
+    const scrollPosition = window.scrollY;
+    
+    // Re-render the ticket
+    await renderTicket();
+    
+    // Restore scroll position
+    setTimeout(() => {
+      window.scrollTo({
+        top: scrollPosition,
+        behavior: 'instant'
       });
-      
-      try {
-        await saveTicket(ticket);
-        showToast('Comment posted');
-        document.getElementById('commentInput').value = '';
-        renderTicket();
-      } catch (error) {
-        showToast('Error posting comment');
+    }, 100);
+    
+  } catch (error) {
+    showToast('Error updating status');
+  }
+}
+    
+   async function addComment(ticketId) {
+  const message = document.getElementById('commentInput')?.value;
+  if (!message) {
+    showToast('Please enter a comment');
+    return;
+  }
+  
+  const ticket = await getTicketById(ticketId);
+  if (!ticket) return;
+  
+  // Get the official's name from localStorage if logged in
+  let authorName = ticket.name; // Default to resident name
+  if (isOfficialLoggedIn) {
+    const officialNameFromStorage = localStorage.getItem('officialName');
+    authorName = officialNameFromStorage || 'Government Official';
+    console.log('Commenting as official:', authorName);
+  }
+  
+  ticket.comments = ticket.comments || [];
+  ticket.comments.push({
+    id: Date.now().toString(),
+    authorName: authorName,
+    message: message,
+    isOfficial: isOfficialLoggedIn,
+    timestamp: new Date().toISOString()
+  });
+  
+  try {
+    await saveTicket(ticket);
+    showToast('Comment posted');
+    document.getElementById('commentInput').value = '';
+    
+    // Save scroll position before re-rendering
+    const scrollPosition = window.scrollY;
+    const commentsSection = document.querySelector('.right-column');
+    const commentsOffset = commentsSection ? commentsSection.offsetTop : scrollPosition;
+    
+    // Re-render the ticket
+    await renderTicket();
+    
+    // Restore scroll position to the comments section
+    setTimeout(() => {
+      if (commentsSection) {
+        window.scrollTo({
+          top: commentsOffset,
+          behavior: 'instant'
+        });
+      } else {
+        window.scrollTo({
+          top: scrollPosition,
+          behavior: 'instant'
+        });
       }
-    }
+    }, 100);
+    
+  } catch (error) {
+    showToast('Error posting comment');
+  }
+}
     
     // Make functions global
     window.updateStatus = updateStatus;
