@@ -102,25 +102,25 @@
     }
     
     /* Three Column Layout - Fixed */
-.ticket-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr 300px;
-  gap: 24px;
-  align-items: start;
-  padding-left: 20px;
-}
-
-.left-column {
-  width: 100%;
-}
-
-.middle-column {
-  width: 100%;
-}
-
-.right-column {
-  width: 150%;
-}
+    .ticket-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr 300px;
+      gap: 24px;
+      align-items: start;
+      padding-left: 20px;
+    }
+    
+    .left-column {
+      width: 100%;
+    }
+    
+    .middle-column {
+      width: 100%;
+    }
+    
+    .right-column {
+      width: 100%;
+    }
     
     /* Cards */
     .card {
@@ -371,12 +371,8 @@
     
     @media (max-width: 1024px) {
       .ticket-layout {
-        flex-direction: column;
-      }
-      .left-column,
-      .middle-column,
-      .right-column {
-        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 24px;
       }
       .container {
         padding: 24px;
@@ -425,10 +421,14 @@
     
     // Check if user is logged in as official
     let isOfficialLoggedIn = localStorage.getItem('civicSaysOfficial') === 'true';
+    let officialName = localStorage.getItem('officialName'); // Get the official's name
     
     // Get ticket ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const ticketId = urlParams.get('id');
+    
+    console.log('Logged in status:', isOfficialLoggedIn);
+    console.log('Official name:', officialName);
     
     function getStatusText(status) {
       const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
@@ -523,7 +523,7 @@
         ? comments.map(c => `
           <div class="comment-item">
             <div class="comment-author">
-              ${c.isOfficial ? '👔 Official' : '👤 ' + escapeHtml(c.authorName)}
+              ${c.isOfficial ? '👔 ' + escapeHtml(c.authorName) : '👤 ' + escapeHtml(c.authorName)}
               ${c.isOfficial ? '<span class="official-badge">Government Official</span>' : ''}
             </div>
             <div class="comment-time">${new Date(c.timestamp).toLocaleString()}</div>
@@ -648,9 +648,13 @@
       
       ticket.status = status;
       ticket.comments = ticket.comments || [];
+      
+      // Get the official's name from localStorage
+      const officialNameFromStorage = localStorage.getItem('officialName') || 'System';
+      
       ticket.comments.push({
         id: Date.now().toString(),
-        authorName: 'System',
+        authorName: officialNameFromStorage,
         message: `Status updated to: ${getStatusText(status)}`,
         isOfficial: true,
         timestamp: new Date().toISOString()
@@ -675,10 +679,18 @@
       const ticket = await getTicketById(ticketId);
       if (!ticket) return;
       
+      // Get the official's name from localStorage if logged in
+      let authorName = ticket.name; // Default to resident name
+      if (isOfficialLoggedIn) {
+        const officialNameFromStorage = localStorage.getItem('officialName');
+        authorName = officialNameFromStorage || 'Government Official';
+        console.log('Commenting as official:', authorName);
+      }
+      
       ticket.comments = ticket.comments || [];
       ticket.comments.push({
         id: Date.now().toString(),
-        authorName: isOfficialLoggedIn ? 'Government Official' : ticket.name,
+        authorName: authorName,
         message: message,
         isOfficial: isOfficialLoggedIn,
         timestamp: new Date().toISOString()
