@@ -1016,58 +1016,65 @@
     }
     
     async function saveTicket(ticket) {
-      const existing = await getTicketById(ticket.id);
-      
-      if (existing) {
-        const { error } = await supabaseClient
-          .from(TABLE_NAME)
-          .update({
-            name: ticket.name,
-            phone: ticket.phone,
-            email: ticket.email,
-            type: ticket.type,
-            location: ticket.location,
-            title: ticket.title,
-            description: ticket.description,
-            media: ticket.media,
-            media_type: ticket.mediaType,
-            video_url: ticket.videoUrl,
-            status: ticket.status,
-            comments: ticket.comments
-          })
-          .eq('id', ticket.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabaseClient
-          .from(TABLE_NAME)
-          .insert([{
-            id: ticket.id,
-            name: ticket.name,
-            phone: ticket.phone,
-            email: ticket.email,
-            type: ticket.type,
-            location: ticket.location,
-            title: ticket.title,
-            description: ticket.description,
-            media: ticket.media,
-            media_type: ticket.mediaType,
-            video_url: ticket.videoUrl,
-            status: ticket.status,
-            comments: ticket.comments || [],
-            created_at: ticket.createdAt
-          }]);
-        if (error) throw error;
-      }
-    }
+  const existing = await getTicketById(ticket.id);
+  
+  if (existing) {
+    const { data, error } = await supabaseClient
+      .from(TABLE_NAME)
+      .update({
+        name: ticket.name,
+        phone: ticket.phone,
+        email: ticket.email,
+        type: ticket.type,
+        type_id: ticket.typeId,  // ← Add this line
+        location: ticket.location,
+        title: ticket.title,
+        description: ticket.description,
+        media: ticket.media,
+        media_type: ticket.mediaType,
+        video_url: ticket.videoUrl,
+        status: ticket.status,
+        comments: ticket.comments,
+        resolved_at: ticket.resolvedAt
+      })
+      .eq('id', ticket.id)
+      .select();
     
-    function generateTicketId() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-      let id = 'CIV-';
-      for (let i = 0; i < 6; i++) {
-        id += chars[Math.floor(Math.random() * chars.length)];
-      }
-      return id;
+    if (error) {
+      console.error('Error updating ticket:', error);
+      throw error;
     }
+    return data;
+  } else {
+    const { data, error } = await supabaseClient
+      .from(TABLE_NAME)
+      .insert([{
+        id: ticket.id,
+        name: ticket.name,
+        phone: ticket.phone,
+        email: ticket.email,
+        type: ticket.type,
+        type_id: ticket.typeId,  // ← Add this line
+        location: ticket.location,
+        title: ticket.title,
+        description: ticket.description,
+        media: ticket.media,
+        media_type: ticket.mediaType,
+        video_url: ticket.videoUrl,
+        status: ticket.status,
+        comments: ticket.comments || [],
+        created_at: ticket.createdAt,
+        resolved_at: ticket.resolvedAt
+      }])
+      .select();
+    
+    if (error) {
+      console.error('Error inserting ticket:', error);
+      throw error;
+    }
+    return data;
+  }
+}
     
     document.getElementById('photoUpload')?.addEventListener('change', (e) => {
       if (e.target.files[0]) currentMediaFile = e.target.files[0];
