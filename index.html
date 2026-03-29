@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CivicSays - Your Voice Will Be Heard</title>
-  <link rel="icon" type="image/png" href="Logo.png">
+  <link rel="icon" type="image/png" href="logonobg.png">
   <style>
     * {
       margin: 0;
@@ -74,20 +74,15 @@
       }
     }
     
-    .logo-text {
-      font-size: 28px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #e67e22, #f39c12);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
+    .logo {
+      display: flex;
+      align-items: center;
     }
     
-    .logo-text span {
-      background: linear-gradient(135deg, #f39c12, #e67e22);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .logo img {
+      height: 50px;
+      width: auto;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
     
     .nav-buttons {
@@ -257,10 +252,13 @@
       letter-spacing: 0.5px;
     }
     
-    /* Logo on Right Side */
+    /* Logo on Right Side - No Box Outline */
     .hero-logo {
       position: relative;
       animation: fadeInRight 0.8s ease-out 0.4s both;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     
     @keyframes fadeInRight {
@@ -274,27 +272,24 @@
       }
     }
     
-    .logo-card {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(20px);
-      border-radius: 40px;
-      padding: 40px;
+    .logo-container {
       text-align: center;
-      border: 1px solid rgba(230,126,34,0.2);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      background: transparent;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+    }
+    
+    .logo-container img {
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
       transition: transform 0.3s ease;
     }
     
-    .logo-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(230,126,34,0.5);
-    }
-    
-    .logo-card img {
-      max-width: 280px;
-      width: 100%;
-      height: auto;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    .logo-container img:hover {
+      transform: scale(1.02);
     }
     
     .floating-elements {
@@ -305,7 +300,6 @@
       bottom: 0;
       pointer-events: none;
       overflow: hidden;
-      border-radius: 40px;
     }
     
     .floating-element {
@@ -500,12 +494,8 @@
         font-size: 36px;
       }
       
-      .logo-card {
-        padding: 30px;
-      }
-      
-      .logo-card img {
-        max-width: 200px;
+      .logo-container img {
+        max-width: 280px;
       }
     }
     
@@ -526,6 +516,10 @@
       .hero-stats {
         justify-content: center;
       }
+      
+      .logo-container img {
+        max-width: 220px;
+      }
     }
   </style>
 </head>
@@ -533,7 +527,9 @@
   <div class="bg-animation"></div>
   
   <nav class="navbar">
-    <div class="logo-text">CIVIC<span>SAYS</span></div>
+    <div class="logo">
+      <img src="logonobg.png" alt="CivicSays Logo">
+    </div>
     <div class="nav-buttons">
       <a href="index.html" class="nav-btn nav-btn-outline">Home</a>
       <a href="civicsays.html" class="nav-btn nav-btn-primary">Submit a Ticket →</a>
@@ -573,8 +569,8 @@
         </div>
       </div>
       <div class="hero-logo">
-        <div class="logo-card">
-          <img src="Logo.png" alt="CivicSays Logo" onerror="this.src='https://via.placeholder.com/280x280?text=CivicSays'">
+        <div class="logo-container">
+          <img src="logonobg.png" alt="CivicSays Logo">
           <div class="floating-elements">
             <div class="floating-element"></div>
             <div class="floating-element"></div>
