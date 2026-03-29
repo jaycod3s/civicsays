@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicSays - Your Voice Will Be Heard</title>
+  <link rel="icon" type="image/png" href="Logo.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #fef7e8 0%, #fae9d4 100%);
+      min-height: 100vh;
+      color: #2c3e2f;
+    }
+    
+    /* Navigation */
+    .navbar {
+      background: white;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo img {
+      height: 45px;
+      width: auto;
+    }
+    
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      color: #e67e22;
+    }
+    
+    .logo-text span {
+      color: #c97e3a;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .nav-btn {
+      padding: 10px 24px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .nav-btn-primary {
+      background: #e67e22;
+      color: white;
+    }
+    
+    .nav-btn-primary:hover {
+      background: #d45a1a;
+      transform: translateY(-2px);
+    }
+    
+    .nav-btn-outline {
+      border: 2px solid #e67e22;
+      color: #e67e22;
+    }
+    
+    .nav-btn-outline:hover {
+      background: #fff5eb;
+      transform: translateY(-2px);
+    }
+    
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    
+    .hero-content h1 {
+      font-size: 48px;
+      font-weight: 800;
+      color: #2c3e2f;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    
+    .hero-content h1 span {
+      color: #e67e22;
+      display: inline-block;
+    }
+    
+    .hero-content p {
+      font-size: 18px;
+      color: #6b4e2e;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background: #e67e22;
+      color: white;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 18px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(230,126,34,0.3);
+    }
+    
+    .cta-button:hover {
+      background: #d45a1a;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(230,126,34,0.4);
+    }
+    
+    .hero-image {
+      text-align: center;
+    }
+    
+    .hero-image img {
+      max-width: 100%;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    /* Features Section */
+    .features {
+      background: white;
+      padding: 80px 32px;
+    }
+    
+    .features-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: #2c3e2f;
+      margin-bottom: 16px;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      font-size: 18px;
+      color: #b87a4a;
+      margin-bottom: 60px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+    }
+    
+    .feature-card {
+      text-align: center;
+      padding: 32px 24px;
+      background: #fef7e8;
+      border-radius: 24px;
+      transition: all 0.3s;
+      border: 1px solid #f0dfcc;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-color: #e67e22;
+    }
+    
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .feature-card h3 {
+      font-size: 22px;
+      color: #e67e22;
+      margin-bottom: 16px;
+    }
+    
+    .feature-card p {
+      color: #6b4e2e;
+      line-height: 1.6;
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      padding: 80px 32px;
+      background: linear-gradient(135deg, #fff5eb 0%, #fef7e8 100%);
+    }
+    
+    .steps-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+    }
+    
+    .step {
+      text-align: center;
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: #e67e22;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 auto 20px;
+    }
+    
+    .step h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #2c3e2f;
+    }
+    
+    .step p {
+      color: #b87a4a;
+    }
+    
+    /* Stats Section */
+    .stats {
+      background: #e67e22;
+      padding: 60px 32px;
+      color: white;
+    }
+    
+    .stats-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 48px;
+      font-weight: 800;
+    }
+    
+    .stat-label {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-top: 8px;
+    }
+    
+    /* Footer */
+    .footer {
+      background: #2c3e2f;
+      color: #f5e6d3;
+      padding: 48px 32px 24px;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    
+    .footer-section h4 {
+      margin-bottom: 16px;
+      color: #e67e22;
+    }
+    
+    .footer-section p {
+      line-height: 1.6;
+      color: #f0dfcc;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid #4a5b3e;
+      font-size: 14px;
+      color: #b87a4a;
+    }
+    
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 40px 24px;
+      }
+      
+      .hero-content h1 {
+        font-size: 36px;
+      }
+      
+      .navbar {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+      
+      .section-title {
+        font-size: 28px;
+      }
+      
+      .stat-number {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="Logo.png" alt="CivicSays Logo" onerror="this.src='https://via.placeholder.com/45x45?text=CS'">
+      <div class="logo-text">CIVIC<span>SAYS</span></div>
+    </div>
+    <div class="nav-buttons">
+      <a href="index.html" class="nav-btn nav-btn-outline">Home</a>
+      <a href="civicsays.html" class="nav-btn nav-btn-primary">Submit a Ticket →</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Your Voice <span>Will Be Heard</span></h1>
+      <p>CivicSays is a local government request and complaint tracking system that bridges the gap between residents and local officials. Residents can submit requests or complaints with photos and videos, receiving a unique tracking ID to monitor progress. Government officials can manage tickets, update statuses, and communicate with residents through comments, creating a transparent and efficient feedback system for community issues.</p>
+      <a href="civicsays.html" class="cta-button">Submit a Ticket →</a>
+    </div>
+    <div class="hero-image">
+      <img src="https://via.placeholder.com/500x400?text=Civic+Engagement" alt="Civic Engagement" onerror="this.style.display='none'">
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="features-container">
+      <h2 class="section-title">Why Choose CivicSays?</h2>
+      <p class="section-subtitle">Making local governance transparent and accessible</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Easy Submission</h3>
+          <p>Submit requests or complaints with photos and videos in just a few clicks</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Track Progress</h3>
+          <p>Get a unique tracking ID to monitor your ticket status anytime</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Real Communication</h3>
+          <p>Officials can respond and update statuses with transparent comments</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Dashboard Analytics</h3>
+          <p>Officials get a comprehensive view of all community issues</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-it-works">
+    <div class="features-container">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Simple steps to get your voice heard</p>
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Submit Your Ticket</h3>
+          <p>Fill out the form with details, photos, or video links about your concern</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Get Your Tracking ID</h3>
+          <p>Receive a unique ID to track your request or complaint status</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Officials Respond</h3>
+          <p>Local government officials review, update status, and communicate</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Resolution</h3>
+          <p>Track progress until your issue is resolved</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stats-container">
+      <div>
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Transparent Process</div>
+      </div>
+      <div>
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Track Anytime</div>
+      </div>
+      <div>
+        <div class="stat-number">Real-time</div>
+        <div class="stat-label">Status Updates</div>
+      </div>
+      <div>
+        <div class="stat-number">Direct</div>
+        <div class="stat-label">Official Communication</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>CivicSays</h4>
+        <p>Your voice will be heard. Bridging the gap between residents and local government.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <p><a href="civicsays.html" style="color: #e67e22; text-decoration: none;">Submit a Ticket</a></p>
+        <p><a href="civicsays.html" style="color: #e67e22; text-decoration: none;">Track Your Ticket</a></p>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>Email: support@civicsays.com</p>
+        <p>Phone: (555) 123-4567</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 CivicSays. All rights reserved. Your Voice Will Be Heard.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Simple animation for stats
+    const observerOptions = {
+      threshold: 0.5,
+      rootMargin: "0px 0px -100px 0px"
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.feature-card, .step').forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(20px)";
+      el.style.transition = "all 0.6s ease-out";
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
