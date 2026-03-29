@@ -28,7 +28,7 @@
         async function testConnection() {
             try {
                 const { data, error } = await supabaseClient
-                    .from('your_table')
+                    .from('tickets')
                     .select('*')
                     .limit(5);
                 
