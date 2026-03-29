@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Official - Admin Only</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #0a0c0a;
+      color: #fff;
+      padding: 40px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #e67e22;
+      background: #1a1a1a;
+      color: white;
+    }
+    button {
+      background: #e67e22;
+      cursor: pointer;
+    }
+    .success { color: #2ecc71; }
+    .error { color: #e74c3c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔐 Add New Official</h2>
+    <div id="status"></div>
+    
+    <input type="password" id="adminKey" placeholder="Admin Key" value="CivicSays2024!">
+    <input type="text" id="fullName" placeholder="Full Name">
+    <input type="text" id="username" placeholder="Username">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="phone" placeholder="Phone">
+    <input type="text" id="department" placeholder="Department">
+    <input type="password" id="password" placeholder="Password">
+    
+    <button onclick="addOfficial()">Add Official</button>
+    
+    <div style="margin-top: 20px; font-size: 12px; color: #666;">
+      <p>Only accessible to admin. Keep this page private.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://gdovxbzzggdjwkbwsokp.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    const ADMIN_KEY = 'CivicSays2024!';
+    
+    async function addOfficial() {
+      const key = document.getElementById('adminKey').value;
+      if (key !== ADMIN_KEY) {
+        document.getElementById('status').innerHTML = '<div class="error">❌ Invalid admin key</div>';
+        return;
+      }
+      
+      const official = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value,
+        full_name: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        department: document.getElementById('department').value,
+        role: 'official',
+        is_active: true
+      };
+      
+      const { data, error } = await supabase
+        .from('officials')
+        .insert([official])
+        .select();
+      
+      if (error) {
+        document.getElementById('status').innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+      } else {
+        document.getElementById('status').innerHTML = '<div class="success">✅ Official added successfully!</div>';
+        // Clear form
+        document.getElementById('fullName').value = '';
+        document.getElementById('username').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('department').value = '';
+        document.getElementById('password').value = '';
+      }
+    }
+  </script>
+</body>
+</html>
