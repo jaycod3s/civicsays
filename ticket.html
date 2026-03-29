@@ -641,7 +641,7 @@
       container.innerHTML = `<div class="ticket-layout">${leftColumnHtml}${middleColumnHtml}${rightColumnHtml}</div>`;
     }
     
- async function updateStatus(ticketId) {
+async function updateStatus(ticketId) {
   const status = document.getElementById('statusSelect').value;
   const ticket = await getTicketById(ticketId);
   if (!ticket) return;
@@ -664,18 +664,21 @@
     await saveTicket(ticket);
     showToast(`Status updated to ${getStatusText(status)}`);
     
-    // Save scroll position before re-rendering
-    const scrollPosition = window.scrollY;
+    // Get the ticket info section
+    const ticketInfoCard = document.querySelector('.left-column');
     
     // Re-render the ticket
     await renderTicket();
     
-    // Restore scroll position
+    // Scroll to ticket info section after re-render
     setTimeout(() => {
-      window.scrollTo({
-        top: scrollPosition,
-        behavior: 'instant'
-      });
+      const newTicketInfo = document.querySelector('.left-column');
+      if (newTicketInfo) {
+        newTicketInfo.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
     }, 100);
     
   } catch (error) {
@@ -715,25 +718,19 @@
     showToast('Comment posted');
     document.getElementById('commentInput').value = '';
     
-    // Save scroll position before re-rendering
-    const scrollPosition = window.scrollY;
-    const commentsSection = document.querySelector('.right-column');
-    const commentsOffset = commentsSection ? commentsSection.offsetTop : scrollPosition;
+    // Get the comments section element
+    const commentsCard = document.querySelector('.right-column');
     
     // Re-render the ticket
     await renderTicket();
     
-    // Restore scroll position to the comments section
+    // Scroll to comments section after re-render
     setTimeout(() => {
-      if (commentsSection) {
-        window.scrollTo({
-          top: commentsOffset,
-          behavior: 'instant'
-        });
-      } else {
-        window.scrollTo({
-          top: scrollPosition,
-          behavior: 'instant'
+      const newCommentsCard = document.querySelector('.right-column');
+      if (newCommentsCard) {
+        newCommentsCard.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
         });
       }
     }, 100);
