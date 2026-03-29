@@ -612,232 +612,20 @@
       }
     }
   </style>
-</head>
-<body>
-  <div class="header">
-    <div class="logo-icon">
-      CIVIC<span>SAYS</span>
-    </div>
-    <div class="logo-text">YOUR VOICE WILL BE HEARD</div>
-  </div>
-  
-  <div class="container">
-    <div class="view-toggle">
-      <button class="view-btn active" onclick="setView('resident')">Resident View</button>
-      <button class="view-btn" onclick="setView('official')">Official View</button>
-    </div>
-    
-    <!-- Resident View -->
-    <div id="residentView">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <h2>Submit New Request or Complaint</h2>
-          </div>
-          <form id="ticketForm">
-            <div class="form-group">
-              <label>Full Name <span class="required">*</span></label>
-              <input type="text" id="residentName" required placeholder="Enter your full name">
-            </div>
-            <div class="form-group">
-              <label>Phone Number <span class="required">*</span></label>
-              <input type="tel" id="residentPhone" required placeholder="(555) 123-4567">
-            </div>
-            <div class="form-group">
-              <label>Email Address <span class="required">*</span></label>
-              <input type="email" id="residentEmail" required placeholder="your@email.com">
-            </div>
-            <div class="form-group">
-              <label>Type <span class="required">*</span></label>
-              <select id="ticketType" required>
-                <option value="request">Request</option>
-                <option value="complaint">Complaint</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Location / Address <span class="required">*</span></label>
-              <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
-            </div>
-            <div class="form-group">
-              <label>Title <span class="required">*</span></label>
-              <input type="text" id="ticketTitle" required placeholder="Brief summary">
-            </div>
-            <div class="form-group">
-              <label>Description <span class="required">*</span></label>
-              <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>Photo (Optional)</label>
-              <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
-            </div>
-            <div class="form-group">
-              <label>Video Link (Optional)</label>
-              <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
-              <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Ticket</button>
-          </form>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <h2>Track Your Ticket</h2>
-          </div>
-          <div class="form-group">
-            <label>Enter Ticket ID</label>
-            <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
-            <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px;">Track Ticket</button>
-          </div>
-          <div id="searchResult" style="margin-top: 20px;"></div>
-          <div class="card-header" style="margin-top: 28px;">
-            <h2>Your Tickets</h2>
-          </div>
-          <div id="myTicketsList" class="ticket-list">
-            <div class="empty-state">Enter your email below to see your tickets</div>
-          </div>
-          <div class="form-group" style="margin-top: 16px;">
-            <input type="email" id="viewTicketsEmail" placeholder="Enter your email to view all your tickets">
-            <button class="btn btn-outline" onclick="loadTicketsByEmail()" style="margin-top: 8px;">View My Tickets</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Official View -->
-    <div id="officialView" style="display: none;">
-      <div class="card">
-        <div class="card-header">
-          <h2>Dashboard</h2>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card total"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
-          <div class="stat-card pending"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
-          <div class="stat-card inprocess"><div class="stat-number" id="statInProcess">0</div><div class="stat-label">In Process</div></div>
-          <div class="stat-card solved"><div class="stat-number" id="statSolved">0</div><div class="stat-label">Solved</div></div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <h2>Manage Tickets</h2>
-        </div>
-        <div class="search-box">
-          <input type="text" id="officialSearchInput" placeholder="Search by Ticket ID, Name, Email, or Title..." onkeyup="searchOfficialTickets()">
-          <button class="btn btn-outline" onclick="clearOfficialSearch()">Clear</button>
-        </div>
-        <div class="tabs">
-          <button class="tab active" onclick="switchOfficialTab(event, 'all')">All Tickets</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'pending')">Pending</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'in_process')">In Process</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'hold')">On Hold</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'solved')">Solved</button>
-        </div>
-        <div id="officialTicketsList" class="ticket-list">
-          <div class="empty-state">Loading tickets...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Success Modal -->
-  <div id="successModal" class="modal-overlay">
-    <div class="success-modal">
-      <div class="success-icon">✓</div>
-      <div class="success-title">Ticket Submitted!</div>
-      <div class="success-message">Your request has been successfully submitted.</div>
-      <div class="tracking-id" id="successTrackingId"></div>
-      <div class="success-message">Please save this tracking ID to check your ticket status.</div>
-      <button class="btn btn-primary" onclick="closeSuccessModal()" style="margin-top: 16px;">OK</button>
-    </div>
-  </div>
-  
-  <!-- Full Screen Ticket Modal -->
-  <div id="fullscreenModal" class="fullscreen-modal">
-    <div class="fullscreen-content">
-      <div class="fullscreen-header">
-        <h2 id="fullscreenTitle">Ticket Details</h2>
-        <button class="fullscreen-close" onclick="closeFullscreenModal()">✕</button>
-      </div>
-      <div id="fullscreenContent"></div>
-    </div>
-  </div>
-  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    // IndexedDB Setup - Browser Database (No external setup needed!)
-    let db = null;
+    // ==================== SUPABASE CONFIGURATION ====================
+    // REPLACE THESE WITH YOUR ACTUAL SUPABASE CREDENTIALS
+    const SUPABASE_URL = 'https://gdovxbzzggdjwkbwskop.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
     let currentView = 'resident';
     let currentOfficialTab = 'all';
     let currentMediaFile = null;
     
-    // File upload handling
-    const uploadArea = document.getElementById('fileUploadArea');
-    const fileInput = document.getElementById('mediaUpload');
-    
-    if (uploadArea) {
-      uploadArea.addEventListener('click', () => fileInput.click());
-      uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('drag-over');
-      });
-      uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('drag-over');
-      });
-      uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file) handleFile(file);
-      });
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files[0]) handleFile(e.target.files[0]);
-      });
-    }
-    
-    function handleFile(file) {
-      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'video/webm'];
-      if (!validTypes.includes(file.type)) {
-        alert('Please upload a valid image or video file');
-        return;
-      }
-      if (file.size > 50 * 1024 * 1024) {
-        alert('File size must be less than 50MB');
-        return;
-      }
-      currentMediaFile = file;
-      document.getElementById('fileName').textContent = file.name;
-      document.getElementById('fileName').style.display = 'inline-block';
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const preview = document.getElementById('mediaPreview');
-        preview.innerHTML = '';
-        if (file.type.startsWith('image/')) {
-          preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-        } else {
-          preview.innerHTML = `<video controls src="${e.target.result}"></video>`;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-    
-    // Open IndexedDB Database
-    function openDatabase() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open('CivicSaysDB', 1);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-          db = request.result;
-          resolve(db);
-        };
-        request.onupgradeneeded = (event) => {
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains('tickets')) {
-            db.createObjectStore('tickets', { keyPath: 'id' });
-          }
-        };
-      });
-    }
-    
+    // Helper Functions
     function generateTicketId() {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
       let id = 'CIV-';
@@ -845,30 +633,6 @@
         id += chars[Math.floor(Math.random() * chars.length)];
       }
       return id;
-    }
-    
-    function saveTicket(ticket) {
-      return new Promise((resolve) => {
-        const transaction = db.transaction(['tickets'], 'readwrite');
-        const store = transaction.objectStore('tickets');
-        store.put(ticket).onsuccess = () => resolve();
-      });
-    }
-    
-    function getAllTickets() {
-      return new Promise((resolve) => {
-        const transaction = db.transaction(['tickets'], 'readonly');
-        const store = transaction.objectStore('tickets');
-        store.getAll().onsuccess = (e) => resolve(e.target.result || []);
-      });
-    }
-    
-    function getTicketById(id) {
-      return new Promise((resolve) => {
-        const transaction = db.transaction(['tickets'], 'readonly');
-        const store = transaction.objectStore('tickets');
-        store.get(id).onsuccess = (e) => resolve(e.target.result);
-      });
     }
     
     function getStatusText(status) {
@@ -891,7 +655,7 @@
       setTimeout(() => toast.remove(), 3000);
     }
     
-    // Submit ticket
+    // Submit Ticket
     document.getElementById('ticketForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -909,43 +673,59 @@
         return;
       }
       
-      let mediaData = null;
-      let mediaType = null;
-      if (currentMediaFile) {
-        mediaData = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.readAsDataURL(currentMediaFile);
-        });
-        mediaType = currentMediaFile.type.startsWith('image/') ? 'image' : 'video';
+      const ticketId = generateTicketId();
+      let photoUrl = null;
+      const photoFile = document.getElementById('photoUpload').files[0];
+      
+      // Upload photo to Supabase Storage if provided
+      if (photoFile) {
+        const fileExt = photoFile.name.split('.').pop();
+        const fileName = `${ticketId}_photo.${fileExt}`;
+        const filePath = `ticket_photos/${fileName}`;
+        
+        try {
+          const { error: uploadError } = await supabase.storage
+            .from('ticket-photos')
+            .upload(filePath, photoFile);
+          
+          if (!uploadError) {
+            const { data: urlData } = supabase.storage
+              .from('ticket-photos')
+              .getPublicUrl(filePath);
+            photoUrl = urlData.publicUrl;
+          }
+        } catch (err) {
+          console.log('Photo upload error:', err);
+        }
       }
       
-      const ticketId = generateTicketId();
+      // Save ticket to Supabase database
+      const { error } = await supabase
+        .from('tickets')
+        .insert({
+          id: ticketId,
+          name, phone, email,
+          type: type === 'request' ? 'Request' : 'Complaint',
+          location, title, description,
+          photo_url: photoUrl,
+          video_url: videoLink,
+          status: 'pending',
+          created_at: new Date().toISOString()
+        });
       
-      const newTicket = {
-        id: ticketId,
-        name, phone, email,
-        type: type === 'request' ? 'Request' : 'Complaint',
-        typeId: type,
-        location, title, description,
-        media: mediaData,
-        mediaType: mediaType,
-        videoUrl: videoLink,
-        status: 'pending',
-        comments: [],
-        createdAt: new Date().toISOString(),
-        resolvedAt: null
-      };
+      if (error) {
+        alert('Error: ' + error.message);
+        return;
+      }
       
-      await saveTicket(newTicket);
-      
+      // Show success modal with ticket ID
       document.getElementById('successTrackingId').textContent = ticketId;
       document.getElementById('successModal').style.display = 'flex';
       
+      // Reset form
       document.getElementById('ticketForm').reset();
-      currentMediaFile = null;
-      document.getElementById('fileName').style.display = 'none';
-      document.getElementById('mediaPreview').innerHTML = '';
+      document.getElementById('photoUpload').value = '';
+      document.getElementById('videoLink').value = '';
       
       if (currentView === 'official') loadOfficialTickets();
     });
@@ -954,19 +734,24 @@
       document.getElementById('successModal').style.display = 'none';
     }
     
-    // Search ticket by ID (Resident View)
-    async function searchTicketById() {
+    // Resident: Search by Ticket ID
+    window.searchTicketById = async function() {
       const ticketId = document.getElementById('searchTicketId').value.trim().toUpperCase();
       if (!ticketId) {
         alert('Please enter a Ticket ID');
         return;
       }
       
-      const ticket = await getTicketById(ticketId);
+      const { data: ticket, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('id', ticketId)
+        .single();
+      
       const resultDiv = document.getElementById('searchResult');
       
-      if (!ticket) {
-        resultDiv.innerHTML = '<div class="empty-state" style="background: #fff5eb; border: 1px solid #f0dfcc; border-radius: 16px; padding: 16px;">❌ Ticket not found. Please check your Ticket ID.</div>';
+      if (error || !ticket) {
+        resultDiv.innerHTML = '<div class="empty-state">❌ Ticket not found</div>';
         document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">Enter a Ticket ID above to search</div>';
         return;
       }
@@ -981,26 +766,28 @@
           </div>
           <div class="ticket-title">${escapeHtml(ticket.title)}</div>
           <div class="ticket-meta">
-            <span>${new Date(ticket.createdAt).toLocaleDateString()}</span>
+            <span>${new Date(ticket.created_at).toLocaleDateString()}</span>
             <span>${escapeHtml(ticket.location)}</span>
           </div>
         </div>
       `;
-    }
+    };
     
-    // Load tickets by email
-    async function loadTicketsByEmail() {
+    // Resident: Load tickets by email
+    window.loadTicketsByEmail = async function() {
       const email = document.getElementById('viewTicketsEmail').value;
       if (!email) {
         alert('Please enter your email');
         return;
       }
       
-      const allTickets = await getAllTickets();
-      const tickets = allTickets.filter(t => t.email === email);
-      tickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const { data: tickets, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('email', email)
+        .order('created_at', { ascending: false });
       
-      if (tickets.length === 0) {
+      if (error || !tickets || tickets.length === 0) {
         document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">No tickets found for this email</div>';
         return;
       }
@@ -1014,17 +801,21 @@
           </div>
           <div class="ticket-title">${escapeHtml(ticket.title)}</div>
           <div class="ticket-meta">
-            <span>${new Date(ticket.createdAt).toLocaleDateString()}</span>
+            <span>${new Date(ticket.created_at).toLocaleDateString()}</span>
             <span>${escapeHtml(ticket.location)}</span>
           </div>
         </div>
       `).join('');
-    }
+    };
     
-    // Load official tickets
+    // Official: Load all tickets
     async function loadOfficialTickets() {
-      const allTickets = await getAllTickets();
-      let tickets = [...allTickets];
+      let { data: tickets, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) return;
       
       const searchTerm = document.getElementById('officialSearchInput')?.value.toLowerCase() || '';
       if (searchTerm) {
@@ -1040,17 +831,10 @@
         tickets = tickets.filter(t => t.status === currentOfficialTab);
       }
       
-      tickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      
-      const total = allTickets.length;
-      const pending = allTickets.filter(t => t.status === 'pending').length;
-      const inProcess = allTickets.filter(t => t.status === 'in_process').length;
-      const solved = allTickets.filter(t => t.status === 'solved').length;
-      
-      document.getElementById('statTotal').textContent = total;
-      document.getElementById('statPending').textContent = pending;
-      document.getElementById('statInProcess').textContent = inProcess;
-      document.getElementById('statSolved').textContent = solved;
+      document.getElementById('statTotal').textContent = tickets.length;
+      document.getElementById('statPending').textContent = tickets.filter(t => t.status === 'pending').length;
+      document.getElementById('statInProcess').textContent = tickets.filter(t => t.status === 'in_process').length;
+      document.getElementById('statSolved').textContent = tickets.filter(t => t.status === 'solved').length;
       
       if (tickets.length === 0) {
         document.getElementById('officialTicketsList').innerHTML = '<div class="empty-state">No tickets found</div>';
@@ -1067,182 +851,125 @@
           <div class="ticket-title">${escapeHtml(ticket.title)}</div>
           <div class="ticket-meta">
             <span>${escapeHtml(ticket.name)}</span>
-            <span>${new Date(ticket.createdAt).toLocaleDateString()}</span>
+            <span>${new Date(ticket.created_at).toLocaleDateString()}</span>
             <span>${escapeHtml(ticket.location)}</span>
           </div>
         </div>
       `).join('');
     }
     
-    function searchOfficialTickets() {
-      loadOfficialTickets();
-    }
-    
-    function clearOfficialSearch() {
+    window.searchOfficialTickets = function() { loadOfficialTickets(); };
+    window.clearOfficialSearch = function() {
       document.getElementById('officialSearchInput').value = '';
       loadOfficialTickets();
-    }
+    };
     
-    // Open full screen ticket view
-    async function openFullscreenTicket(ticketId) {
-      const ticket = await getTicketById(ticketId);
+    window.switchOfficialTab = function(event, tab) {
+      currentOfficialTab = tab;
+      document.querySelectorAll('#officialView .tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      loadOfficialTickets();
+    };
+    
+    // Fullscreen Ticket View
+    window.openFullscreenTicket = async function(ticketId) {
+      const { data: ticket } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('id', ticketId)
+        .single();
+      
       if (!ticket) return;
+      
+      const { data: comments } = await supabase
+        .from('comments')
+        .select('*')
+        .eq('ticket_id', ticketId)
+        .order('created_at', { ascending: true });
       
       const isOfficial = currentView === 'official';
       
-      const mediaHtml = ticket.media ? `
-        <div style="margin-top: 16px;">
-          <div class="info-label">Attachment</div>
-          ${ticket.mediaType === 'image' ? `<img src="${ticket.media}" style="max-width: 100%; border-radius: 12px;">` : `<video controls src="${ticket.media}" style="max-width: 100%; border-radius: 12px;"></video>`}
-        </div>
-      ` : '';
+      const mediaHtml = ticket.photo_url ? `<div style="margin-top:16px"><div class="info-label">Photo</div><img src="${ticket.photo_url}" style="max-width:100%;border-radius:12px"></div>` : '';
+      const videoHtml = ticket.video_url ? `<div style="margin-top:16px"><div class="info-label">Video</div><a href="${ticket.video_url}" target="_blank" class="btn btn-outline">Watch Video →</a></div>` : '';
       
-      const videoHtml = ticket.videoUrl ? `
-        <div style="margin-top: 16px;">
-          <div class="info-label">Video Link</div>
-          <a href="${ticket.videoUrl}" target="_blank" class="btn btn-outline" style="display: inline-block;">Watch Video →</a>
-        </div>
-      ` : '';
-      
-      const commentsHtml = ticket.comments && ticket.comments.length > 0 ? ticket.comments.map(c => `
+      const commentsHtml = comments && comments.length ? comments.map(c => `
         <div class="comment-item">
-          <div class="comment-author">
-            ${c.isOfficial ? '👔 Official' : '👤 ' + escapeHtml(c.authorName)}
-            ${c.isOfficial ? '<span class="official-badge">Government Official</span>' : ''}
-          </div>
-          <div class="comment-time">${new Date(c.timestamp).toLocaleString()}</div>
+          <div class="comment-author">${c.is_official ? '👔 Official' : '👤 ' + escapeHtml(c.author_name)}${c.is_official ? '<span class="official-badge">Government Official</span>' : ''}</div>
+          <div class="comment-time">${new Date(c.created_at).toLocaleString()}</div>
           <div class="comment-message">${escapeHtml(c.message)}</div>
         </div>
-      `).join('') : '<p style="color: #c97e3a; text-align: center; padding: 20px;">No comments yet</p>';
+      `).join('') : '<p style="color:#c97e3a;text-align:center">No comments yet</p>';
       
-      const leftColumn = `
-        <div class="column">
-          <div class="column-header"><h3>Ticket Information</h3></div>
-          <div class="column-content">
-            <div class="info-row"><div class="info-label">Ticket ID</div><div class="info-value">${ticket.id}</div></div>
-            <div class="info-row"><div class="info-label">Type</div><div class="info-value">${ticket.type}</div></div>
-            <div class="info-row"><div class="info-label">Status</div><div class="info-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div></div>
-            <div class="info-row"><div class="info-label">Submitted</div><div class="info-value">${new Date(ticket.createdAt).toLocaleString()}</div></div>
-            ${isOfficial ? `
-              <div style="margin-top: 24px; border-top: 1px solid #f0dfcc; padding-top: 20px;">
-                <div class="info-label">Update Status</div>
-                <select id="fullscreenStatusSelect" class="status-select">
-                  <option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option>
-                  <option value="in_process" ${ticket.status === 'in_process' ? 'selected' : ''}>In Process</option>
-                  <option value="hold" ${ticket.status === 'hold' ? 'selected' : ''}>On Hold</option>
-                  <option value="solved" ${ticket.status === 'solved' ? 'selected' : ''}>Solved</option>
-                </select>
-                <button class="btn btn-primary" onclick="updateFullscreenStatus('${ticket.id}')" style="width: 100%;">Update Status</button>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      `;
+      const leftColumn = `<div class="column"><div class="column-header"><h3>Ticket Information</h3></div><div class="column-content"><div class="info-row"><div class="info-label">Ticket ID</div><div class="info-value">${ticket.id}</div></div><div class="info-row"><div class="info-label">Type</div><div class="info-value">${ticket.type}</div></div><div class="info-row"><div class="info-label">Status</div><div class="info-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div></div><div class="info-row"><div class="info-label">Submitted</div><div class="info-value">${new Date(ticket.created_at).toLocaleString()}</div></div>${isOfficial ? `<div style="margin-top:24px;border-top:1px solid #f0dfcc;padding-top:20px"><div class="info-label">Update Status</div><select id="fullscreenStatusSelect" class="status-select"><option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option><option value="in_process" ${ticket.status === 'in_process' ? 'selected' : ''}>In Process</option><option value="hold" ${ticket.status === 'hold' ? 'selected' : ''}>On Hold</option><option value="solved" ${ticket.status === 'solved' ? 'selected' : ''}>Solved</option></select><button class="btn btn-primary" onclick="updateFullscreenStatus('${ticket.id}')" style="width:100%">Update Status</button></div>` : ''}</div></div>`;
       
-      const centerColumn = `
-        <div class="column">
-          <div class="column-header"><h3>Issue Details</h3></div>
-          <div class="column-content">
-            <div class="info-row"><div class="info-label">Location</div><div class="info-value">${escapeHtml(ticket.location)}</div></div>
-            <div class="info-row"><div class="info-label">Title</div><div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div></div>
-            <div class="info-row"><div class="info-label">Description</div><div class="info-value">${escapeHtml(ticket.description)}</div></div>
-            ${mediaHtml}${videoHtml}
-          </div>
-          <div class="column-header"><h3>Comments & Updates</h3></div>
-          <div class="column-content">
-            <div class="comment-list" style="max-height: 250px;">${commentsHtml}</div>
-            <textarea id="fullscreenComment" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
-            <button class="btn btn-primary" onclick="addFullscreenComment('${ticket.id}')" style="width: 100%;">Post Comment</button>
-          </div>
-        </div>
-      `;
+      const centerColumn = `<div class="column"><div class="column-header"><h3>Issue Details</h3></div><div class="column-content"><div class="info-row"><div class="info-label">Location</div><div class="info-value">${escapeHtml(ticket.location)}</div></div><div class="info-row"><div class="info-label">Title</div><div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div></div><div class="info-row"><div class="info-label">Description</div><div class="info-value">${escapeHtml(ticket.description)}</div></div>${mediaHtml}${videoHtml}</div><div class="column-header"><h3>Comments & Updates</h3></div><div class="column-content"><div class="comment-list">${commentsHtml}</div><textarea id="fullscreenComment" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea><button class="btn btn-primary" onclick="addFullscreenComment('${ticket.id}')" style="width:100%">Post Comment</button></div></div>`;
       
-      const rightColumn = `
-        <div class="column">
-          <div class="column-header"><h3>Contact Information</h3></div>
-          <div class="column-content">
-            <div class="info-row"><div class="info-label">Name</div><div class="info-value">${escapeHtml(ticket.name)}</div></div>
-            <div class="info-row"><div class="info-label">Phone Number</div><div class="info-value">${escapeHtml(ticket.phone)}</div></div>
-            <div class="info-row"><div class="info-label">Email Address</div><div class="info-value">${escapeHtml(ticket.email)}</div></div>
-          </div>
-        </div>
-      `;
+      const rightColumn = `<div class="column"><div class="column-header"><h3>Contact Information</h3></div><div class="column-content"><div class="info-row"><div class="info-label">Name</div><div class="info-value">${escapeHtml(ticket.name)}</div></div><div class="info-row"><div class="info-label">Phone Number</div><div class="info-value">${escapeHtml(ticket.phone)}</div></div><div class="info-row"><div class="info-label">Email Address</div><div class="info-value">${escapeHtml(ticket.email)}</div></div></div></div>`;
       
       document.getElementById('fullscreenTitle').textContent = ticket.title;
       document.getElementById('fullscreenContent').innerHTML = `<div class="three-column">${leftColumn}${centerColumn}${rightColumn}</div>`;
       document.getElementById('fullscreenModal').style.display = 'block';
       document.body.style.overflow = 'hidden';
-    }
+    };
     
-    async function updateFullscreenStatus(ticketId) {
+    window.updateFullscreenStatus = async function(ticketId) {
       const status = document.getElementById('fullscreenStatusSelect').value;
-      const ticket = await getTicketById(ticketId);
-      if (!ticket) return;
-      
-      ticket.status = status;
-      ticket.comments = ticket.comments || [];
-      ticket.comments.push({
-        id: Date.now().toString(),
-        authorName: 'System',
+      await supabase.from('tickets').update({ status }).eq('id', ticketId);
+      await supabase.from('comments').insert({
+        ticket_id: ticketId,
+        author_name: 'System',
         message: `Status updated to: ${getStatusText(status)}`,
-        isOfficial: true,
-        timestamp: new Date().toISOString()
+        is_official: true
       });
-      
-      await saveTicket(ticket);
       showToast(`Status updated to ${getStatusText(status)}`);
       closeFullscreenModal();
       if (currentView === 'official') loadOfficialTickets();
-    }
+    };
     
-    async function addFullscreenComment(ticketId) {
+    window.addFullscreenComment = async function(ticketId) {
       const message = document.getElementById('fullscreenComment')?.value;
       if (!message) { alert('Please enter a comment'); return; }
-      
-      const ticket = await getTicketById(ticketId);
-      if (!ticket) return;
-      
       const isOfficial = currentView === 'official';
-      
-      ticket.comments = ticket.comments || [];
-      ticket.comments.push({
-        id: Date.now().toString(),
-        authorName: isOfficial ? 'Government Official' : ticket.name,
+      const authorName = isOfficial ? 'Government Official' : 'Resident';
+      await supabase.from('comments').insert({
+        ticket_id: ticketId,
+        author_name: authorName,
         message: message,
-        isOfficial: isOfficial,
-        timestamp: new Date().toISOString()
+        is_official: isOfficial
       });
-      
-      await saveTicket(ticket);
       showToast('Comment posted');
       closeFullscreenModal();
-      openFullscreenTicket(ticketId);
-    }
+      window.openFullscreenTicket(ticketId);
+    };
     
     function closeFullscreenModal() {
       document.getElementById('fullscreenModal').style.display = 'none';
       document.body.style.overflow = 'auto';
     }
     
-    function switchOfficialTab(event, tab) {
-      currentOfficialTab = tab;
-      document.querySelectorAll('#officialView .tab').forEach(t => t.classList.remove('active'));
-      event.target.classList.add('active');
-      loadOfficialTickets();
-    }
+    window.closeFullscreenModal = closeFullscreenModal;
+    window.closeSuccessModal = closeSuccessModal;
     
-    function setView(view) {
+    // View Toggle
+    window.setView = function(view) {
       currentView = view;
-      document.getElementById('residentView').style.display = view === 'resident' ? 'block' : 'none';
-      document.getElementById('officialView').style.display = view === 'official' ? 'block' : 'none';
-      document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+      const residentView = document.getElementById('residentView');
+      const officialView = document.getElementById('officialView');
+      const btns = document.querySelectorAll('.view-btn');
+      
       if (view === 'resident') {
-        document.querySelectorAll('.view-btn')[0].classList.add('active');
+        residentView.style.display = 'block';
+        officialView.style.display = 'none';
+        btns[0].classList.add('active');
+        btns[1].classList.remove('active');
       } else {
-        document.querySelectorAll('.view-btn')[1].classList.add('active');
+        residentView.style.display = 'none';
+        officialView.style.display = 'block';
+        btns[0].classList.remove('active');
+        btns[1].classList.add('active');
         loadOfficialTickets();
       }
-    }
+    };
     
     // Close modals on outside click
     window.onclick = (e) => {
@@ -1252,10 +979,8 @@
       if (e.target === fullscreenModal) closeFullscreenModal();
     };
     
-    // Initialize database and load tickets
-    openDatabase().then(() => {
-      loadOfficialTickets();
-    });
+    // Initial load
+    loadOfficialTickets();
   </script>
 </body>
 </html>
