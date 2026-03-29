@@ -635,69 +635,69 @@
     
     <!-- Resident View -->
     <div id="residentView">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-header">
-        <h2>Submit New Request or Complaint</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h2>Submit New Request or Complaint</h2>
+          </div>
+          <form id="ticketForm">
+            <div class="form-group">
+              <label>Full Name <span class="required">*</span></label>
+              <input type="text" id="residentName" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+              <label>Phone Number <span class="required">*</span></label>
+              <input type="tel" id="residentPhone" required placeholder="(555) 123-4567">
+            </div>
+            <div class="form-group">
+              <label>Email Address <span class="required">*</span></label>
+              <input type="email" id="residentEmail" required placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label>Type <span class="required">*</span></label>
+              <select id="ticketType" required>
+                <option value="request">Request</option>
+                <option value="complaint">Complaint</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Location / Address <span class="required">*</span></label>
+              <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
+            </div>
+            <div class="form-group">
+              <label>Title <span class="required">*</span></label>
+              <input type="text" id="ticketTitle" required placeholder="Brief summary">
+            </div>
+            <div class="form-group">
+              <label>Description <span class="required">*</span></label>
+              <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Photo (Optional)</label>
+              <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
+            </div>
+            <div class="form-group">
+              <label>Video Link (Optional)</label>
+              <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
+              <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Ticket</button>
+          </form>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h2>Track Your Ticket</h2>
+          </div>
+          <div class="form-group">
+            <label>Enter Your Ticket ID</label>
+            <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
+            <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px; width: 100%;">Track Ticket</button>
+          </div>
+          <div id="searchResult" style="margin-top: 20px;"></div>
+        </div>
       </div>
-      <form id="ticketForm">
-        <div class="form-group">
-          <label>Full Name <span class="required">*</span></label>
-          <input type="text" id="residentName" required placeholder="Enter your full name">
-        </div>
-        <div class="form-group">
-          <label>Phone Number <span class="required">*</span></label>
-          <input type="tel" id="residentPhone" required placeholder="(555) 123-4567">
-        </div>
-        <div class="form-group">
-          <label>Email Address <span class="required">*</span></label>
-          <input type="email" id="residentEmail" required placeholder="your@email.com">
-        </div>
-        <div class="form-group">
-          <label>Type <span class="required">*</span></label>
-          <select id="ticketType" required>
-            <option value="request">Request</option>
-            <option value="complaint">Complaint</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Location / Address <span class="required">*</span></label>
-          <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
-        </div>
-        <div class="form-group">
-          <label>Title <span class="required">*</span></label>
-          <input type="text" id="ticketTitle" required placeholder="Brief summary">
-        </div>
-        <div class="form-group">
-          <label>Description <span class="required">*</span></label>
-          <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
-        </div>
-        <div class="form-group">
-          <label>Photo (Optional)</label>
-          <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
-        </div>
-        <div class="form-group">
-          <label>Video Link (Optional)</label>
-          <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
-          <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Ticket</button>
-      </form>
     </div>
-    
-    <div class="card">
-      <div class="card-header">
-        <h2>Track Your Ticket</h2>
-      </div>
-      <div class="form-group">
-        <label>Enter Your Ticket ID</label>
-        <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
-        <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px; width: 100%;">Track Ticket</button>
-      </div>
-      <div id="searchResult" style="margin-top: 20px;"></div>
-    </div>
-  </div>
-</div>
     
     <!-- Official View -->
     <div id="officialView" style="display: none;">
@@ -976,18 +976,19 @@
         return;
       }
       
-      const ticket = await getTicketById(ticketId);
       const resultDiv = document.getElementById('searchResult');
+      resultDiv.innerHTML = '<div class="loading">Searching for ticket...</div>';
+      
+      const ticket = await getTicketById(ticketId);
       
       if (!ticket) {
         resultDiv.innerHTML = '<div class="empty-state" style="background: #fff5eb; border: 1px solid #f0dfcc; border-radius: 16px; padding: 16px;">❌ Ticket not found. Please check your Ticket ID.</div>';
-        document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">Enter a Ticket ID above to search</div>';
         return;
       }
       
-      resultDiv.innerHTML = '';
-      document.getElementById('myTicketsList').innerHTML = `
-        <div class="ticket-item" onclick="openFullscreenTicket('${ticket.id}')">
+      // Display the ticket in the search result area
+      resultDiv.innerHTML = `
+        <div class="ticket-item" onclick="openFullscreenTicket('${ticket.id}')" style="cursor: pointer;">
           <div class="ticket-header">
             <span class="ticket-id">${ticket.id}</span>
             <span class="type-badge">${ticket.type}</span>
@@ -998,49 +999,9 @@
             <span>${new Date(ticket.created_at).toLocaleDateString()}</span>
             <span>${escapeHtml(ticket.location)}</span>
           </div>
+          <div style="margin-top: 12px; color: #e67e22; font-size: 12px;">Click to view full details →</div>
         </div>
       `;
-    }
-    
-    // Load tickets by email
-    async function loadTicketsByEmail() {
-      const email = document.getElementById('viewTicketsEmail').value;
-      if (!email) {
-        alert('Please enter your email');
-        return;
-      }
-      
-      const { data: tickets, error } = await supabaseClient
-        .from(TABLE_NAME)
-        .select('*')
-        .eq('email', email)
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Error loading tickets:', error);
-        alert('Error loading tickets');
-        return;
-      }
-      
-      if (!tickets || tickets.length === 0) {
-        document.getElementById('myTicketsList').innerHTML = '<div class="empty-state">No tickets found for this email</div>';
-        return;
-      }
-      
-      document.getElementById('myTicketsList').innerHTML = tickets.map(ticket => `
-        <div class="ticket-item" onclick="openFullscreenTicket('${ticket.id}')">
-          <div class="ticket-header">
-            <span class="ticket-id">${ticket.id}</span>
-            <span class="type-badge">${ticket.type}</span>
-            <span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span>
-          </div>
-          <div class="ticket-title">${escapeHtml(ticket.title)}</div>
-          <div class="ticket-meta">
-            <span>${new Date(ticket.created_at).toLocaleDateString()}</span>
-            <span>${escapeHtml(ticket.location)}</span>
-          </div>
-        </div>
-      `).join('');
     }
     
     // Load official tickets
