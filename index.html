@@ -635,79 +635,69 @@
     
     <!-- Resident View -->
     <div id="residentView">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <h2>Submit New Request or Complaint</h2>
-          </div>
-          <form id="ticketForm">
-            <div class="form-group">
-              <label>Full Name <span class="required">*</span></label>
-              <input type="text" id="residentName" required placeholder="Enter your full name">
-            </div>
-            <div class="form-group">
-              <label>Phone Number <span class="required">*</span></label>
-              <input type="tel" id="residentPhone" required placeholder="(555) 123-4567">
-            </div>
-            <div class="form-group">
-              <label>Email Address <span class="required">*</span></label>
-              <input type="email" id="residentEmail" required placeholder="your@email.com">
-            </div>
-            <div class="form-group">
-              <label>Type <span class="required">*</span></label>
-              <select id="ticketType" required>
-                <option value="request">Request</option>
-                <option value="complaint">Complaint</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Location / Address <span class="required">*</span></label>
-              <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
-            </div>
-            <div class="form-group">
-              <label>Title <span class="required">*</span></label>
-              <input type="text" id="ticketTitle" required placeholder="Brief summary">
-            </div>
-            <div class="form-group">
-              <label>Description <span class="required">*</span></label>
-              <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>Photo (Optional)</label>
-              <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
-            </div>
-            <div class="form-group">
-              <label>Video Link (Optional)</label>
-              <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
-              <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Ticket</button>
-          </form>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <h2>Track Your Ticket</h2>
-          </div>
-          <div class="form-group">
-            <label>Enter Ticket ID</label>
-            <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
-            <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px;">Track Ticket</button>
-          </div>
-          <div id="searchResult" style="margin-top: 20px;"></div>
-          <div class="card-header" style="margin-top: 28px;">
-            <h2>Your Tickets</h2>
-          </div>
-          <div id="myTicketsList" class="ticket-list">
-            <div class="empty-state">Enter your email below to see your tickets</div>
-          </div>
-          <div class="form-group" style="margin-top: 16px;">
-            <input type="email" id="viewTicketsEmail" placeholder="Enter your email to view all your tickets">
-            <button class="btn btn-outline" onclick="loadTicketsByEmail()" style="margin-top: 8px;">View My Tickets</button>
-          </div>
-        </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <h2>Submit New Request or Complaint</h2>
       </div>
+      <form id="ticketForm">
+        <div class="form-group">
+          <label>Full Name <span class="required">*</span></label>
+          <input type="text" id="residentName" required placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label>Phone Number <span class="required">*</span></label>
+          <input type="tel" id="residentPhone" required placeholder="(555) 123-4567">
+        </div>
+        <div class="form-group">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" id="residentEmail" required placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label>Type <span class="required">*</span></label>
+          <select id="ticketType" required>
+            <option value="request">Request</option>
+            <option value="complaint">Complaint</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Location / Address <span class="required">*</span></label>
+          <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
+        </div>
+        <div class="form-group">
+          <label>Title <span class="required">*</span></label>
+          <input type="text" id="ticketTitle" required placeholder="Brief summary">
+        </div>
+        <div class="form-group">
+          <label>Description <span class="required">*</span></label>
+          <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Photo (Optional)</label>
+          <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
+        </div>
+        <div class="form-group">
+          <label>Video Link (Optional)</label>
+          <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
+          <small style="color: #b87a4a; font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Ticket</button>
+      </form>
     </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h2>Track Your Ticket</h2>
+      </div>
+      <div class="form-group">
+        <label>Enter Your Ticket ID</label>
+        <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
+        <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px; width: 100%;">Track Ticket</button>
+      </div>
+      <div id="searchResult" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+</div>
     
     <!-- Official View -->
     <div id="officialView" style="display: none;">
