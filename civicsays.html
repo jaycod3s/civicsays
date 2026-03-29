@@ -120,7 +120,6 @@
       padding: 32px 48px;
     }
     
-    /* Login Modal */
     .login-modal {
       display: none;
       position: fixed;
@@ -1005,6 +1004,15 @@
       setTimeout(() => toast.remove(), 3000);
     }
     
+    function generateTicketId() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+      let id = 'CIV-';
+      for (let i = 0; i < 6; i++) {
+        id += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return id;
+    }
+    
     async function getTicketById(id) {
       const { data, error } = await supabaseClient
         .from(TABLE_NAME)
@@ -1016,65 +1024,53 @@
     }
     
     async function saveTicket(ticket) {
-  const existing = await getTicketById(ticket.id);
-  
-  if (existing) {
-    const { data, error } = await supabaseClient
-      .from(TABLE_NAME)
-      .update({
-        name: ticket.name,
-        phone: ticket.phone,
-        email: ticket.email,
-        type: ticket.type,
-        type_id: ticket.typeId,  // ← Add this line
-        location: ticket.location,
-        title: ticket.title,
-        description: ticket.description,
-        media: ticket.media,
-        media_type: ticket.mediaType,
-        video_url: ticket.videoUrl,
-        status: ticket.status,
-        comments: ticket.comments,
-        resolved_at: ticket.resolvedAt
-      })
-      .eq('id', ticket.id)
-      .select();
-    
-    if (error) {
-      console.error('Error updating ticket:', error);
-      throw error;
+      const existing = await getTicketById(ticket.id);
+      
+      if (existing) {
+        const { error } = await supabaseClient
+          .from(TABLE_NAME)
+          .update({
+            name: ticket.name,
+            phone: ticket.phone,
+            email: ticket.email,
+            type: ticket.type,
+            type_id: ticket.typeId,
+            location: ticket.location,
+            title: ticket.title,
+            description: ticket.description,
+            media: ticket.media,
+            media_type: ticket.mediaType,
+            video_url: ticket.videoUrl,
+            status: ticket.status,
+            comments: ticket.comments,
+            resolved_at: ticket.resolvedAt
+          })
+          .eq('id', ticket.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabaseClient
+          .from(TABLE_NAME)
+          .insert([{
+            id: ticket.id,
+            name: ticket.name,
+            phone: ticket.phone,
+            email: ticket.email,
+            type: ticket.type,
+            type_id: ticket.typeId,
+            location: ticket.location,
+            title: ticket.title,
+            description: ticket.description,
+            media: ticket.media,
+            media_type: ticket.mediaType,
+            video_url: ticket.videoUrl,
+            status: ticket.status,
+            comments: ticket.comments || [],
+            created_at: ticket.createdAt,
+            resolved_at: ticket.resolvedAt
+          }]);
+        if (error) throw error;
+      }
     }
-    return data;
-  } else {
-    const { data, error } = await supabaseClient
-      .from(TABLE_NAME)
-      .insert([{
-        id: ticket.id,
-        name: ticket.name,
-        phone: ticket.phone,
-        email: ticket.email,
-        type: ticket.type,
-        type_id: ticket.typeId,  // ← Add this line
-        location: ticket.location,
-        title: ticket.title,
-        description: ticket.description,
-        media: ticket.media,
-        media_type: ticket.mediaType,
-        video_url: ticket.videoUrl,
-        status: ticket.status,
-        comments: ticket.comments || [],
-        created_at: ticket.createdAt,
-        resolved_at: ticket.resolvedAt
-      }])
-      .select();
-    
-    if (error) {
-      console.error('Error inserting ticket:', error);
-      throw error;
-    }
-    return data;
-  }
-}
     
     document.getElementById('photoUpload')?.addEventListener('change', (e) => {
       if (e.target.files[0]) currentMediaFile = e.target.files[0];
@@ -1114,13 +1110,15 @@
         id: ticketId,
         name, phone, email,
         type: type === 'request' ? 'Request' : 'Complaint',
+        typeId: type,
         location, title, description,
         media: mediaData,
         mediaType: mediaType,
         videoUrl: videoLink,
         status: 'pending',
         comments: [],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        resolvedAt: null
       };
       
       try {
