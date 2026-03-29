@@ -19,7 +19,6 @@
       overflow-x: hidden;
     }
     
-    /* Animated Background */
     .bg-animation {
       position: fixed;
       top: 0;
@@ -46,7 +45,6 @@
       to { transform: rotate(360deg); }
     }
     
-    /* Glassmorphism Navbar */
     .navbar {
       position: sticky;
       top: 0;
@@ -116,7 +114,6 @@
       transform: translateY(-2px);
     }
     
-    /* Main Container */
     .container {
       max-width: 1400px;
       margin: 0 auto;
@@ -188,7 +185,6 @@
       text-align: center;
     }
     
-    /* Official Header */
     .official-header {
       display: flex;
       justify-content: space-between;
@@ -209,7 +205,6 @@
       gap: 8px;
     }
     
-    /* Cards */
     .card {
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(10px);
@@ -242,7 +237,6 @@
       gap: 32px;
     }
     
-    /* Forms */
     .form-group {
       margin-bottom: 20px;
     }
@@ -282,7 +276,6 @@
       color: rgba(255,255,255,0.4);
     }
     
-    /* Buttons */
     .btn {
       padding: 12px 24px;
       border: none;
@@ -316,7 +309,6 @@
       transform: translateY(-2px);
     }
     
-    /* Ticket Items */
     .ticket-list {
       max-height: 550px;
       overflow-y: auto;
@@ -408,7 +400,6 @@
       flex-wrap: wrap;
     }
     
-    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -444,7 +435,6 @@
       margin-top: 8px;
     }
     
-    /* Tabs */
     .tabs {
       display: flex;
       gap: 12px;
@@ -476,7 +466,6 @@
       background: rgba(230,126,34,0.15);
     }
     
-    /* Search Box */
     .search-box {
       display: flex;
       gap: 12px;
@@ -487,7 +476,184 @@
       flex: 1;
     }
     
-    /* Success Modal */
+    .fullscreen-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10,12,10,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 2000;
+      overflow-y: auto;
+    }
+    
+    .fullscreen-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    
+    .fullscreen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(230,126,34,0.2);
+    }
+    
+    .fullscreen-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #e67e22;
+    }
+    
+    .fullscreen-close {
+      font-size: 28px;
+      cursor: pointer;
+      color: #e67e22;
+      background: none;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .fullscreen-close:hover {
+      background: rgba(230,126,34,0.2);
+      transform: rotate(90deg);
+    }
+    
+    .three-column {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    
+    .column {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(230,126,34,0.2);
+      overflow: hidden;
+    }
+    
+    .column-header {
+      background: rgba(230,126,34,0.08);
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(230,126,34,0.2);
+    }
+    
+    .column-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e67e22;
+      margin: 0;
+    }
+    
+    .column-content {
+      padding: 20px;
+    }
+    
+    .info-row {
+      margin-bottom: 20px;
+    }
+    
+    .info-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+      font-size: 15px;
+      color: #ffffff;
+    }
+    
+    .comment-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+    
+    .comment-item {
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(230,126,34,0.15);
+    }
+    
+    .comment-author {
+      font-weight: 600;
+      font-size: 13px;
+      color: #e67e22;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .comment-time {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+    
+    .comment-message {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.5;
+    }
+    
+    .official-badge {
+      background: #e67e22;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 9px;
+    }
+    
+    .status-select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(230,126,34,0.3);
+      border-radius: 12px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.4);
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+    
+    .comment-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(230,126,34,0.3);
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 12px;
+      background: rgba(0,0,0,0.4);
+      color: #ffffff;
+    }
+    
+    .comment-input:focus {
+      outline: none;
+      border-color: #e67e22;
+    }
+    
     .success-modal {
       background: rgba(10,12,10,0.95);
       backdrop-filter: blur(20px);
@@ -591,6 +757,10 @@
       .grid-2 {
         grid-template-columns: 1fr;
       }
+      .three-column {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
       .container {
         padding: 24px;
       }
@@ -628,7 +798,6 @@
   </nav>
   
   <div class="container">
-    <!-- Resident View (Default, always visible) -->
     <div id="residentView">
       <div class="grid-2">
         <div class="card">
@@ -694,7 +863,6 @@
       </div>
     </div>
     
-    <!-- Official View (Hidden by default, requires login) -->
     <div id="officialView" style="display: none;">
       <div class="official-header">
         <div class="official-badge-header">
@@ -735,7 +903,6 @@
     </div>
   </div>
   
-  <!-- Login Modal -->
   <div id="loginModal" class="login-modal">
     <div class="login-card">
       <h2>🔐 Official Login</h2>
@@ -752,13 +919,13 @@
       <div id="loginError" class="login-error"></div>
       <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(230,126,34,0.2);">
         <div class="login-subtitle" style="font-size: 12px;">Demo Credentials:</div>
-        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: admin</div>
-        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Password: civic2024</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: admin | Password: civic2024</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: juan | Password: juan123</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: pedro | Password: pedro123</div>
       </div>
     </div>
   </div>
   
-  <!-- Success Modal -->
   <div id="successModal" class="modal-overlay">
     <div class="success-modal">
       <div class="success-icon">✓</div>
@@ -770,6 +937,16 @@
     </div>
   </div>
   
+  <div id="fullscreenModal" class="fullscreen-modal">
+    <div class="fullscreen-content">
+      <div class="fullscreen-header">
+        <h2 id="fullscreenTitle">Ticket Details</h2>
+        <button class="fullscreen-close" onclick="closeFullscreenModal()">✕</button>
+      </div>
+      <div id="fullscreenContent"></div>
+    </div>
+  </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // Supabase Configuration
@@ -777,103 +954,35 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkb3Z4Ynp6Z2dkandrYndzb2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzIyNDgsImV4cCI6MjA5MDI0ODI0OH0.L9na-M72r4BL030Uq-yrEBrpgDilMXeJIckaVqUhlR0';
     const TABLE_NAME = 'tickets';
     
-    // Official credentials
-    const OFFICIAL_CREDENTIALS = {
-      username: 'admin',
-      password: 'civic2024',
-      fullName: 'Juan Dela Cruz'
-    }
-        {
-    username: 'pedro',
-    password: 'pedro123',
-    fullName: 'Pedro Reyes'
-  }
-];
-      
+    // Official credentials - Add/remove officials here
+    const OFFICIALS = [
+      {
+        username: 'admin',
+        password: 'civic2024',
+        fullName: 'System Administrator'
+      },
+      {
+        username: 'juan',
+        password: 'juan123',
+        fullName: 'Juan Dela Cruz'
+      },
+      {
+        username: 'pedro',
+        password: 'pedro123',
+        fullName: 'Pedro Reyes'
+      },
+      {
+        username: 'maria',
+        password: 'maria123',
+        fullName: 'Maria Santos'
+      }
+    ];
     
-    // Initialize Supabase
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     
     let isOfficialLoggedIn = false;
     let currentOfficialTab = 'all';
     let currentMediaFile = null;
-    
-    // Check login status on page load
-    function checkLoginStatus() {
-      const savedLogin = localStorage.getItem('civicSaysOfficial');
-      if (savedLogin === 'true') {
-        isOfficialLoggedIn = true;
-        document.getElementById('loginBtn').style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'block';
-        document.getElementById('officialView').style.display = 'block';
-        document.getElementById('residentView').style.display = 'none';
-        loadOfficialTickets();
-        showToast('Logged in as Official', '#2ecc71');
-      }
-    }
-    
-    // Login function
-// Login function - officials only enter username and password
-function attemptLogin() {
-  const username = document.getElementById('loginUsername').value;
-  const password = document.getElementById('loginPassword').value;
-  const errorDiv = document.getElementById('loginError');
-  
-  // Find the official by username and password
-  const official = OFFICIALS.find(o => o.username === username && o.password === password);
-  
-  if (official) {
-    isOfficialLoggedIn = true;
-    localStorage.setItem('civicSaysOfficial', 'true');
-    localStorage.setItem('officialName', official.fullName);  // Store full name automatically
-    
-    document.getElementById('loginModal').style.display = 'none';
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('logoutBtn').style.display = 'block';
-    
-    // Show their name on logout button
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.innerHTML = `👤 ${official.fullName} | Logout`;
-    }
-    
-    document.getElementById('officialView').style.display = 'block';
-    document.getElementById('residentView').style.display = 'none';
-    loadOfficialTickets();
-    showToast(`Welcome ${official.fullName}!`, '#2ecc71');
-    document.getElementById('loginUsername').value = '';
-    document.getElementById('loginPassword').value = '';
-    errorDiv.textContent = '';
-  } else {
-    errorDiv.textContent = 'Invalid username or password';
-  }
-}
-    
-    // Logout function
-    function logout() {
-      isOfficialLoggedIn = false;
-      localStorage.removeItem('civicSaysOfficial');
-      document.getElementById('loginBtn').style.display = 'block';
-      document.getElementById('logoutBtn').style.display = 'none';
-      document.getElementById('officialView').style.display = 'none';
-      document.getElementById('residentView').style.display = 'block';
-      showToast('Logged out successfully');
-    }
-    
-    // Show login modal
-    function showLoginModal() {
-      document.getElementById('loginModal').style.display = 'flex';
-    }
-    
-    // Helper Functions
-    function generateTicketId() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-      let id = 'CIV-';
-      for (let i = 0; i < 6; i++) {
-        id += chars[Math.floor(Math.random() * chars.length)];
-      }
-      return id;
-    }
     
     function getStatusText(status) {
       const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
@@ -896,31 +1005,13 @@ function attemptLogin() {
       setTimeout(() => toast.remove(), 3000);
     }
     
-    // Supabase CRUD Operations
-    async function getAllTickets() {
-      const { data, error } = await supabaseClient
-        .from(TABLE_NAME)
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Error fetching tickets:', error);
-        return [];
-      }
-      return data || [];
-    }
-    
     async function getTicketById(id) {
       const { data, error } = await supabaseClient
         .from(TABLE_NAME)
         .select('*')
         .eq('id', id)
         .single();
-      
-      if (error) {
-        console.error('Error fetching ticket:', error);
-        return null;
-      }
+      if (error) return null;
       return data;
     }
     
@@ -928,14 +1019,13 @@ function attemptLogin() {
       const existing = await getTicketById(ticket.id);
       
       if (existing) {
-        const { data, error } = await supabaseClient
+        const { error } = await supabaseClient
           .from(TABLE_NAME)
           .update({
             name: ticket.name,
             phone: ticket.phone,
             email: ticket.email,
             type: ticket.type,
-            type_id: ticket.typeId,
             location: ticket.location,
             title: ticket.title,
             description: ticket.description,
@@ -943,19 +1033,12 @@ function attemptLogin() {
             media_type: ticket.mediaType,
             video_url: ticket.videoUrl,
             status: ticket.status,
-            comments: ticket.comments,
-            resolved_at: ticket.resolvedAt
+            comments: ticket.comments
           })
-          .eq('id', ticket.id)
-          .select();
-        
-        if (error) {
-          console.error('Error updating ticket:', error);
-          throw error;
-        }
-        return data;
+          .eq('id', ticket.id);
+        if (error) throw error;
       } else {
-        const { data, error } = await supabaseClient
+        const { error } = await supabaseClient
           .from(TABLE_NAME)
           .insert([{
             id: ticket.id,
@@ -963,7 +1046,6 @@ function attemptLogin() {
             phone: ticket.phone,
             email: ticket.email,
             type: ticket.type,
-            type_id: ticket.typeId,
             location: ticket.location,
             title: ticket.title,
             description: ticket.description,
@@ -972,27 +1054,25 @@ function attemptLogin() {
             video_url: ticket.videoUrl,
             status: ticket.status,
             comments: ticket.comments || [],
-            created_at: ticket.createdAt,
-            resolved_at: ticket.resolvedAt
-          }])
-          .select();
-        
-        if (error) {
-          console.error('Error inserting ticket:', error);
-          throw error;
-        }
-        return data;
+            created_at: ticket.createdAt
+          }]);
+        if (error) throw error;
       }
     }
     
-    // File upload handling
-    document.getElementById('photoUpload')?.addEventListener('change', (e) => {
-      if (e.target.files[0]) {
-        currentMediaFile = e.target.files[0];
+    function generateTicketId() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+      let id = 'CIV-';
+      for (let i = 0; i < 6; i++) {
+        id += chars[Math.floor(Math.random() * chars.length)];
       }
+      return id;
+    }
+    
+    document.getElementById('photoUpload')?.addEventListener('change', (e) => {
+      if (e.target.files[0]) currentMediaFile = e.target.files[0];
     });
     
-    // Submit ticket
     document.getElementById('ticketForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -1027,27 +1107,22 @@ function attemptLogin() {
         id: ticketId,
         name, phone, email,
         type: type === 'request' ? 'Request' : 'Complaint',
-        typeId: type,
         location, title, description,
         media: mediaData,
         mediaType: mediaType,
         videoUrl: videoLink,
         status: 'pending',
         comments: [],
-        createdAt: new Date().toISOString(),
-        resolvedAt: null
+        createdAt: new Date().toISOString()
       };
       
       try {
         await saveTicket(newTicket);
-        
         document.getElementById('successTrackingId').textContent = ticketId;
         document.getElementById('successModal').style.display = 'flex';
-        
         document.getElementById('ticketForm').reset();
         currentMediaFile = null;
         document.getElementById('photoUpload').value = '';
-        
         if (isOfficialLoggedIn) loadOfficialTickets();
       } catch (error) {
         console.error('Error submitting ticket:', error);
@@ -1059,7 +1134,6 @@ function attemptLogin() {
       document.getElementById('successModal').style.display = 'none';
     }
     
-    // Search ticket by ID - Redirect to ticket page
     async function searchTicketById() {
       const ticketId = document.getElementById('searchTicketId').value.trim().toUpperCase();
       if (!ticketId) {
@@ -1073,39 +1147,32 @@ function attemptLogin() {
       const ticket = await getTicketById(ticketId);
       
       if (!ticket) {
-        resultDiv.innerHTML = '<div class="empty-state" style="background: rgba(230,126,34,0.08); border-radius: 16px; padding: 16px;">❌ Ticket not found. Please check your Ticket ID.</div>';
+        resultDiv.innerHTML = '<div class="empty-state">❌ Ticket not found. Please check your Ticket ID.</div>';
         return;
       }
       
-      // Redirect to ticket detail page
       window.location.href = `ticket.html?id=${ticket.id}`;
     }
     
-    // Load official tickets
     async function loadOfficialTickets() {
       if (!isOfficialLoggedIn) return;
       
       let query = supabaseClient.from(TABLE_NAME).select('*');
-      
       const searchTerm = document.getElementById('officialSearchInput')?.value.toLowerCase() || '';
       if (searchTerm) {
         query = query.or(`id.ilike.%${searchTerm}%,name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%`);
       }
-      
       if (currentOfficialTab !== 'all') {
         query = query.eq('status', currentOfficialTab);
       }
       
       const { data: tickets, error } = await query.order('created_at', { ascending: false });
-      
       if (error) {
-        console.error('Error loading official tickets:', error);
         document.getElementById('officialTicketsList').innerHTML = '<div class="empty-state">Error loading tickets</div>';
         return;
       }
       
       const { data: allTickets } = await supabaseClient.from(TABLE_NAME).select('*');
-      
       const total = allTickets?.length || 0;
       const pending = allTickets?.filter(t => t.status === 'pending').length || 0;
       const inProcess = allTickets?.filter(t => t.status === 'in_process').length || 0;
@@ -1138,13 +1205,159 @@ function attemptLogin() {
       `).join('');
     }
     
-    function searchOfficialTickets() {
-      loadOfficialTickets();
-    }
-    
+    function searchOfficialTickets() { loadOfficialTickets(); }
     function clearOfficialSearch() {
       document.getElementById('officialSearchInput').value = '';
       loadOfficialTickets();
+    }
+    
+    async function openFullscreenTicket(ticketId) {
+      const ticket = await getTicketById(ticketId);
+      if (!ticket) return;
+      
+      const isOfficial = isOfficialLoggedIn;
+      
+      const mediaHtml = ticket.media ? `
+        <div style="margin-top: 16px;">
+          <div class="info-label">Attachment</div>
+          ${ticket.media_type === 'image' ? `<img src="${ticket.media}" style="max-width: 100%; border-radius: 12px;">` : `<video controls src="${ticket.media}" style="max-width: 100%; border-radius: 12px;"></video>`}
+        </div>
+      ` : '';
+      
+      const videoHtml = ticket.video_url ? `
+        <div style="margin-top: 16px;">
+          <div class="info-label">Video Link</div>
+          <a href="${ticket.video_url}" target="_blank" class="btn btn-outline" style="display: inline-block;">Watch Video →</a>
+        </div>
+      ` : '';
+      
+      const comments = ticket.comments || [];
+      const commentsHtml = comments.length > 0 ? comments.map(c => `
+        <div class="comment-item">
+          <div class="comment-author">
+            ${c.isOfficial ? '👔 ' + escapeHtml(c.authorName) : '👤 ' + escapeHtml(c.authorName)}
+            ${c.isOfficial ? '<span class="official-badge">Government Official</span>' : ''}
+          </div>
+          <div class="comment-time">${new Date(c.timestamp).toLocaleString()}</div>
+          <div class="comment-message">${escapeHtml(c.message)}</div>
+        </div>
+      `).join('') : '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No comments yet</p>';
+      
+      const leftColumn = `
+        <div class="column">
+          <div class="column-header"><h3>📋 TICKET INFORMATION</h3></div>
+          <div class="column-content">
+            <div class="info-row"><div class="info-label">Ticket ID</div><div class="info-value"><strong>${ticket.id}</strong></div></div>
+            <div class="info-row"><div class="info-label">Type</div><div class="info-value"><span class="type-badge">${ticket.type}</span></div></div>
+            <div class="info-row"><div class="info-label">Status</div><div class="info-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div></div>
+            <div class="info-row"><div class="info-label">Submitted</div><div class="info-value">${new Date(ticket.created_at).toLocaleString()}</div></div>
+            ${isOfficial ? `
+              <div style="margin-top: 24px; border-top: 1px solid rgba(230,126,34,0.2); padding-top: 20px;">
+                <div class="info-label">Update Status</div>
+                <select id="fullscreenStatusSelect" class="status-select">
+                  <option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option>
+                  <option value="in_process" ${ticket.status === 'in_process' ? 'selected' : ''}>In Process</option>
+                  <option value="hold" ${ticket.status === 'hold' ? 'selected' : ''}>On Hold</option>
+                  <option value="solved" ${ticket.status === 'solved' ? 'selected' : ''}>Solved</option>
+                </select>
+                <button class="btn btn-primary" onclick="updateFullscreenStatus('${ticket.id}')" style="width: 100%;">Update Status</button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      const centerColumn = `
+        <div class="column">
+          <div class="column-header"><h3>📝 ISSUE DETAILS</h3></div>
+          <div class="column-content">
+            <div class="info-row"><div class="info-label">Location</div><div class="info-value">📍 ${escapeHtml(ticket.location)}</div></div>
+            <div class="info-row"><div class="info-label">Title</div><div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div></div>
+            <div class="info-row"><div class="info-label">Description</div><div class="info-value">${escapeHtml(ticket.description)}</div></div>
+            ${mediaHtml}${videoHtml}
+          </div>
+          <div class="column-header"><h3>💬 COMMENTS</h3></div>
+          <div class="column-content">
+            <div class="comment-list" style="max-height: 250px;">${commentsHtml}</div>
+            <textarea id="fullscreenComment" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
+            <button class="btn btn-primary" onclick="addFullscreenComment('${ticket.id}')" style="width: 100%;">Post Comment</button>
+          </div>
+        </div>
+      `;
+      
+      const rightColumn = `
+        <div class="column">
+          <div class="column-header"><h3>📞 CONTACT INFORMATION</h3></div>
+          <div class="column-content">
+            <div class="info-row"><div class="info-label">Name</div><div class="info-value">👤 ${escapeHtml(ticket.name)}</div></div>
+            <div class="info-row"><div class="info-label">Phone Number</div><div class="info-value">📱 ${escapeHtml(ticket.phone)}</div></div>
+            <div class="info-row"><div class="info-label">Email Address</div><div class="info-value">✉️ ${escapeHtml(ticket.email)}</div></div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('fullscreenTitle').textContent = ticket.title;
+      document.getElementById('fullscreenContent').innerHTML = `<div class="three-column">${leftColumn}${centerColumn}${rightColumn}</div>`;
+      document.getElementById('fullscreenModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+    
+    async function updateFullscreenStatus(ticketId) {
+      const status = document.getElementById('fullscreenStatusSelect').value;
+      const ticket = await getTicketById(ticketId);
+      if (!ticket) return;
+      
+      ticket.status = status;
+      ticket.comments = ticket.comments || [];
+      
+      const officialName = localStorage.getItem('officialName') || 'System';
+      
+      ticket.comments.push({
+        id: Date.now().toString(),
+        authorName: officialName,
+        message: `Status updated to: ${getStatusText(status)}`,
+        isOfficial: true,
+        timestamp: new Date().toISOString()
+      });
+      
+      await saveTicket(ticket);
+      showToast(`Status updated to ${getStatusText(status)}`);
+      closeFullscreenModal();
+      if (currentView === 'official') loadOfficialTickets();
+    }
+    
+    async function addFullscreenComment(ticketId) {
+      const message = document.getElementById('fullscreenComment')?.value;
+      if (!message) { alert('Please enter a comment'); return; }
+      
+      const ticket = await getTicketById(ticketId);
+      if (!ticket) return;
+      
+      const isOfficial = isOfficialLoggedIn;
+      
+      let authorName = ticket.name;
+      if (isOfficial) {
+        authorName = localStorage.getItem('officialName') || 'Government Official';
+      }
+      
+      ticket.comments = ticket.comments || [];
+      ticket.comments.push({
+        id: Date.now().toString(),
+        authorName: authorName,
+        message: message,
+        isOfficial: isOfficial,
+        timestamp: new Date().toISOString()
+      });
+      
+      await saveTicket(ticket);
+      showToast('Comment posted');
+      closeFullscreenModal();
+      openFullscreenTicket(ticketId);
+    }
+    
+    function closeFullscreenModal() {
+      document.getElementById('fullscreenModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
     }
     
     function switchOfficialTab(event, tab) {
@@ -1154,19 +1367,98 @@ function attemptLogin() {
       loadOfficialTickets();
     }
     
-    // Event listeners for login/logout buttons
+    function attemptLogin() {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
+      
+      const official = OFFICIALS.find(o => o.username === username && o.password === password);
+      
+      if (official) {
+        isOfficialLoggedIn = true;
+        localStorage.setItem('civicSaysOfficial', 'true');
+        localStorage.setItem('officialName', official.fullName);
+        
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'block';
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+          logoutBtn.innerHTML = `👤 ${official.fullName} | Logout`;
+        }
+        
+        document.getElementById('officialView').style.display = 'block';
+        document.getElementById('residentView').style.display = 'none';
+        loadOfficialTickets();
+        showToast(`Welcome ${official.fullName}!`, '#2ecc71');
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        errorDiv.textContent = '';
+      } else {
+        errorDiv.textContent = 'Invalid username or password';
+      }
+    }
+    
+    function logout() {
+      isOfficialLoggedIn = false;
+      localStorage.removeItem('civicSaysOfficial');
+      localStorage.removeItem('officialName');
+      
+      document.getElementById('loginBtn').style.display = 'block';
+      document.getElementById('logoutBtn').style.display = 'none';
+      document.getElementById('officialView').style.display = 'none';
+      document.getElementById('residentView').style.display = 'block';
+      showToast('Logged out successfully');
+    }
+    
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+    
+    function checkLoginStatus() {
+      const savedLogin = localStorage.getItem('civicSaysOfficial');
+      if (savedLogin === 'true') {
+        isOfficialLoggedIn = true;
+        const officialName = localStorage.getItem('officialName');
+        
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'block';
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn && officialName) {
+          logoutBtn.innerHTML = `👤 ${officialName} | Logout`;
+        }
+        
+        document.getElementById('officialView').style.display = 'block';
+        document.getElementById('residentView').style.display = 'none';
+        loadOfficialTickets();
+      }
+    }
+    
     document.getElementById('loginBtn').addEventListener('click', showLoginModal);
     document.getElementById('logoutBtn').addEventListener('click', logout);
     
-    // Close modal when clicking outside
     window.onclick = (e) => {
       const loginModal = document.getElementById('loginModal');
       const successModal = document.getElementById('successModal');
+      const fullscreenModal = document.getElementById('fullscreenModal');
       if (e.target === loginModal) loginModal.style.display = 'none';
       if (e.target === successModal) closeSuccessModal();
+      if (e.target === fullscreenModal) closeFullscreenModal();
     };
     
-    // Initialize
+    window.updateFullscreenStatus = updateFullscreenStatus;
+    window.addFullscreenComment = addFullscreenComment;
+    window.openFullscreenTicket = openFullscreenTicket;
+    window.searchTicketById = searchTicketById;
+    window.switchOfficialTab = switchOfficialTab;
+    window.searchOfficialTickets = searchOfficialTickets;
+    window.clearOfficialSearch = clearOfficialSearch;
+    window.attemptLogin = attemptLogin;
+    window.closeSuccessModal = closeSuccessModal;
+    window.closeFullscreenModal = closeFullscreenModal;
+    
     checkLoginStatus();
     console.log('CivicSays initialized with Supabase');
   </script>
