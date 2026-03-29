@@ -95,27 +95,16 @@
       transform: translateY(-2px);
     }
     
-    .nav-btn-primary {
-      background: linear-gradient(135deg, #e67e22, #f39c12);
-      color: white;
-      box-shadow: 0 4px 15px rgba(230,126,34,0.3);
-    }
-    
-    .nav-btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(230,126,34,0.4);
-    }
-    
     .container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 32px 48px;
     }
     
-    /* Two Column Layout */
-    .two-column {
+    /* Three Column Layout - Exactly as requested */
+    .three-column {
       display: grid;
-      grid-template-columns: 1fr 1.5fr;
+      grid-template-columns: 1fr 1.5fr 1fr;
       gap: 32px;
       align-items: start;
     }
@@ -127,6 +116,9 @@
       border-radius: 24px;
       border: 1px solid rgba(230,126,34,0.2);
       overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     .card-header {
@@ -147,6 +139,7 @@
     
     .card-content {
       padding: 24px;
+      flex: 1;
     }
     
     /* Info Rows */
@@ -218,11 +211,27 @@
       margin-top: 8px;
     }
     
-    /* Comments Section */
+    /* Comments Section - Inside Issue Details Column */
+    .comments-section {
+      margin-top: 24px;
+      border-top: 1px solid rgba(230,126,34,0.2);
+      padding-top: 24px;
+    }
+    
+    .comments-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e67e22;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
     .comment-list {
-      max-height: 400px;
+      max-height: 300px;
       overflow-y: auto;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     
     .comment-item {
@@ -358,7 +367,7 @@
     }
     
     @media (max-width: 968px) {
-      .two-column {
+      .three-column {
         grid-template-columns: 1fr;
         gap: 24px;
       }
@@ -506,7 +515,7 @@
         `).join('') 
         : '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No comments yet</p>';
       
-      // Left Column - Ticket Information
+      // LEFT COLUMN - Ticket Information
       const leftColumn = `
         <div class="card">
           <div class="card-header">
@@ -543,6 +552,43 @@
             ` : ''}
           </div>
         </div>
+      `;
+      
+      // MIDDLE COLUMN - Issue Details + Comments
+      const middleColumn = `
+        <div class="card">
+          <div class="card-header">
+            <h3>📝 ISSUE DETAILS</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-row">
+              <div class="info-label">Location</div>
+              <div class="info-value">📍 ${escapeHtml(ticket.location)}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Title</div>
+              <div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Description</div>
+              <div class="info-value">${escapeHtml(ticket.description)}</div>
+            </div>
+            ${mediaHtml}
+            ${videoHtml}
+          </div>
+          <div class="comments-section">
+            <div class="comments-title">
+              💬 COMMENTS
+            </div>
+            <div class="comment-list">${commentsHtml}</div>
+            <textarea id="commentInput" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
+            <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
+          </div>
+        </div>
+      `;
+      
+      // RIGHT COLUMN - Contact Information
+      const rightColumn = `
         <div class="card">
           <div class="card-header">
             <h3>📞 CONTACT INFORMATION</h3>
@@ -564,40 +610,7 @@
         </div>
       `;
       
-      // Right Column - Issue Details with Comments
-      const rightColumn = `
-        <div class="card">
-          <div class="card-header">
-            <h3>📝 ISSUE DETAILS</h3>
-          </div>
-          <div class="card-content">
-            <div class="info-row">
-              <div class="info-label">Location</div>
-              <div class="info-value">📍 ${escapeHtml(ticket.location)}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Title</div>
-              <div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Description</div>
-              <div class="info-value">${escapeHtml(ticket.description)}</div>
-            </div>
-            ${mediaHtml}
-            ${videoHtml}
-          </div>
-          <div class="card-header">
-            <h3>💬 COMMENTS</h3>
-          </div>
-          <div class="card-content">
-            <div class="comment-list">${commentsHtml}</div>
-            <textarea id="commentInput" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
-            <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
-          </div>
-        </div>
-      `;
-      
-      container.innerHTML = `<div class="two-column">${leftColumn}${rightColumn}</div>`;
+      container.innerHTML = `<div class="three-column">${leftColumn}${middleColumn}${rightColumn}</div>`;
     }
     
     async function updateStatus(ticketId) {
