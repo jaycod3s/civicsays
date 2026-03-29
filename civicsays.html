@@ -780,7 +780,7 @@
     // Official credentials
     const OFFICIAL_CREDENTIALS = {
       username: 'admin',
-      password: 'civic2024'
+      password: 'civic2024',
       fullName: 'Juan Dela Cruz'
     },
         {
@@ -813,28 +813,41 @@
     }
     
     // Login function
-    function attemptLogin() {
-      const username = document.getElementById('loginUsername').value;
-      const password = document.getElementById('loginPassword').value;
-      const errorDiv = document.getElementById('loginError');
-      
-      if (username === OFFICIAL_CREDENTIALS.username && password === OFFICIAL_CREDENTIALS.password) {
-        isOfficialLoggedIn = true;
-        localStorage.setItem('civicSaysOfficial', 'true');
-        document.getElementById('loginModal').style.display = 'none';
-        document.getElementById('loginBtn').style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'block';
-        document.getElementById('officialView').style.display = 'block';
-        document.getElementById('residentView').style.display = 'none';
-        loadOfficialTickets();
-        showToast('Login successful! Welcome Official.', '#2ecc71');
-        document.getElementById('loginUsername').value = '';
-        document.getElementById('loginPassword').value = '';
-        errorDiv.textContent = '';
-      } else {
-        errorDiv.textContent = 'Invalid username or password';
-      }
+// Login function - officials only enter username and password
+function attemptLogin() {
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorDiv = document.getElementById('loginError');
+  
+  // Find the official by username and password
+  const official = OFFICIALS.find(o => o.username === username && o.password === password);
+  
+  if (official) {
+    isOfficialLoggedIn = true;
+    localStorage.setItem('civicSaysOfficial', 'true');
+    localStorage.setItem('officialName', official.fullName);  // Store full name automatically
+    
+    document.getElementById('loginModal').style.display = 'none';
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'block';
+    
+    // Show their name on logout button
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.innerHTML = `👤 ${official.fullName} | Logout`;
     }
+    
+    document.getElementById('officialView').style.display = 'block';
+    document.getElementById('residentView').style.display = 'none';
+    loadOfficialTickets();
+    showToast(`Welcome ${official.fullName}!`, '#2ecc71');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    errorDiv.textContent = '';
+  } else {
+    errorDiv.textContent = 'Invalid username or password';
+  }
+}
     
     // Logout function
     function logout() {
