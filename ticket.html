@@ -101,12 +101,26 @@
       padding: 32px 48px;
     }
     
-    /* Three Column Layout */
-    .three-column {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr 1fr;
+    /* Three Column Layout - Fixed */
+    .ticket-layout {
+      display: flex;
       gap: 32px;
-      align-items: start;
+      flex-wrap: wrap;
+    }
+    
+    .left-column {
+      flex: 1;
+      min-width: 280px;
+    }
+    
+    .middle-column {
+      flex: 1.5;
+      min-width: 320px;
+    }
+    
+    .right-column {
+      flex: 1;
+      min-width: 280px;
     }
     
     /* Cards */
@@ -165,6 +179,7 @@
       font-size: 15px;
       color: #ffffff;
       line-height: 1.5;
+      word-break: break-word;
     }
     
     .status-badge {
@@ -216,7 +231,7 @@
       margin-top: 8px;
     }
     
-    /* Comments Section - Right Column */
+    /* Comments Section */
     .comment-list {
       max-height: 400px;
       overflow-y: auto;
@@ -355,16 +370,30 @@
       box-shadow: 0 4px 15px rgba(230,126,34,0.3);
     }
     
-    @media (max-width: 968px) {
-      .three-column {
-        grid-template-columns: 1fr;
-        gap: 24px;
+    @media (max-width: 1024px) {
+      .ticket-layout {
+        flex-direction: column;
+      }
+      .left-column,
+      .middle-column,
+      .right-column {
+        width: 100%;
       }
       .container {
         padding: 24px;
       }
       .navbar {
         padding: 16px 24px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .nav-buttons {
+        gap: 10px;
+      }
+      .nav-btn {
+        padding: 8px 16px;
+        font-size: 12px;
       }
     }
   </style>
@@ -504,107 +533,113 @@
         `).join('') 
         : '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No comments yet</p>';
       
-      // LEFT COLUMN - Ticket Information + Contact Information (stacked)
-      const leftColumn = `
-        <!-- Ticket Information Card -->
-        <div class="card">
-          <div class="card-header">
-            <h3>📋 TICKET INFORMATION</h3>
-          </div>
-          <div class="card-content">
-            <div class="info-row">
-              <div class="info-label">Ticket ID</div>
-              <div class="info-value"><strong>${ticket.id}</strong></div>
+      // LEFT COLUMN HTML - Ticket Information + Contact Information
+      const leftColumnHtml = `
+        <div class="left-column">
+          <!-- Ticket Information Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3>📋 TICKET INFORMATION</h3>
             </div>
-            <div class="info-row">
-              <div class="info-label">Type</div>
-              <div class="info-value"><span class="type-badge">${ticket.type}</span></div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Status</div>
-              <div class="info-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Submitted</div>
-              <div class="info-value">${new Date(ticket.created_at).toLocaleString()}</div>
-            </div>
-            ${isOfficialLoggedIn ? `
-              <div style="margin-top: 24px; border-top: 1px solid rgba(230,126,34,0.2); padding-top: 20px;">
-                <div class="info-label">Update Status</div>
-                <select id="statusSelect" class="status-select">
-                  <option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option>
-                  <option value="in_process" ${ticket.status === 'in_process' ? 'selected' : ''}>In Process</option>
-                  <option value="hold" ${ticket.status === 'hold' ? 'selected' : ''}>On Hold</option>
-                  <option value="solved" ${ticket.status === 'solved' ? 'selected' : ''}>Solved</option>
-                </select>
-                <button class="btn btn-primary" onclick="updateStatus('${ticket.id}')">Update Status</button>
+            <div class="card-content">
+              <div class="info-row">
+                <div class="info-label">Ticket ID</div>
+                <div class="info-value"><strong>${ticket.id}</strong></div>
               </div>
-            ` : ''}
+              <div class="info-row">
+                <div class="info-label">Type</div>
+                <div class="info-value"><span class="type-badge">${ticket.type}</span></div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Status</div>
+                <div class="info-value"><span class="status-badge status-${ticket.status}">${getStatusText(ticket.status)}</span></div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Submitted</div>
+                <div class="info-value">${new Date(ticket.created_at).toLocaleString()}</div>
+              </div>
+              ${isOfficialLoggedIn ? `
+                <div style="margin-top: 24px; border-top: 1px solid rgba(230,126,34,0.2); padding-top: 20px;">
+                  <div class="info-label">Update Status</div>
+                  <select id="statusSelect" class="status-select">
+                    <option value="pending" ${ticket.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="in_process" ${ticket.status === 'in_process' ? 'selected' : ''}>In Process</option>
+                    <option value="hold" ${ticket.status === 'hold' ? 'selected' : ''}>On Hold</option>
+                    <option value="solved" ${ticket.status === 'solved' ? 'selected' : ''}>Solved</option>
+                  </select>
+                  <button class="btn btn-primary" onclick="updateStatus('${ticket.id}')">Update Status</button>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          
+          <!-- Contact Information Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3>📞 CONTACT INFORMATION</h3>
+            </div>
+            <div class="card-content">
+              <div class="info-row">
+                <div class="info-label">Name</div>
+                <div class="info-value">👤 ${escapeHtml(ticket.name)}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Phone Number</div>
+                <div class="info-value">📱 ${escapeHtml(ticket.phone)}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Email Address</div>
+                <div class="info-value">✉️ ${escapeHtml(ticket.email)}</div>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <!-- Contact Information Card -->
-        <div class="card">
-          <div class="card-header">
-            <h3>📞 CONTACT INFORMATION</h3>
-          </div>
-          <div class="card-content">
-            <div class="info-row">
-              <div class="info-label">Name</div>
-              <div class="info-value">👤 ${escapeHtml(ticket.name)}</div>
+      `;
+      
+      // MIDDLE COLUMN HTML - Issue Details
+      const middleColumnHtml = `
+        <div class="middle-column">
+          <div class="card">
+            <div class="card-header">
+              <h3>📝 ISSUE DETAILS</h3>
             </div>
-            <div class="info-row">
-              <div class="info-label">Phone Number</div>
-              <div class="info-value">📱 ${escapeHtml(ticket.phone)}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Email Address</div>
-              <div class="info-value">✉️ ${escapeHtml(ticket.email)}</div>
+            <div class="card-content">
+              <div class="info-row">
+                <div class="info-label">Location / Address</div>
+                <div class="info-value">📍 ${escapeHtml(ticket.location)}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Title</div>
+                <div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Description</div>
+                <div class="info-value">${escapeHtml(ticket.description)}</div>
+              </div>
+              ${mediaHtml}
+              ${videoHtml}
             </div>
           </div>
         </div>
       `;
       
-      // MIDDLE COLUMN - Issue Details
-      const middleColumn = `
-        <div class="card">
-          <div class="card-header">
-            <h3>📝 ISSUE DETAILS</h3>
-          </div>
-          <div class="card-content">
-            <div class="info-row">
-              <div class="info-label">Location</div>
-              <div class="info-value">📍 ${escapeHtml(ticket.location)}</div>
+      // RIGHT COLUMN HTML - Comments
+      const rightColumnHtml = `
+        <div class="right-column">
+          <div class="card">
+            <div class="card-header">
+              <h3>💬 COMMENTS</h3>
             </div>
-            <div class="info-row">
-              <div class="info-label">Title</div>
-              <div class="info-value"><strong>${escapeHtml(ticket.title)}</strong></div>
+            <div class="card-content">
+              <div class="comment-list">${commentsHtml}</div>
+              <textarea id="commentInput" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
+              <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
             </div>
-            <div class="info-row">
-              <div class="info-label">Description</div>
-              <div class="info-value">${escapeHtml(ticket.description)}</div>
-            </div>
-            ${mediaHtml}
-            ${videoHtml}
           </div>
         </div>
       `;
       
-      // RIGHT COLUMN - Comments
-      const rightColumn = `
-        <div class="card">
-          <div class="card-header">
-            <h3>💬 COMMENTS</h3>
-          </div>
-          <div class="card-content">
-            <div class="comment-list">${commentsHtml}</div>
-            <textarea id="commentInput" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
-            <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
-          </div>
-        </div>
-      `;
-      
-      container.innerHTML = `<div class="three-column">${leftColumn}${middleColumn}${rightColumn}</div>`;
+      container.innerHTML = `<div class="ticket-layout">${leftColumnHtml}${middleColumnHtml}${rightColumnHtml}</div>`;
     }
     
     async function updateStatus(ticketId) {
