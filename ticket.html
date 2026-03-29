@@ -103,26 +103,22 @@
     
     /* Three Column Layout - Fixed */
 .ticket-layout {
-  display: flex;
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
   gap: 24px;
-  flex-wrap: wrap;
+  align-items: start;
 }
 
 .left-column {
-  flex: 0.5;
-  min-width: 220px;
-  max-width: 260px;
+  width: 100%;
 }
 
 .middle-column {
-  flex: 3;
-  min-width: 550px;
+  width: 100%;
 }
 
 .right-column {
-  flex: 0.8;
-  min-width: 260px;
-  max-width: 300px;
+  width: 100%;
 }
     
     /* Cards */
