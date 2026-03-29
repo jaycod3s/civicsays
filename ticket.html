@@ -101,7 +101,7 @@
       padding: 32px 30px;
     }
     
-    /* Three Column Layout - Fixed */
+    /* Three Column Layout */
     .ticket-layout {
       display: grid;
       grid-template-columns: 280px 1fr 300px;
@@ -119,7 +119,7 @@
     }
     
     .right-column {
-      width: 150%;
+      width: 100%;
     }
     
     /* Cards */
@@ -421,14 +421,13 @@
     
     // Check if user is logged in as official
     let isOfficialLoggedIn = localStorage.getItem('civicSaysOfficial') === 'true';
-    let officialName = localStorage.getItem('officialName'); // Get the official's name
+    let officialName = localStorage.getItem('officialName');
     
     // Get ticket ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const ticketId = urlParams.get('id');
     
-    console.log('Logged in status:', isOfficialLoggedIn);
-    console.log('Official name:', officialName);
+    let currentTicket = null;
     
     function getStatusText(status) {
       const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
@@ -473,6 +472,48 @@
       if (error) throw error;
     }
     
+    // Function to update only the comments section
+    function updateCommentsSection(comments) {
+      const commentsContainer = document.querySelector('.comment-list');
+      if (!commentsContainer) return;
+      
+      const commentsHtml = comments.length > 0 
+        ? comments.map(c => `
+          <div class="comment-item">
+            <div class="comment-author">
+              ${c.isOfficial ? '👔 ' + escapeHtml(c.authorName) : '👤 ' + escapeHtml(c.authorName)}
+              ${c.isOfficial ? '<span class="official-badge">Government Official</span>' : ''}
+            </div>
+            <div class="comment-time">${new Date(c.timestamp).toLocaleString()}</div>
+            <div class="comment-message">${escapeHtml(c.message)}</div>
+          </div>
+        `).join('') 
+        : '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No comments yet</p>';
+      
+      commentsContainer.innerHTML = commentsHtml;
+      
+      // Scroll to show the new comment
+      const commentsSection = document.querySelector('.right-column');
+      if (commentsSection) {
+        commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    
+    // Function to update only the status section
+    function updateStatusSection(status) {
+      const statusBadge = document.querySelector('.status-badge');
+      const statusSelect = document.getElementById('statusSelect');
+      
+      if (statusBadge) {
+        statusBadge.className = `status-badge status-${status}`;
+        statusBadge.textContent = getStatusText(status);
+      }
+      
+      if (statusSelect) {
+        statusSelect.value = status;
+      }
+    }
+    
     async function renderTicket() {
       const container = document.getElementById('ticketContainer');
       
@@ -488,6 +529,7 @@
       }
       
       const ticket = await getTicketById(ticketId);
+      currentTicket = ticket;
       
       if (!ticket) {
         container.innerHTML = `
@@ -517,7 +559,7 @@
         </div>
       ` : '';
       
-      // Comments HTML for Right Column
+      // Comments HTML
       const comments = ticket.comments || [];
       const commentsHtml = comments.length > 0 
         ? comments.map(c => `
@@ -532,10 +574,9 @@
         `).join('') 
         : '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No comments yet</p>';
       
-      // LEFT COLUMN HTML - Ticket Information + Contact Information
+      // LEFT COLUMN HTML
       const leftColumnHtml = `
         <div class="left-column">
-          <!-- Ticket Information Card -->
           <div class="card">
             <div class="card-header">
               <h3>📋 TICKET INFORMATION</h3>
@@ -572,7 +613,6 @@
             </div>
           </div>
           
-          <!-- Contact Information Card -->
           <div class="card">
             <div class="card-header">
               <h3>📞 CONTACT INFORMATION</h3>
@@ -595,7 +635,7 @@
         </div>
       `;
       
-      // MIDDLE COLUMN HTML - Issue Details
+      // MIDDLE COLUMN HTML
       const middleColumnHtml = `
         <div class="middle-column">
           <div class="card">
@@ -622,7 +662,7 @@
         </div>
       `;
       
-      // RIGHT COLUMN HTML - Comments
+      // RIGHT COLUMN HTML
       const rightColumnHtml = `
         <div class="right-column">
           <div class="card">
@@ -641,104 +681,74 @@
       container.innerHTML = `<div class="ticket-layout">${leftColumnHtml}${middleColumnHtml}${rightColumnHtml}</div>`;
     }
     
-async function updateStatus(ticketId) {
-  const status = document.getElementById('statusSelect').value;
-  const ticket = await getTicketById(ticketId);
-  if (!ticket) return;
-  
-  ticket.status = status;
-  ticket.comments = ticket.comments || [];
-  
-  // Get the official's name from localStorage
-  const officialNameFromStorage = localStorage.getItem('officialName') || 'System';
-  
-  ticket.comments.push({
-    id: Date.now().toString(),
-    authorName: officialNameFromStorage,
-    message: `Status updated to: ${getStatusText(status)}`,
-    isOfficial: true,
-    timestamp: new Date().toISOString()
-  });
-  
-  try {
-    await saveTicket(ticket);
-    showToast(`Status updated to ${getStatusText(status)}`);
-    
-    // Get the ticket info section
-    const ticketInfoCard = document.querySelector('.left-column');
-    
-    // Re-render the ticket
-    await renderTicket();
-    
-    // Scroll to ticket info section after re-render
-    setTimeout(() => {
-      const newTicketInfo = document.querySelector('.left-column');
-      if (newTicketInfo) {
-        newTicketInfo.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
+    async function updateStatus(ticketId) {
+      const status = document.getElementById('statusSelect').value;
+      const ticket = currentTicket;
+      if (!ticket) return;
+      
+      ticket.status = status;
+      ticket.comments = ticket.comments || [];
+      
+      const officialNameFromStorage = localStorage.getItem('officialName') || 'System';
+      
+      ticket.comments.push({
+        id: Date.now().toString(),
+        authorName: officialNameFromStorage,
+        message: `Status updated to: ${getStatusText(status)}`,
+        isOfficial: true,
+        timestamp: new Date().toISOString()
+      });
+      
+      try {
+        await saveTicket(ticket);
+        showToast(`Status updated to ${getStatusText(status)}`);
+        
+        // Update UI without full reload
+        updateStatusSection(status);
+        updateCommentsSection(ticket.comments);
+        
+      } catch (error) {
+        showToast('Error updating status');
       }
-    }, 100);
+    }
     
-  } catch (error) {
-    showToast('Error updating status');
-  }
-}
-    
-   async function addComment(ticketId) {
-  const message = document.getElementById('commentInput')?.value;
-  if (!message) {
-    showToast('Please enter a comment');
-    return;
-  }
-  
-  const ticket = await getTicketById(ticketId);
-  if (!ticket) return;
-  
-  // Get the official's name from localStorage if logged in
-  let authorName = ticket.name; // Default to resident name
-  if (isOfficialLoggedIn) {
-    const officialNameFromStorage = localStorage.getItem('officialName');
-    authorName = officialNameFromStorage || 'Government Official';
-    console.log('Commenting as official:', authorName);
-  }
-  
-  ticket.comments = ticket.comments || [];
-  ticket.comments.push({
-    id: Date.now().toString(),
-    authorName: authorName,
-    message: message,
-    isOfficial: isOfficialLoggedIn,
-    timestamp: new Date().toISOString()
-  });
-  
-  try {
-    await saveTicket(ticket);
-    showToast('Comment posted');
-    document.getElementById('commentInput').value = '';
-    
-    // Get the comments section element
-    const commentsCard = document.querySelector('.right-column');
-    
-    // Re-render the ticket
-    await renderTicket();
-    
-    // Scroll to comments section after re-render
-    setTimeout(() => {
-      const newCommentsCard = document.querySelector('.right-column');
-      if (newCommentsCard) {
-        newCommentsCard.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
+    async function addComment(ticketId) {
+      const message = document.getElementById('commentInput')?.value;
+      if (!message) {
+        showToast('Please enter a comment');
+        return;
       }
-    }, 100);
-    
-  } catch (error) {
-    showToast('Error posting comment');
-  }
-}
+      
+      const ticket = currentTicket;
+      if (!ticket) return;
+      
+      let authorName = ticket.name;
+      if (isOfficialLoggedIn) {
+        const officialNameFromStorage = localStorage.getItem('officialName');
+        authorName = officialNameFromStorage || 'Government Official';
+      }
+      
+      ticket.comments = ticket.comments || [];
+      ticket.comments.push({
+        id: Date.now().toString(),
+        authorName: authorName,
+        message: message,
+        isOfficial: isOfficialLoggedIn,
+        timestamp: new Date().toISOString()
+      });
+      
+      try {
+        await saveTicket(ticket);
+        showToast('Comment posted');
+        document.getElementById('commentInput').value = '';
+        
+        // Update only the comments section
+        updateCommentsSection(ticket.comments);
+        
+      } catch (error) {
+        showToast('Error posting comment');
+      }
+    }
     
     // Make functions global
     window.updateStatus = updateStatus;
