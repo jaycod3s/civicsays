@@ -101,7 +101,7 @@
       padding: 32px 48px;
     }
     
-    /* Three Column Layout - Exactly as requested */
+    /* Three Column Layout */
     .three-column {
       display: grid;
       grid-template-columns: 1fr 1.5fr 1fr;
@@ -116,9 +116,11 @@
       border-radius: 24px;
       border: 1px solid rgba(230,126,34,0.2);
       overflow: hidden;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
+      margin-bottom: 32px;
+    }
+    
+    .card:last-child {
+      margin-bottom: 0;
     }
     
     .card-header {
@@ -139,12 +141,15 @@
     
     .card-content {
       padding: 24px;
-      flex: 1;
     }
     
     /* Info Rows */
     .info-row {
       margin-bottom: 20px;
+    }
+    
+    .info-row:last-child {
+      margin-bottom: 0;
     }
     
     .info-label {
@@ -211,27 +216,11 @@
       margin-top: 8px;
     }
     
-    /* Comments Section - Inside Issue Details Column */
-    .comments-section {
-      margin-top: 24px;
-      border-top: 1px solid rgba(230,126,34,0.2);
-      padding-top: 24px;
-    }
-    
-    .comments-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #e67e22;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
+    /* Comments Section - Right Column */
     .comment-list {
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     
     .comment-item {
@@ -483,7 +472,7 @@
         return;
       }
       
-      // Media HTML
+      // Media HTML for Issue Details
       const mediaHtml = ticket.media ? `
         <div class="media-container">
           <div class="info-label">Attachment</div>
@@ -500,7 +489,7 @@
         </div>
       ` : '';
       
-      // Comments HTML
+      // Comments HTML for Right Column
       const comments = ticket.comments || [];
       const commentsHtml = comments.length > 0 
         ? comments.map(c => `
@@ -515,8 +504,9 @@
         `).join('') 
         : '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No comments yet</p>';
       
-      // LEFT COLUMN - Ticket Information
+      // LEFT COLUMN - Ticket Information + Contact Information (stacked)
       const leftColumn = `
+        <!-- Ticket Information Card -->
         <div class="card">
           <div class="card-header">
             <h3>📋 TICKET INFORMATION</h3>
@@ -552,9 +542,30 @@
             ` : ''}
           </div>
         </div>
+        
+        <!-- Contact Information Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📞 CONTACT INFORMATION</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-row">
+              <div class="info-label">Name</div>
+              <div class="info-value">👤 ${escapeHtml(ticket.name)}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Phone Number</div>
+              <div class="info-value">📱 ${escapeHtml(ticket.phone)}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Email Address</div>
+              <div class="info-value">✉️ ${escapeHtml(ticket.email)}</div>
+            </div>
+          </div>
+        </div>
       `;
       
-      // MIDDLE COLUMN - Issue Details + Comments
+      // MIDDLE COLUMN - Issue Details
       const middleColumn = `
         <div class="card">
           <div class="card-header">
@@ -576,36 +587,19 @@
             ${mediaHtml}
             ${videoHtml}
           </div>
-          <div class="comments-section">
-            <div class="comments-title">
-              💬 COMMENTS
-            </div>
-            <div class="comment-list">${commentsHtml}</div>
-            <textarea id="commentInput" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
-            <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
-          </div>
         </div>
       `;
       
-      // RIGHT COLUMN - Contact Information
+      // RIGHT COLUMN - Comments
       const rightColumn = `
         <div class="card">
           <div class="card-header">
-            <h3>📞 CONTACT INFORMATION</h3>
+            <h3>💬 COMMENTS</h3>
           </div>
           <div class="card-content">
-            <div class="info-row">
-              <div class="info-label">Name</div>
-              <div class="info-value">👤 ${escapeHtml(ticket.name)}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Phone Number</div>
-              <div class="info-value">📱 ${escapeHtml(ticket.phone)}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label">Email Address</div>
-              <div class="info-value">✉️ ${escapeHtml(ticket.email)}</div>
-            </div>
+            <div class="comment-list">${commentsHtml}</div>
+            <textarea id="commentInput" class="comment-input" rows="3" placeholder="Write your comment here..."></textarea>
+            <button class="btn btn-primary" onclick="addComment('${ticket.id}')">Post Comment</button>
           </div>
         </div>
       `;
