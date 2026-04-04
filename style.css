@@ -491,7 +491,7 @@ input::placeholder, textarea::placeholder {
 /* Ticket Detail Page Layout - THREE COLUMN WITH WIDER COMMENTS */
 .ticket-layout {
   display: grid;
-  grid-template-columns: 500px 1fr 420px;
+  grid-template-columns: 300px 1fr 420px;
   gap: 24px;
   align-items: start;
 }
@@ -501,7 +501,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .middle-column {
-  min-width: 900px;
+  min-width: 500px;
 }
 /* Right column (comments) wider */
 .right-column {
