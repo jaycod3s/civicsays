@@ -496,8 +496,8 @@ input::placeholder, textarea::placeholder {
   align-items: start;
 }
 
-.left-column, {
-  width: 100px;
+.left-column {
+  width: 50px;
 }
 
 .middle-column {
