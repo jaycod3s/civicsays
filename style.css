@@ -646,6 +646,7 @@ input::placeholder, textarea::placeholder {
   padding: 14px;
   margin-bottom: 12px;
   border: 1px solid rgba(230,126,34,0.15);
+  width: 100%;
 }
 
 .comment-author {
@@ -666,6 +667,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .comment-message {
+  word-wrap; break-word;
   font-size: 13px;
   color: rgba(255,255,255,0.85);
   line-height: 1.5;
