@@ -477,6 +477,170 @@ input::placeholder, textarea::placeholder {
   flex: 1;
 }
 
+/* Ticket Detail Page Layout - WIDER COMMENTS COLUMN */
+.ticket-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 450px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Three Column Layout */
+.three-column {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.column {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(230,126,34,0.2);
+  overflow: hidden;
+}
+
+.column-header {
+  background: rgba(230,126,34,0.08);
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(230,126,34,0.2);
+}
+
+.column-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e67e22;
+  margin: 0;
+}
+
+.column-content {
+  padding: 20px;
+}
+
+/* Comments Section - Wider and Full Width */
+.right-column {
+  width: 100%;
+}
+
+.comment-list {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.comment-item {
+  background: rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(230,126,34,0.15);
+  width: 100%;
+  display: block;
+}
+
+.comment-author {
+  font-weight: 600;
+  font-size: 13px;
+  color: #e67e22;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.comment-time {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8px;
+}
+
+.comment-message {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.official-badge {
+  background: #e67e22;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 9px;
+}
+
+/* Comment Input - Full Width */
+.comment-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(230,126,34,0.3);
+  border-radius: 12px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 12px;
+  background: rgba(0,0,0,0.4);
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #e67e22;
+}
+
+/* Post Comment Button - Full Width */
+.right-column .btn-primary {
+  width: 100%;
+}
+
+/* Info Rows */
+.info-row {
+  margin-bottom: 20px;
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+/* Status Select */
+.status-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(230,126,34,0.3);
+  border-radius: 12px;
+  font-size: 14px;
+  background: rgba(0,0,0,0.4);
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+/* Media Container */
+.media-container {
+  margin-top: 16px;
+}
+
+.media-container img,
+.media-container video {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
 /* Success Modal */
 .success-modal {
   background: rgba(10,12,10,0.95);
@@ -563,165 +727,6 @@ input::placeholder, textarea::placeholder {
   color: #e67e22;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Ticket Detail Page Layout */
-.ticket-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr 300px;
-  gap: 24px;
-  align-items: start;
-}
-
-/* Three Column Layout */
-.three-column {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr;
-  gap: 24px;
-  align-items: start;
-}
-
-.column {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(230,126,34,0.2);
-  overflow: hidden;
-}
-
-.column-header {
-  background: rgba(230,126,34,0.08);
-  padding: 18px 20px;
-  border-bottom: 1px solid rgba(230,126,34,0.2);
-}
-
-.column-header h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #e67e22;
-  margin: 0;
-}
-
-.column-content {
-  padding: 20px;
-}
-
-.info-row {
-  margin-bottom: 20px;
-}
-
-.info-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.info-value {
-  font-size: 15px;
-  color: #ffffff;
-}
-
-/* Comments */
-.comment-list {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-bottom: 16px;
-}
-
-.comment-item {
-  background: rgba(0,0,0,0.3);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(230,126,34,0.15);
-  width: 100%;
-}
-
-.comment-author {
-  font-weight: 600;
-  font-size: 13px;
-  color: #e67e22;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.comment-time {
-  font-size: 10px;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 8px;
-}
-
-.comment-message {
-  word-wrap; break-word;
-  font-size: 13px;
-  color: rgba(255,255,255,0.85);
-  line-height: 1.5;
-}
-
-.official-badge {
-  background: #e67e22;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 9px;
-}
-
-.status-select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid rgba(230,126,34,0.3);
-  border-radius: 12px;
-  font-size: 14px;
-  background: rgba(0,0,0,0.4);
-  color: #ffffff;
-  margin-bottom: 16px;
-}
-
-.comment-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid rgba(230,126,34,0.3);
-  border-radius: 12px;
-  font-size: 13px;
-  font-family: inherit;
-  resize: vertical;
-  margin-bottom: 12px;
-  background: rgba(0,0,0,0.4);
-  color: #ffffff;
-}
-
-.comment-input:focus,
-.status-select:focus {
-  outline: none;
-  border-color: #e67e22;
-}
-
-.media-container {
-  margin-top: 16px;
-}
-
-.media-container img,
-.media-container video {
-  max-width: 100%;
-  border-radius: 12px;
-  margin-top: 8px;
-}
-
 /* Error State */
 .error-state {
   text-align: center;
@@ -733,7 +738,19 @@ input::placeholder, textarea::placeholder {
   margin-bottom: 16px;
 }
 
-/* Responsive */
+/* Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
 @media (max-width: 1024px) {
   .ticket-layout,
   .three-column {
