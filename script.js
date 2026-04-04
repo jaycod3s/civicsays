@@ -18,6 +18,14 @@ let isOfficialLoggedIn = false;
 let currentOfficialTab = 'all';
 let currentMediaFile = null;
 
+// Inquiry/Chat variables
+let currentInquiryId = null;
+let currentChatSubscription = null;
+let currentOfficialInquiryId = null;
+let officialChatSubscription = null;
+let currentResidentName = '';
+let currentResidentPhone = '';
+
 // Helper Functions
 function getStatusText(status) {
   const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
@@ -209,6 +217,7 @@ function attemptLogin() {
     document.getElementById('officialView').style.display = 'block';
     document.getElementById('residentView').style.display = 'none';
     loadOfficialTickets();
+    loadInquiries();
     showToast(`Welcome ${official.fullName}!`, '#2ecc71');
     document.getElementById('loginUsername').value = '';
     document.getElementById('loginPassword').value = '';
@@ -251,6 +260,7 @@ function checkLoginStatus() {
     document.getElementById('officialView').style.display = 'block';
     document.getElementById('residentView').style.display = 'none';
     loadOfficialTickets();
+    loadInquiries();
   }
 }
 
@@ -338,9 +348,336 @@ function closeSuccessModal() {
   document.getElementById('successModal').style.display = 'none';
 }
 
-function closeFullscreenModal() {
-  document.getElementById('fullscreenModal').style.display = 'none';
-  document.body.style.overflow = 'auto';
+// ==================== INQUIRY / CHAT FUNCTIONS ====================
+
+function openChatBox() {
+  document.getElementById('chatOverlay').style.display = 'flex';
+  resetChatBox();
+}
+
+function closeChatBox() {
+  document.getElementById('chatOverlay').style.display = 'none';
+  if (currentChatSubscription) {
+    currentChatSubscription.unsubscribe();
+  }
+  resetChatBox();
+}
+
+function resetChatBox() {
+  document.getElementById('chatStep1').style.display = 'block';
+  document.getElementById('chatStep2').style.display = 'none';
+  document.getElementById('chatWaiting').style.display = 'none';
+  document.getElementById('chatMessages').style.display = 'none';
+  document.getElementById('chatResolved').style.display = 'none';
+  document.getElementById('chatName').value = '';
+  document.getElementById('chatPhone').value = '';
+  document.getElementById('chatSubject').value = '';
+  document.getElementById('chatQuestion').value = '';
+  currentInquiryId = null;
+}
+
+function goToStep2() {
+  const name = document.getElementById('chatName').value.trim();
+  const phone = document.getElementById('chatPhone').value.trim();
+  if (!name || !phone) {
+    showToast('Please enter your name and phone number');
+    return;
+  }
+  currentResidentName = name;
+  currentResidentPhone = phone;
+  document.getElementById('chatStep1').style.display = 'none';
+  document.getElementById('chatStep2').style.display = 'block';
+}
+
+async function submitInquiry() {
+  const subject = document.getElementById('chatSubject').value.trim();
+  const question = document.getElementById('chatQuestion').value.trim();
+  
+  if (!subject || !question) {
+    showToast('Please fill in subject and question');
+    return;
+  }
+  
+  const { data, error } = await supabaseClient
+    .from('inquiries')
+    .insert({
+      resident_name: currentResidentName,
+      phone_number: currentResidentPhone,
+      subject: subject,
+      question: question,
+      status: 'waiting'
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    showToast('Error submitting inquiry: ' + error.message);
+    return;
+  }
+  
+  currentInquiryId = data.id;
+  
+  document.getElementById('chatStep2').style.display = 'none';
+  document.getElementById('chatWaiting').style.display = 'block';
+  
+  subscribeToInquiryStatus(currentInquiryId);
+  loadInquiries();
+}
+
+function subscribeToInquiryStatus(inquiryId) {
+  supabaseClient
+    .channel(`inquiry_${inquiryId}`)
+    .on('postgres_changes', 
+      { event: 'UPDATE', schema: 'public', table: 'inquiries', filter: `id=eq.${inquiryId}` },
+      (payload) => {
+        if (payload.new.status === 'active') {
+          document.getElementById('chatWaiting').style.display = 'none';
+          document.getElementById('chatMessages').style.display = 'flex';
+          document.getElementById('chatMessagesList').innerHTML = '<div class="waiting-message">✨ You are now connected to an official ✨</div>';
+          loadChatMessages(inquiryId);
+          subscribeToChatMessages(inquiryId);
+        } else if (payload.new.status === 'resolved') {
+          document.getElementById('chatWaiting').style.display = 'none';
+          document.getElementById('chatMessages').style.display = 'none';
+          document.getElementById('chatResolved').style.display = 'block';
+          if (currentChatSubscription) {
+            currentChatSubscription.unsubscribe();
+          }
+        }
+      }
+    )
+    .subscribe();
+}
+
+async function loadChatMessages(inquiryId) {
+  const { data, error } = await supabaseClient
+    .from('chat_messages')
+    .select('*')
+    .eq('inquiry_id', inquiryId)
+    .order('created_at', { ascending: true });
+  
+  if (error) return;
+  
+  const messagesList = document.getElementById('chatMessagesList');
+  if (data.length === 0) {
+    messagesList.innerHTML = '<div class="waiting-message">Start the conversation...</div>';
+  } else {
+    messagesList.innerHTML = data.map(msg => `
+      <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
+        ${escapeHtml(msg.message)}
+      </div>
+    `).join('');
+    messagesList.scrollTop = messagesList.scrollHeight;
+  }
+}
+
+function subscribeToChatMessages(inquiryId) {
+  if (currentChatSubscription) {
+    currentChatSubscription.unsubscribe();
+  }
+  
+  currentChatSubscription = supabaseClient
+    .channel(`chat_${inquiryId}`)
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
+      (payload) => {
+        const messagesList = document.getElementById('chatMessagesList');
+        const newMsg = `
+          <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
+            ${escapeHtml(payload.new.message)}
+          </div>
+        `;
+        messagesList.insertAdjacentHTML('beforeend', newMsg);
+        messagesList.scrollTop = messagesList.scrollHeight;
+      }
+    )
+    .subscribe();
+}
+
+async function sendChatMessage() {
+  if (!currentInquiryId) return;
+  
+  const input = document.getElementById('chatMessageInput');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  const { error } = await supabaseClient
+    .from('chat_messages')
+    .insert({
+      inquiry_id: currentInquiryId,
+      sender: 'resident',
+      message: message
+    });
+  
+  if (!error) {
+    input.value = '';
+  }
+}
+
+// ==================== OFFICIAL INQUIRY FUNCTIONS ====================
+
+async function loadInquiries() {
+  const { data, error } = await supabaseClient
+    .from('inquiries')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) return;
+  
+  const pendingCount = data.filter(i => i.status === 'waiting').length;
+  const badge = document.getElementById('notificationBadge');
+  if (badge) {
+    badge.textContent = pendingCount;
+    badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+  }
+  
+  const listContainer = document.getElementById('inquiriesList');
+  if (listContainer) {
+    if (data.length === 0) {
+      listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5);">No inquiries yet</div>';
+    } else {
+      listContainer.innerHTML = data.map(inquiry => `
+        <div class="inquiry-item" onclick="openOfficialChat('${inquiry.id}')">
+          <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
+          <div class="inquiry-name">${escapeHtml(inquiry.resident_name)} • ${escapeHtml(inquiry.phone_number)}</div>
+          <div style="font-size: 10px; color: #f39c12; margin-top: 4px;">${inquiry.status === 'waiting' ? '⏳ Waiting' : inquiry.status === 'active' ? '💬 Active' : '✅ Resolved'}</div>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('officialSidebar');
+  sidebar.classList.toggle('collapsed');
+}
+
+async function openOfficialChat(inquiryId) {
+  const { data: inquiry, error } = await supabaseClient
+    .from('inquiries')
+    .select('*')
+    .eq('id', inquiryId)
+    .single();
+  
+  if (error) return;
+  
+  currentOfficialInquiryId = inquiryId;
+  
+  if (inquiry.status === 'waiting') {
+    await supabaseClient
+      .from('inquiries')
+      .update({ status: 'active', updated_at: new Date().toISOString() })
+      .eq('id', inquiryId);
+  }
+  
+  document.getElementById('officialChatTitle').textContent = `Chat with: ${inquiry.resident_name}`;
+  document.getElementById('officialChatModal').style.display = 'flex';
+  
+  await loadOfficialChatMessages(inquiryId);
+  subscribeToOfficialChat(inquiryId);
+}
+
+async function loadOfficialChatMessages(inquiryId) {
+  const { data, error } = await supabaseClient
+    .from('chat_messages')
+    .select('*')
+    .eq('inquiry_id', inquiryId)
+    .order('created_at', { ascending: true });
+  
+  if (error) return;
+  
+  const container = document.getElementById('officialChatMessages');
+  if (data.length === 0) {
+    container.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5);">No messages yet. Start the conversation!</div>';
+  } else {
+    container.innerHTML = data.map(msg => `
+      <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
+        ${escapeHtml(msg.message)}
+      </div>
+    `).join('');
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+function subscribeToOfficialChat(inquiryId) {
+  if (officialChatSubscription) {
+    officialChatSubscription.unsubscribe();
+  }
+  
+  officialChatSubscription = supabaseClient
+    .channel(`official_chat_${inquiryId}`)
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
+      (payload) => {
+        const container = document.getElementById('officialChatMessages');
+        const newMsg = `
+          <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
+            ${escapeHtml(payload.new.message)}
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', newMsg);
+        container.scrollTop = container.scrollHeight;
+      }
+    )
+    .subscribe();
+}
+
+async function sendOfficialMessage() {
+  if (!currentOfficialInquiryId) return;
+  
+  const input = document.getElementById('officialChatInput');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  const { error } = await supabaseClient
+    .from('chat_messages')
+    .insert({
+      inquiry_id: currentOfficialInquiryId,
+      sender: 'official',
+      message: message
+    });
+  
+  if (!error) {
+    input.value = '';
+  }
+}
+
+async function resolveInquiry() {
+  if (!currentOfficialInquiryId) return;
+  
+  await supabaseClient
+    .from('chat_messages')
+    .insert({
+      inquiry_id: currentOfficialInquiryId,
+      sender: 'official',
+      message: 'This inquiry has been resolved. The chat will be permanently deleted. Thank you!'
+    });
+  
+  await supabaseClient
+    .from('inquiries')
+    .update({ status: 'resolved', updated_at: new Date().toISOString() })
+    .eq('id', currentOfficialInquiryId);
+  
+  await supabaseClient
+    .from('chat_messages')
+    .delete()
+    .eq('inquiry_id', currentOfficialInquiryId);
+  
+  await supabaseClient
+    .from('inquiries')
+    .delete()
+    .eq('id', currentOfficialInquiryId);
+  
+  showToast('Inquiry resolved and conversation deleted');
+  closeOfficialChatModal();
+  loadInquiries();
+}
+
+function closeOfficialChatModal() {
+  if (officialChatSubscription) {
+    officialChatSubscription.unsubscribe();
+  }
+  document.getElementById('officialChatModal').style.display = 'none';
 }
 
 // Event Listeners Setup
@@ -367,10 +704,8 @@ function setupEventListeners() {
   window.onclick = (e) => {
     const loginModal = document.getElementById('loginModal');
     const successModal = document.getElementById('successModal');
-    const fullscreenModal = document.getElementById('fullscreenModal');
     if (e.target === loginModal) loginModal.style.display = 'none';
     if (e.target === successModal) closeSuccessModal();
-    if (e.target === fullscreenModal) closeFullscreenModal();
   };
 }
 
@@ -378,7 +713,15 @@ function setupEventListeners() {
 function initCivicSays() {
   setupEventListeners();
   checkLoginStatus();
-  console.log('CivicSays initialized with Supabase');
+  
+  // Auto-refresh inquiries every 5 seconds for officials
+  setInterval(() => {
+    if (isOfficialLoggedIn) {
+      loadInquiries();
+    }
+  }, 5000);
+  
+  console.log('CivicSays initialized with Supabase and Inquiries feature');
 }
 
 // Make functions global for HTML onclick
@@ -388,4 +731,13 @@ window.searchOfficialTickets = searchOfficialTickets;
 window.clearOfficialSearch = clearOfficialSearch;
 window.attemptLogin = attemptLogin;
 window.closeSuccessModal = closeSuccessModal;
-window.closeFullscreenModal = closeFullscreenModal;
+window.openChatBox = openChatBox;
+window.closeChatBox = closeChatBox;
+window.goToStep2 = goToStep2;
+window.submitInquiry = submitInquiry;
+window.sendChatMessage = sendChatMessage;
+window.toggleSidebar = toggleSidebar;
+window.openOfficialChat = openOfficialChat;
+window.sendOfficialMessage = sendOfficialMessage;
+window.resolveInquiry = resolveInquiry;
+window.closeOfficialChatModal = closeOfficialChatModal;
