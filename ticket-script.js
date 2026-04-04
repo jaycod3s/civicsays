@@ -150,6 +150,32 @@ async function addComment(ticketId) {
   }
 }
 
+// Function to open attachment in new tab
+function openAttachment(url, type) {
+  if (!url) return;
+  
+  if (type === 'image') {
+    window.open(url, '_blank');
+  } else if (type === 'video') {
+    window.open(url, '_blank');
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+// Function to download attachment
+function downloadAttachment(url, filename) {
+  if (!url) return;
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename || 'attachment';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 async function renderTicket() {
   const container = document.getElementById('ticketContainer');
   
@@ -178,20 +204,38 @@ async function renderTicket() {
     return;
   }
   
-  // Media HTML
-  const mediaHtml = ticket.media ? `
-    <div class="media-container">
-      <div class="info-label">Attachment</div>
-      ${ticket.media_type === 'image' 
-        ? `<img src="${ticket.media}" alt="Attachment" style="max-width:100%; border-radius:12px;">` 
-        : `<video controls src="${ticket.media}" style="max-width:100%; border-radius:12px;"></video>`}
-    </div>
-  ` : '';
+  // Generate filename for download
+  const fileName = `attachment_${ticket.id}`;
+  
+  // Media HTML - CLICKABLE ATTACHMENT
+  let mediaHtml = '';
+  if (ticket.media) {
+    if (ticket.media_type === 'image') {
+      mediaHtml = `
+        <div class="media-container">
+          <div class="info-label">Attachment (Click to view)</div>
+          <div class="clickable-attachment" onclick="openAttachment('${ticket.media}', 'image')">
+            <img src="${ticket.media}" alt="Attachment" style="max-width: 100%; border-radius: 12px; cursor: pointer;">
+            <div class="attachment-overlay">🔍 Click to view full size</div>
+          </div>
+          <button class="btn btn-outline" onclick="downloadAttachment('${ticket.media}', '${fileName}.jpg')" style="margin-top: 8px; width: 100%;">📥 Download Image</button>
+        </div>
+      `;
+    } else if (ticket.media_type === 'video') {
+      mediaHtml = `
+        <div class="media-container">
+          <div class="info-label">Video Attachment</div>
+          <video controls src="${ticket.media}" style="max-width: 100%; border-radius: 12px; cursor: pointer;" onclick="this.paused ? this.play() : this.pause()"></video>
+          <button class="btn btn-outline" onclick="downloadAttachment('${ticket.media}', '${fileName}.mp4')" style="margin-top: 8px; width: 100%;">📥 Download Video</button>
+        </div>
+      `;
+    }
+  }
   
   const videoHtml = ticket.video_url ? `
     <div class="media-container">
       <div class="info-label">Video Link</div>
-      <a href="${ticket.video_url}" target="_blank" class="btn btn-outline" style="display: inline-block; width: auto; margin-top: 8px;">Watch Video →</a>
+      <a href="${ticket.video_url}" target="_blank" class="btn btn-outline" style="display: inline-block; width: 100%; text-align: center; margin-top: 8px;">🎬 Watch Video on YouTube →</a>
     </div>
   ` : '';
   
@@ -284,7 +328,7 @@ async function renderTicket() {
         </div>
       </div>
       
-      <!-- RIGHT COLUMN - COMMENTS (WIDER) -->
+      <!-- RIGHT COLUMN - COMMENTS -->
       <div class="right-column">
         <div class="card">
           <div class="card-header">
@@ -317,6 +361,8 @@ async function renderTicket() {
 // Make functions global
 window.updateStatus = updateStatus;
 window.addComment = addComment;
+window.openAttachment = openAttachment;
+window.downloadAttachment = downloadAttachment;
 
 // Initialize
 renderTicket();
