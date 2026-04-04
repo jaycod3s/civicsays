@@ -41,6 +41,7 @@ body {
 .navbar {
   position: sticky;
   top: 0;
+
   padding: 16px 48px;
   display: flex;
   justify-content: space-between;
@@ -497,7 +498,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .left-column {
-  width: 50px;
+  width: 60px;
 }
 
 .middle-column {
