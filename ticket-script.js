@@ -100,13 +100,50 @@ function updateStatusSection(status) {
   }
 }
 
-// Function to open image in new tab
+// Function to open image in new tab - handles Base64 images
 function viewImage(url) {
   if (!url) {
     showToast('No image to view');
     return;
   }
-  window.open(url, '_blank');
+  
+  // If it's a Base64 image (starts with data:image)
+  if (url.startsWith('data:image')) {
+    // Create a new window and write the image directly
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>View Image</title>
+            <style>
+              body {
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background: #0a0c0a;
+              }
+              img {
+                max-width: 100%;
+                max-height: 100vh;
+                object-fit: contain;
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${url}" alt="Full Size Image">
+          </body>
+        </html>
+      `);
+      newWindow.document.close();
+    }
+  } else {
+    // Regular URL
+    window.open(url, '_blank');
+  }
 }
 
 async function updateStatus(ticketId) {
@@ -219,14 +256,17 @@ async function renderTicket() {
     return;
   }
   
-  // Media HTML - Click image to view full size in new tab
+  // Escape the media URL for safe use in onclick
+  const escapedMediaUrl = ticket.media ? ticket.media.replace(/'/g, "\\'") : '';
+  
+  // Media HTML - Click image to view full size
   let mediaHtml = '';
   if (ticket.media) {
     if (ticket.media_type === 'image') {
       mediaHtml = `
         <div class="media-container">
           <div class="info-label">Attachment (Click image to view full size)</div>
-          <div class="clickable-attachment" onclick="viewImage('${ticket.media}')">
+          <div class="clickable-attachment" onclick="viewImage('${escapedMediaUrl}')">
             <img src="${ticket.media}" alt="Attachment">
             <div class="attachment-overlay">🔍 Click to view full size</div>
           </div>
