@@ -496,13 +496,13 @@ input::placeholder, textarea::placeholder {
   align-items: start;
 }
 
-.left-column, .middle-column, .right-column {
-  width: 100%;
-}
-.right-column {
-  min-width: 130%;
+.left-column, {
+  width: 100px;
 }
 
+.right-column {
+  min-width: 500px;
+}
 /* Right column (comments) wider */
 .right-column {
   min-width: 350px;
