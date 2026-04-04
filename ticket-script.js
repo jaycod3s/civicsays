@@ -100,30 +100,13 @@ function updateStatusSection(status) {
   }
 }
 
-// Function to open attachment in new tab
-function openAttachment(url, type) {
+// Function to open image in new tab
+function viewImage(url) {
   if (!url) {
-    showToast('No attachment to view');
+    showToast('No image to view');
     return;
   }
   window.open(url, '_blank');
-}
-
-// Function to download attachment
-function downloadAttachment(url, filename) {
-  if (!url) {
-    showToast('No attachment to download');
-    return;
-  }
-  
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename || 'attachment';
-  link.target = '_blank';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  showToast('Download started...');
 }
 
 async function updateStatus(ticketId) {
@@ -236,24 +219,16 @@ async function renderTicket() {
     return;
   }
   
-  // Generate filename for download
-  const fileName = `attachment_${ticket.id}`;
-  
-  // Media HTML - CLICKABLE ATTACHMENT with small download icon
+  // Media HTML - Click image to view full size in new tab
   let mediaHtml = '';
   if (ticket.media) {
     if (ticket.media_type === 'image') {
       mediaHtml = `
         <div class="media-container">
-          <div class="info-label">Attachment</div>
-          <div class="clickable-attachment" onclick="openAttachment('${ticket.media}', 'image')">
+          <div class="info-label">Attachment (Click image to view full size)</div>
+          <div class="clickable-attachment" onclick="viewImage('${ticket.media}')">
             <img src="${ticket.media}" alt="Attachment">
             <div class="attachment-overlay">🔍 Click to view full size</div>
-          </div>
-          <div class="download-row">
-            <button class="btn-icon" onclick="downloadAttachment('${ticket.media}', '${fileName}.jpg')" title="Download Image">
-              📥 Download
-            </button>
           </div>
         </div>
       `;
@@ -261,12 +236,9 @@ async function renderTicket() {
       mediaHtml = `
         <div class="media-container">
           <div class="info-label">Video Attachment</div>
-          <video controls src="${ticket.media}" style="max-width: 100%; border-radius: 12px;"></video>
-          <div class="download-row">
-            <button class="btn-icon" onclick="downloadAttachment('${ticket.media}', '${fileName}.mp4')" title="Download Video">
-              📥 Download
-            </button>
-          </div>
+          <video controls src="${ticket.media}" style="max-width: 100%; border-radius: 12px;">
+            Your browser does not support the video tag.
+          </video>
         </div>
       `;
     }
@@ -401,8 +373,7 @@ async function renderTicket() {
 // Make functions global for HTML onclick
 window.updateStatus = updateStatus;
 window.addComment = addComment;
-window.openAttachment = openAttachment;
-window.downloadAttachment = downloadAttachment;
+window.viewImage = viewImage;
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', renderTicket);
