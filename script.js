@@ -525,31 +525,29 @@ async function loadInquiries() {
   if (error) return;
   
   const pendingCount = data.filter(i => i.status === 'waiting').length;
-  const badge = document.getElementById('notificationBadge');
-  if (badge) {
-    badge.textContent = pendingCount;
-    badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+  const inquiriesCount = document.getElementById('inquiriesCount');
+  if (inquiriesCount) {
+    inquiriesCount.textContent = data.length;
   }
   
   const listContainer = document.getElementById('inquiriesList');
   if (listContainer) {
     if (data.length === 0) {
-      listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5);">No inquiries yet</div>';
+      listContainer.innerHTML = '<div style="padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">No inquiries yet</div>';
     } else {
       listContainer.innerHTML = data.map(inquiry => `
         <div class="inquiry-item" onclick="openOfficialChat('${inquiry.id}')">
           <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
-          <div class="inquiry-name">${escapeHtml(inquiry.resident_name)} • ${escapeHtml(inquiry.phone_number)}</div>
-          <div style="font-size: 10px; color: #f39c12; margin-top: 4px;">${inquiry.status === 'waiting' ? '⏳ Waiting' : inquiry.status === 'active' ? '💬 Active' : '✅ Resolved'}</div>
+          <div class="inquiry-question">${escapeHtml(inquiry.question.length > 100 ? inquiry.question.substring(0, 100) + '...' : inquiry.question)}</div>
+          <div class="inquiry-name">
+            <span>👤 ${escapeHtml(inquiry.resident_name)}</span>
+            <span>📞 ${escapeHtml(inquiry.phone_number)}</span>
+            <span class="inquiry-status ${inquiry.status === 'active' ? 'active' : ''}">${inquiry.status === 'waiting' ? '⏳ Waiting' : inquiry.status === 'active' ? '💬 Active' : '✅ Resolved'}</span>
+          </div>
         </div>
       `).join('');
     }
   }
-}
-
-function toggleSidebar() {
-  const sidebar = document.getElementById('officialSidebar');
-  sidebar.classList.toggle('collapsed');
 }
 
 async function openOfficialChat(inquiryId) {
@@ -568,9 +566,10 @@ async function openOfficialChat(inquiryId) {
       .from('inquiries')
       .update({ status: 'active', updated_at: new Date().toISOString() })
       .eq('id', inquiryId);
+    loadInquiries();
   }
   
-  document.getElementById('officialChatTitle').textContent = `Chat with: ${inquiry.resident_name}`;
+  document.getElementById('officialChatTitle').innerHTML = `Chat with: ${escapeHtml(inquiry.resident_name)}<br><span style="font-size: 12px;">Subject: ${escapeHtml(inquiry.subject)}</span>`;
   document.getElementById('officialChatModal').style.display = 'flex';
   
   await loadOfficialChatMessages(inquiryId);
