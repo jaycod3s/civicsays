@@ -18,7 +18,7 @@ body {
   width: 100%;
   height: 100%;
   z-index: -2;
-  background: linear-gradient(135deg, #0a0c0a 0%, #1a2a1a 50%, #0e1a0e 100%).mid;
+  background: linear-gradient(135deg, #0a0c0a 0%, #1a2a1a 50%, #0e1a0e 100%);
 }
 
 .bg-animation::before {
@@ -41,7 +41,6 @@ body {
 .navbar {
   position: sticky;
   top: 0;
-
   padding: 16px 48px;
   display: flex;
   justify-content: space-between;
@@ -113,7 +112,7 @@ body {
 
 /* Container */
 .container {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 32px 48px;
 }
@@ -319,6 +318,26 @@ input::placeholder, textarea::placeholder {
   transform: translateY(-2px);
 }
 
+/* Small Icon Button for Download */
+.btn-icon {
+  background: transparent;
+  border: 1px solid rgba(230,126,34,0.5);
+  color: #e67e22;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-icon:hover {
+  background: rgba(230,126,34,0.2);
+  border-color: #e67e22;
+}
+
 /* Ticket List */
 .ticket-list {
   max-height: 550px;
@@ -489,11 +508,10 @@ input::placeholder, textarea::placeholder {
   flex: 1;
 }
 
-/* Ticket Detail Page Layout - THREE COLUMN WITH WIDER COMMENTS */
-/* Ticket Detail Page Layout - THREE COLUMN WITH WIDER COMMENTS */
+/* Ticket Detail Page Layout - THREE COLUMN WITH WIDER MIDDLE */
 .ticket-layout {
   display: grid;
-  grid-template-columns: 300px 1fr 420px;
+  grid-template-columns: 320px 1.5fr 400px;
   gap: 24px;
   align-items: start;
 }
@@ -504,37 +522,14 @@ input::placeholder, textarea::placeholder {
   width: 100%;
 }
 
-/* Right column (comments) wider */
+/* Middle column (Issue Details) wider */
+.middle-column {
+  min-width: 0;
+}
+
+/* Right column (comments) */
 .right-column {
   min-width: 320px;
-}
-
-/* Comment items full width */
-.comment-item {
-  width: 100%;
-  display: block;
-  box-sizing: border-box;
-}
-
-.comment-input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.right-column .btn-primary {
-  width: 100%;
-}
-
-/* Responsive - Stack on mobile */
-@media (max-width: 1024px) {
-  .ticket-layout {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  
-  .right-column {
-    min-width: auto;
-  }
 }
 
 /* Info Rows */
@@ -645,7 +640,7 @@ input::placeholder, textarea::placeholder {
   margin-bottom: 16px;
 }
 
-/* Media Container */
+/* Media Container - Clickable Attachment */
 .media-container {
   margin-top: 16px;
 }
@@ -654,6 +649,48 @@ input::placeholder, textarea::placeholder {
 .media-container video {
   max-width: 100%;
   border-radius: 12px;
+  margin-top: 8px;
+}
+
+/* Clickable Attachment Styles */
+.clickable-attachment {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  width: 100%;
+}
+
+.clickable-attachment img {
+  transition: transform 0.2s ease;
+  width: 100%;
+}
+
+.clickable-attachment:hover img {
+  transform: scale(1.01);
+}
+
+.attachment-overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.clickable-attachment:hover .attachment-overlay {
+  opacity: 1;
+}
+
+/* Download icon row */
+.download-row {
+  display: flex;
+  justify-content: flex-end;
   margin-top: 8px;
 }
 
@@ -767,10 +804,17 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .ticket-layout {
+    grid-template-columns: 300px 1fr 360px;
+    gap: 20px;
+  }
+}
+
 @media (max-width: 1024px) {
   .ticket-layout {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
   
   .stats-grid {
@@ -807,40 +851,4 @@ input::placeholder, textarea::placeholder {
     padding: 8px 16px;
     font-size: 12px;
   }
-}
-
-/* Clickable Attachment Styles */
-.clickable-attachment {
-  position: relative;
-  cursor: pointer;
-  display: inline-block;
-  width: 100%;
-}
-
-.clickable-attachment img {
-  transition: transform 0.2s ease;
-  width: 100%;
-}
-
-.clickable-attachment:hover img {
-  transform: scale(1.02);
-}
-
-.attachment-overlay {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.7);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-.clickable-attachment:hover .attachment-overlay {
-  opacity: 1;
-}
 }
