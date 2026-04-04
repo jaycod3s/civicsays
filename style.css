@@ -491,7 +491,7 @@ input::placeholder, textarea::placeholder {
 /* Ticket Detail Page Layout - THREE COLUMN WITH WIDER COMMENTS */
 .ticket-layout {
   display: grid;
-  grid-template-columns: 300px 1fr 420px;
+  grid-template-columns:  1fr 420px;
   gap: 24px;
   align-items: start;
 }
