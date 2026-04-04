@@ -501,7 +501,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .middle-column {
-  min-width: 500px;
+  min-width: 900px;
 }
 /* Right column (comments) wider */
 .right-column {
