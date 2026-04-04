@@ -490,23 +490,51 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Ticket Detail Page Layout - THREE COLUMN WITH WIDER COMMENTS */
+/* Ticket Detail Page Layout - THREE COLUMN WITH WIDER COMMENTS */
 .ticket-layout {
   display: grid;
-  grid-template-columns:  1fr 420px;
+  grid-template-columns: 300px 1fr 420px;
   gap: 24px;
   align-items: start;
 }
 
-.left-column {
-  width: 60px;
+.left-column, 
+.middle-column, 
+.right-column {
+  width: 100%;
 }
 
-.middle-column {
-  min-width: 500px;
-}
 /* Right column (comments) wider */
 .right-column {
-  min-width: 350px;
+  min-width: 320px;
+}
+
+/* Comment items full width */
+.comment-item {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.comment-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.right-column .btn-primary {
+  width: 100%;
+}
+
+/* Responsive - Stack on mobile */
+@media (max-width: 1024px) {
+  .ticket-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .right-column {
+    min-width: auto;
+  }
 }
 
 /* Info Rows */
