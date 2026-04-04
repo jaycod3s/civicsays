@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>CivicSays - Resident & Official Portal</title>
   <link rel="icon" type="image/png" href="logonobg.png">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <div class="bg-animation"></div>
@@ -165,10 +168,85 @@
     </div>
   </div>
   
+  <!-- Ask a Question Button -->
+  <button class="btn-ask" onclick="openChatBox()">💬 Ask a Question</button>
+  
+  <!-- Chat Box -->
+  <div id="chatOverlay" class="chat-overlay">
+    <div class="chat-header">
+      <h4>Ask a Question</h4>
+      <button class="chat-close" onclick="closeChatBox()">✕</button>
+    </div>
+    <div id="chatBody" class="chat-body">
+      <!-- Step 1: Name and Phone -->
+      <div id="chatStep1" class="chat-form-step">
+        <input type="text" id="chatName" placeholder="Your Full Name *">
+        <input type="tel" id="chatPhone" placeholder="Phone Number *">
+        <button class="btn btn-primary" onclick="goToStep2()" style="width:100%">Continue</button>
+      </div>
+      
+      <!-- Step 2: Subject and Question -->
+      <div id="chatStep2" class="chat-form-step" style="display:none">
+        <input type="text" id="chatSubject" placeholder="Subject *">
+        <textarea id="chatQuestion" rows="4" placeholder="Your question *"></textarea>
+        <button class="btn btn-primary" onclick="submitInquiry()" style="width:100%">Submit Question</button>
+      </div>
+      
+      <!-- Waiting for Official -->
+      <div id="chatWaiting" class="waiting-message" style="display:none">
+        ⏳ Waiting for officials to answer your question...
+      </div>
+      
+      <!-- Chat Messages -->
+      <div id="chatMessages" style="display:none; flex-direction:column; flex:1;">
+        <div id="chatMessagesList" style="flex:1; overflow-y: auto; padding: 8px;"></div>
+        <div class="chat-input-area">
+          <input type="text" id="chatMessageInput" placeholder="Type your message...">
+          <button onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+      
+      <!-- Resolved Message -->
+      <div id="chatResolved" class="waiting-message" style="display:none">
+        ✅ This inquiry has been resolved. The chat will be permanently deleted.
+      </div>
+    </div>
+  </div>
+  
+  <!-- Official Sidebar -->
+  <div id="officialSidebar" class="official-sidebar">
+    <div class="sidebar-header" onclick="toggleSidebar()">
+      <h4>📬 Inquiries</h4>
+      <span id="notificationBadge" class="notification-badge" style="display:none">0</span>
+      <span>◀</span>
+    </div>
+    <div id="inquiriesList" class="sidebar-list">
+      <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5);">Loading inquiries...</div>
+    </div>
+  </div>
+  
+  <!-- Official Chat Modal -->
+  <div id="officialChatModal" class="official-chat-modal">
+    <div class="official-chat-content">
+      <div class="official-chat-header">
+        <h3 id="officialChatTitle">Chat with Resident</h3>
+        <button class="official-chat-close" onclick="closeOfficialChatModal()">✕</button>
+      </div>
+      <div id="officialChatMessages" class="official-chat-messages">
+        <div style="text-align: center; color: rgba(255,255,255,0.5);">Loading messages...</div>
+      </div>
+      <div class="official-chat-input-area">
+        <input type="text" id="officialChatInput" placeholder="Type your message...">
+        <button onclick="sendOfficialMessage()">Send</button>
+      </div>
+      <button class="resolve-btn" onclick="resolveInquiry()">✓ Resolved - Delete Conversation</button>
+    </div>
+  </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- <script src="script.js?v=1"></script>
+  <script src="script.js?v=5"></script>
   <script>
-    // Initialize after DOM is ready
+    // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', initCivicSays);
   </script>
 </body>
