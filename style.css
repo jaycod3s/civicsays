@@ -110,8 +110,14 @@ body {
   transform: translateY(-2px);
 }
 
-/* Container */
+/* Container - Remove default padding for official view */
 .container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.resident-container {
   max-width: 1600px;
   margin: 0 auto;
   padding: 32px 48px;
@@ -453,54 +459,62 @@ input:focus, select:focus, textarea:focus {
   flex: 1;
 }
 
-/* ==================== OFFICIAL LEFT PANEL ==================== */
-
-/* ==================== OFFICIAL LAYOUT - FIXED ALIGNMENT ==================== */
-
-/* ==================== OFFICIAL LAYOUT ==================== */
+/* ==================== OFFICIAL LAYOUT - FLUSH TO LEFT ==================== */
 
 .official-layout {
   display: flex;
-  gap: 32px;
+  gap: 0;
   align-items: flex-start;
   width: 100%;
 }
 
-/* LEFT PANEL - Inquiries Panel (with background) */
+/* LEFT PANEL - Flush to left edge */
 .official-left-panel {
   width: 380px;
   flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(230,126,34,0.15), rgba(0,0,0,0.3));
+  background: linear-gradient(135deg, rgba(230,126,34,0.12), rgba(0,0,0,0.3));
   backdrop-filter: blur(10px);
-  border-radius: 24px;
-  border: 1px solid rgba(230,126,34,0.3);
-  overflow: hidden;
-  position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 120px);
+  border-right: 1px solid rgba(230,126,34,0.2);
+  min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
 }
 
-/* Left Panel Logo with Background */
+/* Left Panel Logo - Text-based logo (no image issues) */
 .panel-logo-bg {
   text-align: center;
-  padding: 24px 20px 16px;
-  background: linear-gradient(135deg, rgba(230,126,34,0.2), rgba(243,156,18,0.1));
+  padding: 30px 20px 20px;
+  background: linear-gradient(135deg, rgba(230,126,34,0.2), rgba(243,156,18,0.08));
   border-bottom: 1px solid rgba(230,126,34,0.3);
 }
 
-.panel-logo-bg img {
-  height: 60px;
-  width: auto;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+.logo-placeholder {
+  margin-bottom: 15px;
+}
+
+.logo-text-large {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, #e67e22, #f39c12);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+
+.logo-text-small {
+  font-size: 14px;
+  letter-spacing: 6px;
+  color: #f39c12;
+  display: block;
+  margin-top: 4px;
 }
 
 .panel-logo-bg h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #f39c12;
+  color: #e67e22;
   margin: 0;
   letter-spacing: 2px;
 }
@@ -509,7 +523,7 @@ input:focus, select:focus, textarea:focus {
 .inquiries-stats {
   display: flex;
   justify-content: space-around;
-  padding: 16px;
+  padding: 20px 16px;
   background: rgba(0,0,0,0.3);
   border-bottom: 1px solid rgba(230,126,34,0.2);
 }
@@ -526,8 +540,8 @@ input:focus, select:focus, textarea:focus {
 }
 
 .inquiries-stats .stat-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
   font-weight: 600;
   letter-spacing: 1px;
 }
@@ -536,7 +550,6 @@ input:focus, select:focus, textarea:focus {
 .inquiries-list {
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 280px);
   padding: 12px;
 }
 
@@ -605,6 +618,7 @@ input:focus, select:focus, textarea:focus {
 .official-right-content {
   flex: 1;
   min-width: 0;
+  padding: 24px 48px 24px 32px;
 }
 
 .official-badge-header {
@@ -1120,22 +1134,27 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 1024px) {
-  .ticket-layout,
-  .official-layout {
+  .ticket-layout {
     grid-template-columns: 1fr;
     gap: 24px;
   }
   
   .official-layout {
-    display: flex;
     flex-direction: column;
   }
   
   .official-left-panel {
     width: 100%;
-    position: relative;
-    top: 0;
-    max-height: 400px;
+    border-right: none;
+    border-bottom: 1px solid rgba(230,126,34,0.2);
+  }
+  
+  .inquiries-list {
+    max-height: 300px;
+  }
+  
+  .official-right-content {
+    padding: 24px;
   }
   
   .stats-grid {
@@ -1146,12 +1165,12 @@ input:focus, select:focus, textarea:focus {
     grid-template-columns: 1fr;
   }
   
-  .container {
-    padding: 24px;
-  }
-  
   .navbar {
     padding: 16px 24px;
+  }
+  
+  .resident-container {
+    padding: 24px;
   }
 }
 
