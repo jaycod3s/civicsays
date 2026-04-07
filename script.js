@@ -27,8 +27,7 @@ let currentResidentPhone = '';
 let currentFloatingInquiryId = null;
 
 // Channel subscriptions
-let activeResidentChannel = null;
-let activeOfficialChannel = null;
+let activeResidentStatusChannel = null;
 let activeResidentMessageChannel = null;
 let activeOfficialMessageChannel = null;
 
@@ -396,13 +395,10 @@ function openChatBox() {
   const chatOverlay = document.getElementById('chatOverlay');
   if (chatOverlay) chatOverlay.style.display = 'flex';
   resetChatBox();
-  
-  // Check if there's an existing active inquiry for this resident
   checkExistingInquiry();
 }
 
 async function checkExistingInquiry() {
-  // Check localStorage for an existing inquiry
   const savedInquiryId = localStorage.getItem('activeInquiryId');
   if (savedInquiryId) {
     const { data: inquiry } = await supabaseClient
@@ -416,14 +412,13 @@ async function checkExistingInquiry() {
       currentResidentName = inquiry.resident_name;
       currentResidentPhone = inquiry.phone_number;
       
-      // Switch to chat mode
       document.getElementById('chatStep1').style.display = 'none';
       document.getElementById('chatStep2').style.display = 'none';
       document.getElementById('chatWaiting').style.display = 'none';
       document.getElementById('chatMessages').style.display = 'flex';
       
       await loadChatMessages(savedInquiryId);
-      subscribeToChatMessages(savedInquiryId);
+      subscribeToResidentMessages(savedInquiryId);
       
       if (inquiry.status === 'active') {
         showToast('Connected to official. You can chat now!', '#2ecc71');
@@ -440,16 +435,14 @@ function closeChatBox() {
   const chatOverlay = document.getElementById('chatOverlay');
   if (chatOverlay) chatOverlay.style.display = 'none';
   
-  // Clean up subscriptions
-  if (activeResidentChannel) {
-    supabaseClient.removeChannel(activeResidentChannel);
-    activeResidentChannel = null;
+  if (activeResidentStatusChannel) {
+    supabaseClient.removeChannel(activeResidentStatusChannel);
+    activeResidentStatusChannel = null;
   }
   if (activeResidentMessageChannel) {
     supabaseClient.removeChannel(activeResidentMessageChannel);
     activeResidentMessageChannel = null;
   }
-  
   resetChatBox();
 }
 
@@ -521,7 +514,6 @@ async function submitInquiry() {
   
   currentInquiryId = data.id;
   
-  // Save to localStorage for persistence
   localStorage.setItem('activeInquiryId', currentInquiryId);
   localStorage.setItem('activeInquiryName', currentResidentName);
   localStorage.setItem('activeInquiryPhone', currentResidentPhone);
@@ -531,23 +523,21 @@ async function submitInquiry() {
   if (chatStep2) chatStep2.style.display = 'none';
   if (chatWaiting) chatWaiting.style.display = 'block';
   
-  // Subscribe to status changes
   subscribeToInquiryStatus(currentInquiryId);
   loadInquiries();
   showToast('Question sent! Waiting for official to respond.', '#2ecc71');
 }
 
 async function subscribeToInquiryStatus(inquiryId) {
-  if (activeResidentChannel) {
-    await supabaseClient.removeChannel(activeResidentChannel);
+  if (activeResidentStatusChannel) {
+    await supabaseClient.removeChannel(activeResidentStatusChannel);
   }
   
-  activeResidentChannel = supabaseClient
-    .channel(`resident_inquiry_${inquiryId}`)
+  activeResidentStatusChannel = supabaseClient
+    .channel(`resident_status_${inquiryId}`)
     .on('postgres_changes', 
       { event: 'UPDATE', schema: 'public', table: 'inquiries', filter: `id=eq.${inquiryId}` },
       async (payload) => {
-        console.log('Status update:', payload.new.status);
         if (payload.new.status === 'active') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
@@ -556,7 +546,7 @@ async function subscribeToInquiryStatus(inquiryId) {
           if (chatMessages) chatMessages.style.display = 'flex';
           
           await loadChatMessages(inquiryId);
-          subscribeToChatMessages(inquiryId);
+          subscribeToResidentMessages(inquiryId);
           showToast('✨ An official has joined the conversation! You can now chat.', '#2ecc71');
         } else if (payload.new.status === 'resolved') {
           const chatWaiting = document.getElementById('chatWaiting');
@@ -567,18 +557,12 @@ async function subscribeToInquiryStatus(inquiryId) {
           if (chatMessages) chatMessages.style.display = 'none';
           if (chatResolved) {
             chatResolved.style.display = 'block';
-            chatResolved.innerHTML = '✅ This inquiry has been resolved. The conversation has been permanently deleted.';
+            chatResolved.innerHTML = '✅ This inquiry has been resolved. The conversation is now closed.';
           }
           
-          // Clear from localStorage
           localStorage.removeItem('activeInquiryId');
           localStorage.removeItem('activeInquiryName');
           localStorage.removeItem('activeInquiryPhone');
-          
-          // Close chat after 5 seconds
-          setTimeout(() => {
-            closeChatBox();
-          }, 5000);
         }
       }
     )
@@ -602,7 +586,7 @@ async function loadChatMessages(inquiryId) {
   } else {
     messagesList.innerHTML = data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
-        <strong>${msg.sender === 'resident' ? 'You' : msg.sender_name || 'Official'}:</strong><br>
+        <strong>${msg.sender === 'resident' ? 'You' : (msg.sender_name || 'Official')}:</strong><br>
         ${escapeHtml(msg.message)}
       </div>
     `).join('');
@@ -610,7 +594,7 @@ async function loadChatMessages(inquiryId) {
   }
 }
 
-function subscribeToChatMessages(inquiryId) {
+function subscribeToResidentMessages(inquiryId) {
   if (activeResidentMessageChannel) {
     supabaseClient.removeChannel(activeResidentMessageChannel);
   }
@@ -629,7 +613,7 @@ function subscribeToChatMessages(inquiryId) {
         
         const newMsg = `
           <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
-            <strong>${payload.new.sender === 'resident' ? 'You' : payload.new.sender_name || 'Official'}:</strong><br>
+            <strong>${payload.new.sender === 'resident' ? 'You' : (payload.new.sender_name || 'Official')}:</strong><br>
             ${escapeHtml(payload.new.message)}
           </div>
         `;
@@ -679,7 +663,7 @@ async function loadInquiries() {
   
   const waiting = data.filter(i => i.status === 'waiting').length;
   const active = data.filter(i => i.status === 'active').length;
-  const solved = data.filter(i => i.status === 'resolved').length;
+  const resolved = data.filter(i => i.status === 'resolved').length;
   
   const waitingEl = document.getElementById('inquiriesWaiting');
   const activeEl = document.getElementById('inquiriesActive');
@@ -687,7 +671,7 @@ async function loadInquiries() {
   
   if (waitingEl) waitingEl.textContent = waiting;
   if (activeEl) activeEl.textContent = active;
-  if (solvedEl) solvedEl.textContent = solved;
+  if (solvedEl) solvedEl.textContent = resolved;
   
   const listContainer = document.getElementById('inquiriesList');
   if (!listContainer) return;
@@ -705,7 +689,7 @@ async function loadInquiries() {
         statusText = '💬 Active';
         statusClass = 'active';
       } else {
-        statusText = '✅ Solved';
+        statusText = '✅ Resolved';
         statusClass = 'solved';
       }
       
@@ -739,12 +723,9 @@ function openFloatingChat(inquiryId, residentName, subject, originalQuestion) {
     chatBox.classList.remove('minimized');
   }
   
-  // Update status to active if waiting
   updateInquiryStatusToActive(inquiryId);
-  
-  // Load messages
   loadOfficialChatMessages(inquiryId, originalQuestion);
-  subscribeToOfficialChat(inquiryId);
+  subscribeToOfficialMessages(inquiryId);
 }
 
 async function updateInquiryStatusToActive(inquiryId) {
@@ -767,10 +748,6 @@ function closeFloatingChat() {
   const chatBox = document.getElementById('officialFloatingChat');
   if (chatBox) chatBox.style.display = 'none';
   
-  if (activeOfficialChannel) {
-    supabaseClient.removeChannel(activeOfficialChannel);
-    activeOfficialChannel = null;
-  }
   if (activeOfficialMessageChannel) {
     supabaseClient.removeChannel(activeOfficialMessageChannel);
     activeOfficialMessageChannel = null;
@@ -797,10 +774,9 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   
   const officialName = localStorage.getItem('officialName') || 'You';
   
-  // Start with original question
   let messagesHtml = `
     <div class="chat-message resident">
-      <strong>${escapeHtml(currentResidentName)}'s Question:</strong><br>
+      <strong>${escapeHtml(currentResidentName || 'Resident')}'s Question:</strong><br>
       ${escapeHtml(originalQuestion)}
     </div>
     <div style="margin: 8px 0; text-align: center; color: #e67e22;">--- Conversation ---</div>
@@ -821,20 +797,19 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   container.scrollTop = container.scrollHeight;
 }
 
-function subscribeToOfficialChat(inquiryId) {
+function subscribeToOfficialMessages(inquiryId) {
   if (activeOfficialMessageChannel) {
     supabaseClient.removeChannel(activeOfficialMessageChannel);
   }
   
   activeOfficialMessageChannel = supabaseClient
-    .channel(`official_chat_${inquiryId}`)
+    .channel(`official_msgs_${inquiryId}`)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
       (payload) => {
         const container = document.getElementById('floatingChatMessages');
         if (!container) return;
         
-        // Remove waiting message if present
         if (container.innerHTML.includes('No messages yet')) {
           container.innerHTML = container.innerHTML.replace('<div class="waiting-message">No messages yet. Type your response below.</div>', '');
         }
@@ -888,35 +863,27 @@ async function resolveCurrentInquiry() {
   
   const currentOfficial = localStorage.getItem('officialName') || 'System';
   
-  // Add final message before deletion
   await supabaseClient
     .from('chat_messages')
     .insert({
       inquiry_id: currentFloatingInquiryId,
       sender: 'official',
       sender_name: currentOfficial,
-      message: 'This inquiry has been resolved. The conversation will now be permanently deleted. Thank you!'
+      message: 'This inquiry has been resolved. Thank you for reaching out!'
     });
   
-  // Wait a moment for the message to be saved
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Delete all chat messages
-  await supabaseClient
-    .from('chat_messages')
-    .delete()
-    .eq('inquiry_id', currentFloatingInquiryId);
-  
-  // Delete the inquiry
   await supabaseClient
     .from('inquiries')
-    .delete()
+    .update({ 
+      status: 'resolved', 
+      resolved_by: currentOfficial,
+      updated_at: new Date().toISOString() 
+    })
     .eq('id', currentFloatingInquiryId);
   
-  // Close chat and refresh
   closeFloatingChat();
   loadInquiries();
-  showToast('Inquiry resolved and permanently deleted from database');
+  showToast('Inquiry marked as resolved');
 }
 
 // Event Listeners Setup
@@ -939,7 +906,6 @@ function setupEventListeners() {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.addEventListener('click', logout);
   
-  // Enter key to send message in floating chat
   document.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
       const floatingChat = document.getElementById('officialFloatingChat');
@@ -953,7 +919,6 @@ function setupEventListeners() {
     }
   });
   
-  // Close modals on outside click
   window.onclick = (e) => {
     const loginModal = document.getElementById('loginModal');
     const successModal = document.getElementById('successModal');
@@ -962,22 +927,20 @@ function setupEventListeners() {
   };
 }
 
-// Initialize
 function initCivicSays() {
   setupEventListeners();
   checkLoginStatus();
   
-  // Auto-refresh inquiries every 3 seconds for real-time updates
   setInterval(() => {
     if (isOfficialLoggedIn) {
       loadInquiries();
     }
   }, 3000);
   
-  console.log('CivicSays initialized with real-time chat');
+  console.log('CivicSays initialized');
 }
 
-// Make functions global for HTML onclick
+// Make functions global
 window.searchTicketById = searchTicketById;
 window.switchOfficialTab = switchOfficialTab;
 window.searchOfficialTickets = searchOfficialTickets;
