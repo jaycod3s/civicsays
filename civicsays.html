@@ -141,25 +141,28 @@
         
         <!-- LEFT PANEL - Inquiries (Flush to Left Edge) -->
      <!-- LEFT PANEL - Inquiries (Flush to Left Edge) -->
+<!-- LEFT PANEL - Inquiries (Fixed, no toggle) -->
 <div class="official-left-panel">
   <div class="panel-logo-bg">
-    <div class="logo-placeholder">
-      <img src="Logo.png" alt="CivicSays Logo" class="panel-logo-img">
-    </div>
+    <img src="Logo.png" alt="CivicSays Logo" class="panel-logo-img">
     <h3>RESIDENT INQUIRIES</h3>
   </div>
-<div class="inquiries-stats">
-  <div class="stat-item">
-    <span class="stat-value" id="inquiriesWaiting">0</span>
-    <span class="stat-label">WAITING</span>
+  <div class="inquiries-stats">
+    <div class="stat-item">
+      <span class="stat-value" id="inquiriesWaiting">0</span>
+      <span class="stat-label">WAITING</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="inquiriesActive">0</span>
+      <span class="stat-label">ACTIVE</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="inquiriesSolved">0</span>
+      <span class="stat-label">SOLVED</span>
+    </div>
   </div>
-  <div class="stat-item">
-    <span class="stat-value" id="inquiriesActive">0</span>
-    <span class="stat-label">ACTIVE</span>
-  </div>
-  <div class="stat-item">
-    <span class="stat-value" id="inquiriesSolved">0</span>
-    <span class="stat-label">SOLVED</span>
+  <div id="inquiriesList" class="inquiries-list">
+    <div class="loading-placeholder">Loading inquiries...</div>
   </div>
 </div>
         
