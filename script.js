@@ -489,14 +489,14 @@ function subscribeToInquiryStatus(inquiryId) {
         if (payload.new.status === 'active') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
-          const chatMessagesList = document.getElementById('chatMessagesList');
           
           if (chatWaiting) chatWaiting.style.display = 'none';
           if (chatMessages) chatMessages.style.display = 'flex';
-          if (chatMessagesList) chatMessagesList.innerHTML = '<div class="waiting-message">✨ You are now connected to an official ✨</div>';
           
           loadChatMessages(inquiryId);
           subscribeToChatMessages(inquiryId);
+          
+          showToast('✨ An official has joined the conversation!', '#2ecc71');
         } else if (payload.new.status === 'resolved') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
@@ -528,10 +528,11 @@ async function loadChatMessages(inquiryId) {
   if (!messagesList) return;
   
   if (data.length === 0) {
-    messagesList.innerHTML = '<div class="waiting-message">Start the conversation...</div>';
+    messagesList.innerHTML = '<div class="waiting-message">No messages yet. Start the conversation!</div>';
   } else {
     messagesList.innerHTML = data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
+        <strong>${msg.sender === 'resident' ? 'You' : 'Official'}:</strong><br>
         ${escapeHtml(msg.message)}
       </div>
     `).join('');
@@ -552,13 +553,24 @@ function subscribeToChatMessages(inquiryId) {
         const messagesList = document.getElementById('chatMessagesList');
         if (!messagesList) return;
         
+        // Remove "no messages" placeholder if it exists
+        if (messagesList.innerHTML.includes('No messages yet')) {
+          messagesList.innerHTML = '';
+        }
+        
         const newMsg = `
           <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
+            <strong>${payload.new.sender === 'resident' ? 'You' : 'Official'}:</strong><br>
             ${escapeHtml(payload.new.message)}
           </div>
         `;
         messagesList.insertAdjacentHTML('beforeend', newMsg);
         messagesList.scrollTop = messagesList.scrollHeight;
+        
+        // Show notification for resident when official messages
+        if (payload.new.sender === 'official') {
+          showToast('📬 New reply from official!', '#2ecc71');
+        }
       }
     )
     .subscribe();
@@ -629,7 +641,7 @@ async function loadInquiries() {
       }
       
       return `
-        <div class="inquiry-item" onclick="openFloatingChat('${inquiry.id}', '${escapeHtml(inquiry.resident_name)}', '${escapeHtml(inquiry.subject)}')">
+        <div class="inquiry-item" onclick="openFloatingChat('${inquiry.id}', '${escapeHtml(inquiry.resident_name)}', '${escapeHtml(inquiry.subject)}', '${escapeHtml(inquiry.question)}')">
           <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
           <div class="inquiry-question">${escapeHtml(inquiry.question.length > 100 ? inquiry.question.substring(0, 100) + '...' : inquiry.question)}</div>
           <div class="inquiry-meta">
@@ -643,7 +655,7 @@ async function loadInquiries() {
   }
 }
 
-function openFloatingChat(inquiryId, residentName, subject) {
+function openFloatingChat(inquiryId, residentName, subject, originalQuestion) {
   currentFloatingInquiryId = inquiryId;
   
   const chatBox = document.getElementById('officialFloatingChat');
@@ -661,7 +673,8 @@ function openFloatingChat(inquiryId, residentName, subject) {
   // Update status to active if waiting
   updateInquiryStatus(inquiryId, 'active');
   
-  loadFloatingChatMessages(inquiryId);
+  // Load messages and also show the original question
+  loadFloatingChatMessages(inquiryId, originalQuestion);
   subscribeToFloatingChat(inquiryId);
 }
 
@@ -696,7 +709,7 @@ function minimizeFloatingChat() {
   if (chatBox) chatBox.classList.toggle('minimized');
 }
 
-async function loadFloatingChatMessages(inquiryId) {
+async function loadFloatingChatMessages(inquiryId, originalQuestion) {
   const { data, error } = await supabaseClient
     .from('chat_messages')
     .select('*')
@@ -708,16 +721,28 @@ async function loadFloatingChatMessages(inquiryId) {
   const container = document.getElementById('floatingChatMessages');
   if (!container) return;
   
-  if (data.length === 0) {
-    container.innerHTML = '<div class="waiting-message">No messages yet. Start the conversation!</div>';
-  } else {
-    container.innerHTML = data.map(msg => `
+  // Start with original question
+  let messagesHtml = `
+    <div class="chat-message resident">
+      <strong>Resident's Question:</strong><br>
+      ${escapeHtml(originalQuestion)}
+    </div>
+  `;
+  
+  // Add existing messages
+  if (data.length > 0) {
+    messagesHtml += data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
+        <strong>${msg.sender === 'resident' ? 'Resident' : 'You'}:</strong><br>
         ${escapeHtml(msg.message)}
       </div>
     `).join('');
-    container.scrollTop = container.scrollHeight;
+  } else {
+    messagesHtml += '<div class="waiting-message">No messages yet. Type your response below.</div>';
   }
+  
+  container.innerHTML = messagesHtml;
+  container.scrollTop = container.scrollHeight;
 }
 
 function subscribeToFloatingChat(inquiryId) {
@@ -733,13 +758,28 @@ function subscribeToFloatingChat(inquiryId) {
         const container = document.getElementById('floatingChatMessages');
         if (!container) return;
         
+        // Remove waiting message if present
+        if (container.innerHTML.includes('No messages yet')) {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = container.innerHTML;
+          const waitingMsg = tempDiv.querySelector('.waiting-message');
+          if (waitingMsg) waitingMsg.remove();
+          container.innerHTML = tempDiv.innerHTML;
+        }
+        
         const newMsg = `
           <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
+            <strong>${payload.new.sender === 'resident' ? 'Resident' : 'You'}:</strong><br>
             ${escapeHtml(payload.new.message)}
           </div>
         `;
         container.insertAdjacentHTML('beforeend', newMsg);
         container.scrollTop = container.scrollHeight;
+        
+        // Show notification for official when resident messages
+        if (payload.new.sender === 'resident') {
+          showToast('📬 New message from resident!', '#e67e22');
+        }
       }
     )
     .subscribe();
@@ -857,6 +897,8 @@ function initCivicSays() {
       loadInquiries();
     }
   }, 5000);
+  
+  console.log('CivicSays initialized with real-time chat');
 }
 
 // Make functions global for HTML onclick
