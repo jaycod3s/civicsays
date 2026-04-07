@@ -455,14 +455,18 @@ input:focus, select:focus, textarea:focus {
 
 /* ==================== OFFICIAL LEFT PANEL ==================== */
 
+/* ==================== OFFICIAL LAYOUT - FIXED ALIGNMENT ==================== */
+
 .official-layout {
   display: flex;
-  gap: 24px;
+  gap: 32px;
   align-items: flex-start;
+  width: 100%;
 }
 
+/* Left Panel - Inquiries Panel */
 .official-left-panel {
-  width: 360px;
+  width: 380px;
   flex-shrink: 0;
   background: rgba(255,255,255,0.05);
   backdrop-filter: blur(10px);
@@ -484,7 +488,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .panel-logo img {
-  height: 50px;
+  height: 55px;
   width: auto;
   margin-bottom: 12px;
 }
@@ -493,13 +497,15 @@ input:focus, select:focus, textarea:focus {
   font-size: 16px;
   color: #e67e22;
   margin: 0;
+  letter-spacing: 1px;
 }
 
+/* Inquiries Stats */
 .inquiries-stats {
   display: flex;
   justify-content: space-around;
   padding: 16px;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.3);
   border-bottom: 1px solid rgba(230,126,34,0.15);
 }
 
@@ -509,7 +515,7 @@ input:focus, select:focus, textarea:focus {
 
 .inquiries-stats .stat-value {
   display: block;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #f39c12;
 }
@@ -521,10 +527,18 @@ input:focus, select:focus, textarea:focus {
   letter-spacing: 0.5px;
 }
 
+/* Inquiries List */
 .inquiries-list {
   flex: 1;
   overflow-y: auto;
   max-height: calc(100vh - 280px);
+  padding: 8px;
+}
+
+.loading-placeholder {
+  padding: 40px;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
 }
 
 .inquiry-item {
@@ -532,6 +546,8 @@ input:focus, select:focus, textarea:focus {
   border-bottom: 1px solid rgba(230,126,34,0.1);
   cursor: pointer;
   transition: all 0.2s ease;
+  border-radius: 12px;
+  margin-bottom: 4px;
 }
 
 .inquiry-item:hover {
@@ -578,9 +594,21 @@ input:focus, select:focus, textarea:focus {
   color: #58d68d;
 }
 
+/* Right Content */
 .official-right-content {
   flex: 1;
   min-width: 0;
+}
+
+.official-badge-header {
+  background: rgba(46,204,113,0.15);
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 13px;
+  color: #2ecc71;
+  display: inline-block;
+  margin-bottom: 24px;
+  border: 1px solid rgba(46,204,113,0.3);
 }
 
 /* ==================== CHAT BOX STYLES ==================== */
