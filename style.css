@@ -183,26 +183,6 @@ body {
 }
 
 /* Cards */
-.official-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.official-badge-header {
-  background: rgba(46,204,113,0.2);
-  padding: 8px 16px;
-  border-radius: 40px;
-  font-size: 12px;
-  color: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .card {
   background: rgba(255,255,255,0.05);
   backdrop-filter: blur(10px);
@@ -227,17 +207,6 @@ body {
   font-size: 20px;
   font-weight: 600;
   color: #e67e22;
-}
-
-.card-header h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #e67e22;
-  margin: 0;
-}
-
-.card-content {
-  padding: 0;
 }
 
 .grid-2 {
@@ -279,10 +248,6 @@ input:focus, select:focus, textarea:focus {
   border-color: #e67e22;
   box-shadow: 0 0 0 3px rgba(230,126,34,0.15);
   background: rgba(0,0,0,0.6);
-}
-
-input::placeholder, textarea::placeholder {
-  color: rgba(255,255,255,0.4);
 }
 
 .btn {
@@ -488,17 +453,17 @@ input::placeholder, textarea::placeholder {
   flex: 1;
 }
 
-/* ==================== OFFICIAL TWO COLUMN LAYOUT ==================== */
+/* ==================== OFFICIAL LEFT PANEL ==================== */
 
-.official-two-column {
-  display: grid;
-  grid-template-columns: 380px 1fr;
+.official-layout {
+  display: flex;
   gap: 24px;
-  align-items: start;
+  align-items: flex-start;
 }
 
-/* Left Panel - Inquiries Sidebar (Officials Only) */
 .official-left-panel {
+  width: 360px;
+  flex-shrink: 0;
   background: rgba(255,255,255,0.05);
   backdrop-filter: blur(10px);
   border-radius: 24px;
@@ -511,40 +476,62 @@ input::placeholder, textarea::placeholder {
   flex-direction: column;
 }
 
-.inquiries-header {
-  background: linear-gradient(135deg, #e67e22, #f39c12);
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.panel-logo {
+  text-align: center;
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(230,126,34,0.2);
+  background: linear-gradient(135deg, rgba(230,126,34,0.1), rgba(243,156,18,0.05));
 }
 
-.inquiries-header h3 {
-  margin: 0;
+.panel-logo img {
+  height: 50px;
+  width: auto;
+  margin-bottom: 12px;
+}
+
+.panel-logo h3 {
   font-size: 16px;
-  color: white;
+  color: #e67e22;
+  margin: 0;
 }
 
-.inquiries-count {
-  background: rgba(255,255,255,0.3);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: white;
+.inquiries-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px;
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(230,126,34,0.15);
+}
+
+.inquiries-stats .stat-item {
+  text-align: center;
+}
+
+.inquiries-stats .stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f39c12;
+}
+
+.inquiries-stats .stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .inquiries-list {
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 280px);
 }
 
 .inquiry-item {
   padding: 16px;
-  border-bottom: 1px solid rgba(230,126,34,0.15);
+  border-bottom: 1px solid rgba(230,126,34,0.1);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 
 .inquiry-item:hover {
@@ -569,7 +556,7 @@ input::placeholder, textarea::placeholder {
   overflow: hidden;
 }
 
-.inquiry-name {
+.inquiry-meta {
   font-size: 11px;
   color: rgba(255,255,255,0.5);
   display: flex;
@@ -591,12 +578,12 @@ input::placeholder, textarea::placeholder {
   color: #58d68d;
 }
 
-/* Right Content */
 .official-right-content {
+  flex: 1;
   min-width: 0;
 }
 
-/* ==================== CHAT BOX STYLES (Resident Only) ==================== */
+/* ==================== CHAT BOX STYLES ==================== */
 
 .btn-ask {
   position: fixed;
@@ -867,7 +854,6 @@ input::placeholder, textarea::placeholder {
   word-break: break-word;
 }
 
-/* Comments Section */
 .comment-list {
   max-height: 400px;
   overflow-y: auto;
@@ -937,10 +923,6 @@ input::placeholder, textarea::placeholder {
   border-color: #e67e22;
 }
 
-.right-column .btn-primary {
-  width: 100%;
-}
-
 .status-select {
   width: 100%;
   padding: 12px;
@@ -952,7 +934,6 @@ input::placeholder, textarea::placeholder {
   margin-bottom: 16px;
 }
 
-/* Media Container */
 .media-container {
   margin-top: 16px;
 }
@@ -996,12 +977,6 @@ input::placeholder, textarea::placeholder {
 
 .clickable-attachment:hover .attachment-overlay {
   opacity: 1;
-}
-
-.download-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
 }
 
 /* Success Modal */
@@ -1090,17 +1065,6 @@ input::placeholder, textarea::placeholder {
   color: #e67e22;
 }
 
-.error-state {
-  text-align: center;
-  padding: 60px;
-}
-
-.error-state h2 {
-  color: #e67e22;
-  margin-bottom: 16px;
-}
-
-/* Keyframes */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -1118,16 +1082,25 @@ input::placeholder, textarea::placeholder {
     grid-template-columns: 300px 1fr 360px;
     gap: 20px;
   }
-  .official-two-column {
-    grid-template-columns: 320px 1fr;
-  }
 }
 
 @media (max-width: 1024px) {
   .ticket-layout,
-  .official-two-column {
+  .official-layout {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+  
+  .official-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .official-left-panel {
+    width: 100%;
+    position: relative;
+    top: 0;
+    max-height: 400px;
   }
   
   .stats-grid {
@@ -1144,12 +1117,6 @@ input::placeholder, textarea::placeholder {
   
   .navbar {
     padding: 16px 24px;
-  }
-  
-  .official-left-panel {
-    position: relative;
-    top: 0;
-    max-height: 400px;
   }
 }
 
