@@ -524,22 +524,28 @@ async function loadInquiries() {
   
   if (error) return;
   
-  const pendingCount = data.filter(i => i.status === 'waiting').length;
-  const inquiriesCount = document.getElementById('inquiriesCount');
-  if (inquiriesCount) {
-    inquiriesCount.textContent = data.length;
-  }
+  const total = data.length;
+  const pending = data.filter(i => i.status === 'waiting').length;
+  const active = data.filter(i => i.status === 'active').length;
+  
+  const totalEl = document.getElementById('inquiriesTotal');
+  const pendingEl = document.getElementById('inquiriesPending');
+  const activeEl = document.getElementById('inquiriesActive');
+  
+  if (totalEl) totalEl.textContent = total;
+  if (pendingEl) pendingEl.textContent = pending;
+  if (activeEl) activeEl.textContent = active;
   
   const listContainer = document.getElementById('inquiriesList');
   if (listContainer) {
     if (data.length === 0) {
-      listContainer.innerHTML = '<div style="padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">No inquiries yet</div>';
+      listContainer.innerHTML = '<div class="loading-placeholder">No inquiries yet</div>';
     } else {
       listContainer.innerHTML = data.map(inquiry => `
         <div class="inquiry-item" onclick="openOfficialChat('${inquiry.id}')">
           <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
           <div class="inquiry-question">${escapeHtml(inquiry.question.length > 100 ? inquiry.question.substring(0, 100) + '...' : inquiry.question)}</div>
-          <div class="inquiry-name">
+          <div class="inquiry-meta">
             <span>👤 ${escapeHtml(inquiry.resident_name)}</span>
             <span>📞 ${escapeHtml(inquiry.phone_number)}</span>
             <span class="inquiry-status ${inquiry.status === 'active' ? 'active' : ''}">${inquiry.status === 'waiting' ? '⏳ Waiting' : inquiry.status === 'active' ? '💬 Active' : '✅ Resolved'}</span>
