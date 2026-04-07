@@ -28,7 +28,6 @@ let currentResidentPhone = '';
 let currentFloatingInquiryId = null;
 let floatingChatSubscription = null;
 
-// Helper Functions
 function getStatusText(status) {
   const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
   return map[status] || status;
@@ -359,14 +358,9 @@ async function submitTicket(e) {
   }
 }
 
-// Search Ticket by ID - FIXED
 async function searchTicketById() {
-  console.log('searchTicketById called');
   const ticketIdInput = document.getElementById('searchTicketId');
-  if (!ticketIdInput) {
-    console.error('searchTicketId element not found');
-    return;
-  }
+  if (!ticketIdInput) return;
   
   const ticketId = ticketIdInput.value.trim().toUpperCase();
   if (!ticketId) {
@@ -392,10 +386,9 @@ function closeSuccessModal() {
   if (successModal) successModal.style.display = 'none';
 }
 
-// ==================== ASK A QUESTION FUNCTIONS ====================
+// ==================== ASK A QUESTION FUNCTIONS (Resident) ====================
 
 function openChatBox() {
-  console.log('openChatBox called');
   const chatOverlay = document.getElementById('chatOverlay');
   if (chatOverlay) chatOverlay.style.display = 'flex';
   resetChatBox();
@@ -651,7 +644,6 @@ async function loadInquiries() {
 }
 
 function openFloatingChat(inquiryId, residentName, subject) {
-  console.log('openFloatingChat called', inquiryId);
   currentFloatingInquiryId = inquiryId;
   
   const chatBox = document.getElementById('officialFloatingChat');
@@ -664,9 +656,6 @@ function openFloatingChat(inquiryId, residentName, subject) {
   if (chatBox) {
     chatBox.style.display = 'flex';
     chatBox.classList.remove('minimized');
-    console.log('Chat box displayed');
-  } else {
-    console.error('Chat box element not found');
   }
   
   // Update status to active if waiting
@@ -859,7 +848,6 @@ function setupEventListeners() {
 
 // Initialize
 function initCivicSays() {
-  console.log('initCivicSays called');
   setupEventListeners();
   checkLoginStatus();
   
@@ -869,8 +857,6 @@ function initCivicSays() {
       loadInquiries();
     }
   }, 5000);
-  
-  console.log('CivicSays initialized');
 }
 
 // Make functions global for HTML onclick
