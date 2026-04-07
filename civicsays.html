@@ -7,8 +7,8 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>CivicSays - Resident & Official Portal</title>
-  <link rel="icon" type="image/png" href="logonobg.png">
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
   <div class="bg-animation"></div>
@@ -16,7 +16,7 @@
   <!-- Top Navbar -->
   <nav class="navbar">
     <div class="logo">
-      <img src="logonobg.png" alt="CivicSays Logo">
+      <img src="logo.png" alt="CivicSays Logo">
     </div>
     <div class="nav-buttons">
       <a href="index.html" class="nav-btn nav-btn-outline">← Back to Home</a>
@@ -134,15 +134,13 @@
     
     <!-- ==================== OFFICIAL VIEW ==================== -->
     <div id="officialView" style="display: none;">
-      <!-- Two Column Layout: Left Panel + Right Content -->
       <div class="official-layout">
         
-        <!-- LEFT PANEL - Inquiries (Permanently Visible) -->
+        <!-- LEFT PANEL - Inquiries -->
         <div class="official-left-panel">
-          <!-- Logo at top of left panel -->
           <div class="panel-logo">
-            <img src="logonobg.png" alt="CivicSays Logo">
-            <h3>Resident Inquiries</h3>
+            <img src="logo.png" alt="CivicSays Logo">
+            <h3>📬 RESIDENT INQUIRIES</h3>
           </div>
           <div class="inquiries-stats">
             <div class="stat-item">
@@ -165,10 +163,8 @@
         
         <!-- RIGHT CONTENT - Tickets Management -->
         <div class="official-right-content">
-          <div class="official-header">
-            <div class="official-badge-header">
-              👔 Official Mode | Managing all community tickets
-            </div>
+          <div class="official-badge-header">
+            👔 Official Mode | Managing all community tickets
           </div>
           
           <div class="card">
@@ -243,7 +239,7 @@
     </div>
   </div>
   
-  <!-- OFFICIAL ONLY: Chat Modal (for answering inquiries) -->
+  <!-- OFFICIAL ONLY: Chat Modal -->
   <div id="officialChatModal" class="official-chat-modal">
     <div class="official-chat-content">
       <div class="official-chat-header">
@@ -264,7 +260,7 @@
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=9"></script>
+  <script src="script.js?v=10"></script>
   <script>
     document.addEventListener('DOMContentLoaded', initCivicSays);
   </script>
