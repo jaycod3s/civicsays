@@ -906,6 +906,19 @@ input:focus, select:focus, textarea:focus {
 .official-floating-chat.minimized .floating-chat-input {
   display: none;
 }
+
+/* Floating Chat - Hidden by default, only shown in official view */
+#officialFloatingChat {
+  display: none !important;
+}
+
+#officialView #officialFloatingChat {
+  display: none;
+}
+
+#officialView #officialFloatingChat.visible {
+  display: flex !important;
+}
 /* ==================== TICKET DETAIL PAGE ==================== */
 
 .ticket-layout {
