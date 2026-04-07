@@ -625,7 +625,7 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid rgba(46,204,113,0.3);
 }
 
-/* ==================== CHAT BOX STYLES ==================== */
+/* ==================== RESIDENT CHAT BOX ==================== */
 
 .btn-ask {
   position: fixed;
@@ -719,9 +719,15 @@ input:focus, select:focus, textarea:focus {
   font-style: italic;
 }
 
-/* Chat message alignment */
+/* Chat Messages - Resident LEFT, Official RIGHT */
+#chatMessagesList, #floatingChatMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .chat-message {
-  max-width: 85%;
+  max-width: 75%;
   padding: 10px 14px;
   border-radius: 18px;
   font-size: 13px;
@@ -729,27 +735,31 @@ input:focus, select:focus, textarea:focus {
   margin-bottom: 4px;
 }
 
+/* Resident messages - LEFT side */
 .chat-message.resident {
   background: #e67e22;
   color: white;
   align-self: flex-start;
+  border-bottom-left-radius: 4px;
 }
 
+/* Official messages - RIGHT side */
 .chat-message.official {
   background: rgba(255,255,255,0.15);
   color: white;
   align-self: flex-end;
+  border-bottom-right-radius: 4px;
 }
 
 .chat-message strong {
-  font-size: 11px;
-  opacity: 0.8;
+  font-size: 10px;
+  opacity: 0.7;
   display: block;
   margin-bottom: 4px;
 }
 
 .chat-input-area {
-  padding: 16px;
+  padding: 12px;
   border-top: 1px solid rgba(230,126,34,0.2);
   display: flex;
   gap: 8px;
@@ -866,7 +876,7 @@ input:focus, select:focus, textarea:focus {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .floating-chat-input {
@@ -905,35 +915,6 @@ input:focus, select:focus, textarea:focus {
 .official-floating-chat.minimized .floating-chat-messages,
 .official-floating-chat.minimized .floating-chat-input {
   display: none;
-}
-
-/* Better chat message styling */
-.chat-message {
-  max-width: 85%;
-  padding: 10px 14px;
-  border-radius: 18px;
-  font-size: 13px;
-  word-wrap: break-word;
-  margin-bottom: 4px;
-}
-
-.chat-message.resident {
-  background: #e67e22;
-  color: white;
-  align-self: flex-end;
-}
-
-.chat-message.official {
-  background: rgba(255,255,255,0.15);
-  color: white;
-  align-self: flex-start;
-}
-
-.chat-message strong {
-  font-size: 11px;
-  opacity: 0.8;
-  display: block;
-  margin-bottom: 4px;
 }
 
 /* ==================== TICKET DETAIL PAGE ==================== */
