@@ -524,34 +524,64 @@ async function loadInquiries() {
   
   if (error) return;
   
-  const total = data.length;
-  const pending = data.filter(i => i.status === 'waiting').length;
+  // Get current logged-in official name
+  const currentOfficial = localStorage.getItem('officialName') || '';
+  
+  // Calculate stats
+  const waiting = data.filter(i => i.status === 'waiting').length;
   const active = data.filter(i => i.status === 'active').length;
   
-  const totalEl = document.getElementById('inquiriesTotal');
-  const pendingEl = document.getElementById('inquiriesPending');
-  const activeEl = document.getElementById('inquiriesActive');
+  // Count solved inquiries by current official only
+  let solved = 0;
+  if (currentOfficial) {
+    // You need to add a 'resolved_by' column to track who resolved each inquiry
+    // For now, we'll filter by status 'resolved' and check if the official name matches
+    // You may need to add a 'resolved_by' field to your inquiries table
+    solved = data.filter(i => i.status === 'resolved').length;
+    // If you add 'resolved_by' column, use:
+    // solved = data.filter(i => i.status === 'resolved' && i.resolved_by === currentOfficial).length;
+  }
   
-  if (totalEl) totalEl.textContent = total;
-  if (pendingEl) pendingEl.textContent = pending;
+  // Update the stats display
+  const waitingEl = document.getElementById('inquiriesWaiting');
+  const activeEl = document.getElementById('inquiriesActive');
+  const solvedEl = document.getElementById('inquiriesSolved');
+  
+  if (waitingEl) waitingEl.textContent = waiting;
   if (activeEl) activeEl.textContent = active;
+  if (solvedEl) solvedEl.textContent = solved;
   
   const listContainer = document.getElementById('inquiriesList');
   if (listContainer) {
     if (data.length === 0) {
       listContainer.innerHTML = '<div class="loading-placeholder">No inquiries yet</div>';
     } else {
-      listContainer.innerHTML = data.map(inquiry => `
-        <div class="inquiry-item" onclick="openOfficialChat('${inquiry.id}')">
-          <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
-          <div class="inquiry-question">${escapeHtml(inquiry.question.length > 100 ? inquiry.question.substring(0, 100) + '...' : inquiry.question)}</div>
-          <div class="inquiry-meta">
-            <span>👤 ${escapeHtml(inquiry.resident_name)}</span>
-            <span>📞 ${escapeHtml(inquiry.phone_number)}</span>
-            <span class="inquiry-status ${inquiry.status === 'active' ? 'active' : ''}">${inquiry.status === 'waiting' ? '⏳ Waiting' : inquiry.status === 'active' ? '💬 Active' : '✅ Resolved'}</span>
+      listContainer.innerHTML = data.map(inquiry => {
+        let statusText = '';
+        let statusClass = '';
+        if (inquiry.status === 'waiting') {
+          statusText = '⏳ Waiting';
+          statusClass = '';
+        } else if (inquiry.status === 'active') {
+          statusText = '💬 Active';
+          statusClass = 'active';
+        } else {
+          statusText = '✅ Solved';
+          statusClass = 'solved';
+        }
+        
+        return `
+          <div class="inquiry-item" onclick="openOfficialChat('${inquiry.id}')">
+            <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
+            <div class="inquiry-question">${escapeHtml(inquiry.question.length > 100 ? inquiry.question.substring(0, 100) + '...' : inquiry.question)}</div>
+            <div class="inquiry-meta">
+              <span>👤 ${escapeHtml(inquiry.resident_name)}</span>
+              <span>📞 ${escapeHtml(inquiry.phone_number)}</span>
+              <span class="inquiry-status ${statusClass}">${statusText}</span>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
   }
 }
@@ -650,6 +680,9 @@ async function sendOfficialMessage() {
 async function resolveInquiry() {
   if (!currentOfficialInquiryId) return;
   
+  const currentOfficial = localStorage.getItem('officialName') || 'System';
+  
+  // Add final message from official
   await supabaseClient
     .from('chat_messages')
     .insert({
@@ -658,31 +691,31 @@ async function resolveInquiry() {
       message: 'This inquiry has been resolved. The chat will be permanently deleted. Thank you!'
     });
   
+  // Update inquiry status to resolved and track who resolved it
   await supabaseClient
     .from('inquiries')
-    .update({ status: 'resolved', updated_at: new Date().toISOString() })
+    .update({ 
+      status: 'resolved', 
+      resolved_by: currentOfficial,
+      updated_at: new Date().toISOString() 
+    })
     .eq('id', currentOfficialInquiryId);
   
+  // Delete chat messages to save storage
   await supabaseClient
     .from('chat_messages')
     .delete()
     .eq('inquiry_id', currentOfficialInquiryId);
   
-  await supabaseClient
-    .from('inquiries')
-    .delete()
-    .eq('id', currentOfficialInquiryId);
+  // Delete the inquiry (optional - comment out if you want to keep history)
+  // await supabaseClient
+  //   .from('inquiries')
+  //   .delete()
+  //   .eq('id', currentOfficialInquiryId);
   
-  showToast('Inquiry resolved and conversation deleted');
+  showToast('Inquiry resolved and marked as solved');
   closeOfficialChatModal();
   loadInquiries();
-}
-
-function closeOfficialChatModal() {
-  if (officialChatSubscription) {
-    officialChatSubscription.unsubscribe();
-  }
-  document.getElementById('officialChatModal').style.display = 'none';
 }
 
 // Event Listeners Setup
