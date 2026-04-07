@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>CivicSays - Resident & Official Portal</title>
   <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <div class="bg-animation"></div>
@@ -136,24 +136,24 @@
     <div id="officialView" style="display: none;">
       <div class="official-layout">
         
-        <!-- LEFT PANEL - Inquiries -->
+        <!-- LEFT PANEL - Inquiries (with background logo) -->
         <div class="official-left-panel">
-          <div class="panel-logo">
-            <img src="logo.png" alt="CivicSays Logo">
-            <h3>📬 RESIDENT INQUIRIES</h3>
+          <div class="panel-logo-bg">
+            <img src="logonobg.png" alt="CivicSays Logo">
+            <h3>RESIDENT INQUIRIES</h3>
           </div>
           <div class="inquiries-stats">
             <div class="stat-item">
               <span class="stat-value" id="inquiriesTotal">0</span>
-              <span class="stat-label">Total</span>
+              <span class="stat-label">TOTAL</span>
             </div>
             <div class="stat-item">
               <span class="stat-value" id="inquiriesPending">0</span>
-              <span class="stat-label">Pending</span>
+              <span class="stat-label">PENDING</span>
             </div>
             <div class="stat-item">
               <span class="stat-value" id="inquiriesActive">0</span>
-              <span class="stat-label">Active</span>
+              <span class="stat-label">ACTIVE</span>
             </div>
           </div>
           <div id="inquiriesList" class="inquiries-list">
@@ -260,7 +260,7 @@
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=11"></script>
   <script>
     document.addEventListener('DOMContentLoaded', initCivicSays);
   </script>
