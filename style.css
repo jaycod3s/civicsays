@@ -481,43 +481,48 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Left Panel Logo Image */
+/* Left Panel Logo Image */
 .panel-logo-img {
   height: 65px;
-  width: 55px;
-  margin-bottom: 12px;
-  display: block;
+  width: auto;
+  margin-bottom: 8px;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
-}
-
-.logo-placeholder {
-  margin-bottom: 15px;
-}
-
-.logo-text-large {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: 4px;
-  background: linear-gradient(135deg, #e67e22, #f39c12);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.logo-text-small {
-  font-size: 14px;
-  letter-spacing: 6px;
-  color: #f39c12;
-  display: block;
-  margin-top: 4px;
+.panel-logo-bg {
+  text-align: center;
+  padding: 24px 20px 20px;
+  background: linear-gradient(135deg, rgba(230,126,34,0.15), rgba(243,156,18,0.05));
+  border-bottom: 1px solid rgba(230,126,34,0.3);
 }
 
 .panel-logo-bg h3 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #e67e22;
-  margin: 0;
+  margin: 8px 0 0 0;
   letter-spacing: 2px;
+}
+
+/* Left Panel - Overall styling with rounded corners */
+.official-left-panel {
+  width: 320px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(230,126,34,0.1), rgba(0,0,0,0.3));
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(230,126,34,0.2);
+  border-radius: 0;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add rounded corners to top and bottom of left panel */
+.official-left-panel {
+  border-radius: 0 16px 16px 0;
 }
 
 /* Inquiries Stats */
@@ -525,8 +530,9 @@ input:focus, select:focus, textarea:focus {
   display: flex;
   justify-content: space-around;
   padding: 20px 16px;
-  background: rgba(0,0,0,0.3);
-  border-bottom: 1px solid rgba(230,126,34,0.2);
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(230,126,34,0.15);
+  margin: 0;
 }
 
 .inquiries-stats .stat-item {
@@ -554,13 +560,14 @@ input:focus, select:focus, textarea:focus {
   padding: 12px;
 }
 
+/* Individual Inquiry Items - rounded corners */
 .inquiry-item {
   padding: 14px;
-  border-bottom: 1px solid rgba(230,126,34,0.1);
+  border-bottom: 1px solid rgba(230,126,34,0.08);
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   background: rgba(0,0,0,0.2);
 }
 
@@ -608,13 +615,6 @@ input:focus, select:focus, textarea:focus {
   background: rgba(46,204,113,0.2);
   color: #58d68d;
 }
-
-.loading-placeholder {
-  padding: 40px;
-  text-align: center;
-  color: rgba(255,255,255,0.5);
-}
-
 /* Right Content */
 .official-right-content {
   flex: 1;
