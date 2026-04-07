@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>CivicSays - Resident & Official Portal</title>
   <link rel="icon" type="image/png" href="logonobg.png">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <div class="bg-animation"></div>
@@ -25,7 +25,6 @@
     </div>
   </nav>
   
-  <!-- Remove container padding for official view to allow flush left panel -->
   <div class="container" id="mainContainer">
     <!-- ==================== RESIDENT VIEW ==================== -->
     <div id="residentView">
@@ -135,102 +134,137 @@
       </div>
     </div>
     
-<!-- ==================== OFFICIAL VIEW ==================== -->
-<div id="officialView" style="display: none;">
-  <div class="official-layout">
-    
-    <!-- LEFT PANEL - Inquiries -->
-    <div class="official-left-panel">
-      <div class="panel-logo-bg">
-        <img src="Logo.png" alt="CivicSays Logo" class="panel-logo-img">
-        <h3>RESIDENT INQUIRIES</h3>
-      </div>
-      <div class="inquiries-stats">
-        <div class="stat-item">
-          <span class="stat-value" id="inquiriesWaiting">0</span>
-          <span class="stat-label">WAITING</span>
+    <!-- ==================== OFFICIAL VIEW ==================== -->
+    <div id="officialView" style="display: none;">
+      <div class="official-layout">
+        
+        <!-- LEFT PANEL - Inquiries -->
+        <div class="official-left-panel">
+          <div class="panel-logo-bg">
+            <img src="Logo.png" alt="CivicSays Logo" class="panel-logo-img">
+            <h3>RESIDENT INQUIRIES</h3>
+          </div>
+          <div class="inquiries-stats">
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesWaiting">0</span>
+              <span class="stat-label">WAITING</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesActive">0</span>
+              <span class="stat-label">ACTIVE</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesSolved">0</span>
+              <span class="stat-label">SOLVED</span>
+            </div>
+          </div>
+          <div id="inquiriesList" class="inquiries-list">
+            <div class="loading-placeholder">Loading inquiries...</div>
+          </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-value" id="inquiriesActive">0</span>
-          <span class="stat-label">ACTIVE</span>
+        
+        <!-- RIGHT CONTENT - Tickets Management -->
+        <div class="official-right-content">
+          <div class="official-badge-header">
+            👔 Official Mode | Managing all community tickets
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h2>📊 Dashboard Overview</h2>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
+              <div class="stat-card"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
+              <div class="stat-card"><div class="stat-number" id="statInProcess">0</div><div class="stat-label">In Process</div></div>
+              <div class="stat-card"><div class="stat-number" id="statSolved">0</div><div class="stat-label">Solved</div></div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h2>📋 Manage Tickets</h2>
+            </div>
+            <div class="search-box">
+              <input type="text" id="officialSearchInput" placeholder="Search by Ticket ID, Name, Email, or Title..." onkeyup="searchOfficialTickets()">
+              <button class="btn btn-outline" onclick="clearOfficialSearch()">Clear</button>
+            </div>
+            <div class="tabs">
+              <button class="tab active" onclick="switchOfficialTab(event, 'all')">All</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'pending')">Pending</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'in_process')">In Process</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'hold')">On Hold</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'solved')">Solved</button>
+            </div>
+            <div id="officialTicketsList" class="ticket-list">
+              <div class="loading">Loading tickets...</div>
+            </div>
+          </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-value" id="inquiriesSolved">0</span>
-          <span class="stat-label">SOLVED</span>
-        </div>
-      </div>
-      <div id="inquiriesList" class="inquiries-list">
-        <div class="loading-placeholder">Loading inquiries...</div>
-      </div>
-    </div>
-    
-    <!-- RIGHT CONTENT - Tickets Management -->
-    <div class="official-right-content">
-      <div class="official-badge-header">
-        👔 Official Mode | Managing all community tickets
       </div>
       
-      <!-- Dashboard Cards -->
-      <div class="card">
-        <div class="card-header">
-          <h2>📊 Dashboard Overview</h2>
+      <!-- OFFICIAL FLOATING CHAT BOX (Bottom Right Corner) -->
+      <div id="officialFloatingChat" class="official-floating-chat">
+        <div class="floating-chat-header">
+          <div class="floating-chat-title">
+            <span>💬 Chat with Resident</span>
+            <span id="floatingChatResidentName"></span>
+          </div>
+          <div class="floating-chat-actions">
+            <button class="resolve-chat-btn" onclick="resolveCurrentInquiry()">✓ Resolved</button>
+            <button class="minimize-chat-btn" onclick="minimizeFloatingChat()">−</button>
+            <button class="close-chat-btn" onclick="closeFloatingChat()">✕</button>
+          </div>
         </div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
-          <div class="stat-card"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
-          <div class="stat-card"><div class="stat-number" id="statInProcess">0</div><div class="stat-label">In Process</div></div>
-          <div class="stat-card"><div class="stat-number" id="statSolved">0</div><div class="stat-label">Solved</div></div>
+        <div id="floatingChatMessages" class="floating-chat-messages">
+          <div class="loading-messages">Loading messages...</div>
         </div>
-      </div>
-      
-      <!-- Manage Tickets -->
-      <div class="card">
-        <div class="card-header">
-          <h2>📋 Manage Tickets</h2>
-        </div>
-        <div class="search-box">
-          <input type="text" id="officialSearchInput" placeholder="Search by Ticket ID, Name, Email, or Title..." onkeyup="searchOfficialTickets()">
-          <button class="btn btn-outline" onclick="clearOfficialSearch()">Clear</button>
-        </div>
-        <div class="tabs">
-          <button class="tab active" onclick="switchOfficialTab(event, 'all')">All</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'pending')">Pending</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'in_process')">In Process</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'hold')">On Hold</button>
-          <button class="tab" onclick="switchOfficialTab(event, 'solved')">Solved</button>
-        </div>
-        <div id="officialTicketsList" class="ticket-list">
-          <div class="loading">Loading tickets...</div>
+        <div class="floating-chat-input">
+          <input type="text" id="floatingChatInput" placeholder="Type your message...">
+          <button onclick="sendFloatingChatMessage()">Send</button>
         </div>
       </div>
     </div>
   </div>
   
-  <!-- OFFICIAL FLOATING CHAT BOX (Inside Official View only) -->
-  <div id="officialFloatingChat" class="official-floating-chat" style="display: none;">
-    <div class="floating-chat-header">
-      <div class="floating-chat-title">
-        <span>💬 Chat with Resident</span>
-        <span id="floatingChatResidentName"></span>
+  <!-- Login Modal -->
+  <div id="loginModal" class="login-modal">
+    <div class="login-card">
+      <h2>🔐 Official Login</h2>
+      <div class="login-subtitle">Enter your credentials to access the official dashboard</div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUsername" placeholder="Enter username">
       </div>
-      <div class="floating-chat-actions">
-        <button class="resolve-chat-btn" onclick="resolveCurrentInquiry()">✓ Resolved</button>
-        <button class="minimize-chat-btn" onclick="minimizeFloatingChat()">−</button>
-        <button class="close-chat-btn" onclick="closeFloatingChat()">✕</button>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password">
       </div>
-    </div>
-    <div id="floatingChatMessages" class="floating-chat-messages">
-      <div class="loading-messages">Loading messages...</div>
-    </div>
-    <div class="floating-chat-input">
-      <input type="text" id="floatingChatInput" placeholder="Type your message...">
-      <button onclick="sendFloatingChatMessage()">Send</button>
+      <button class="btn btn-primary" onclick="attemptLogin()" style="width: 100%;">Login →</button>
+      <div id="loginError" class="login-error"></div>
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(230,126,34,0.2);">
+        <div class="login-subtitle" style="font-size: 12px;">Demo Credentials:</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: admin | Password: civic2024</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: juan | Password: juan123</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: pedro | Password: pedro123</div>
+      </div>
     </div>
   </div>
-</div>
+  
+  <!-- Success Modal -->
+  <div id="successModal" class="modal-overlay">
+    <div class="success-modal">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Ticket Submitted!</div>
+      <div class="success-message">Your request has been successfully submitted.</div>
+      <div class="tracking-id" id="successTrackingId"></div>
+      <div class="success-message">Please save this tracking ID to check your ticket status.</div>
+      <button class="btn btn-primary" onclick="closeSuccessModal()" style="margin-top: 16px;">OK</button>
+    </div>
+  </div>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=12"></script>
+  <script src="script.js?v=13"></script>
   <script>
     document.addEventListener('DOMContentLoaded', initCivicSays);
   </script>
