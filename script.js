@@ -394,6 +394,44 @@ function openChatBox() {
   const chatOverlay = document.getElementById('chatOverlay');
   if (chatOverlay) chatOverlay.style.display = 'flex';
   resetChatBox();
+  
+  // Check if there's an existing active inquiry for this resident
+  checkExistingInquiry();
+}
+
+async function checkExistingInquiry() {
+  // Check localStorage for an existing inquiry
+  const savedInquiryId = localStorage.getItem('activeInquiryId');
+  if (savedInquiryId) {
+    const { data: inquiry } = await supabaseClient
+      .from('inquiries')
+      .select('*')
+      .eq('id', savedInquiryId)
+      .single();
+    
+    if (inquiry && inquiry.status !== 'resolved') {
+      currentInquiryId = savedInquiryId;
+      currentResidentName = inquiry.resident_name;
+      currentResidentPhone = inquiry.phone_number;
+      
+      // Switch to chat mode
+      document.getElementById('chatStep1').style.display = 'none';
+      document.getElementById('chatStep2').style.display = 'none';
+      document.getElementById('chatWaiting').style.display = 'none';
+      document.getElementById('chatMessages').style.display = 'flex';
+      
+      await loadChatMessages(savedInquiryId);
+      subscribeToChatMessages(savedInquiryId);
+      
+      if (inquiry.status === 'active') {
+        showToast('Connected to official. You can chat now!', '#2ecc71');
+      } else {
+        document.getElementById('chatWaiting').style.display = 'block';
+        document.getElementById('chatMessages').style.display = 'none';
+        subscribeToInquiryStatus(savedInquiryId);
+      }
+    }
+  }
 }
 
 function closeChatBox() {
@@ -474,6 +512,11 @@ async function submitInquiry() {
   
   currentInquiryId = data.id;
   
+  // Save to localStorage for persistence
+  localStorage.setItem('activeInquiryId', currentInquiryId);
+  localStorage.setItem('activeInquiryName', currentResidentName);
+  localStorage.setItem('activeInquiryPhone', currentResidentPhone);
+  
   const chatStep2 = document.getElementById('chatStep2');
   const chatWaiting = document.getElementById('chatWaiting');
   if (chatStep2) chatStep2.style.display = 'none';
@@ -482,6 +525,7 @@ async function submitInquiry() {
   // Subscribe to status changes
   subscribeToInquiryStatus(currentInquiryId);
   loadInquiries();
+  showToast('Question sent! Waiting for official to respond.', '#2ecc71');
 }
 
 async function subscribeToInquiryStatus(inquiryId) {
@@ -504,7 +548,7 @@ async function subscribeToInquiryStatus(inquiryId) {
           
           await loadChatMessages(inquiryId);
           subscribeToChatMessages(inquiryId);
-          showToast('✨ An official has joined the conversation!', '#2ecc71');
+          showToast('✨ An official has joined the conversation! You can now chat.', '#2ecc71');
         } else if (payload.new.status === 'resolved') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
@@ -513,6 +557,11 @@ async function subscribeToInquiryStatus(inquiryId) {
           if (chatWaiting) chatWaiting.style.display = 'none';
           if (chatMessages) chatMessages.style.display = 'none';
           if (chatResolved) chatResolved.style.display = 'block';
+          
+          // Clear from localStorage
+          localStorage.removeItem('activeInquiryId');
+          localStorage.removeItem('activeInquiryName');
+          localStorage.removeItem('activeInquiryPhone');
         }
       }
     )
@@ -536,7 +585,7 @@ async function loadChatMessages(inquiryId) {
   } else {
     messagesList.innerHTML = data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
-        <strong>${msg.sender === 'resident' ? 'You' : 'Official'}:</strong><br>
+        ${msg.sender === 'official' ? '<strong>Official:</strong><br>' : ''}
         ${escapeHtml(msg.message)}
       </div>
     `).join('');
@@ -545,10 +594,6 @@ async function loadChatMessages(inquiryId) {
 }
 
 function subscribeToChatMessages(inquiryId) {
-  if (activeResidentChannel) {
-    // Don't replace, just add message listener
-  }
-  
   const messageChannel = supabaseClient
     .channel(`resident_msgs_${inquiryId}`)
     .on('postgres_changes',
@@ -563,7 +608,7 @@ function subscribeToChatMessages(inquiryId) {
         
         const newMsg = `
           <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
-            <strong>${payload.new.sender === 'resident' ? 'You' : 'Official'}:</strong><br>
+            ${payload.new.sender === 'official' ? '<strong>Official:</strong><br>' : ''}
             ${escapeHtml(payload.new.message)}
           </div>
         `;
@@ -736,7 +781,7 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   if (data.length > 0) {
     messagesHtml += data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
-        <strong>${msg.sender === 'resident' ? 'Resident' : 'You'}:</strong><br>
+        ${msg.sender === 'resident' ? '<strong>Resident:</strong><br>' : ''}
         ${escapeHtml(msg.message)}
       </div>
     `).join('');
@@ -768,7 +813,7 @@ function subscribeToOfficialChat(inquiryId) {
         
         const newMsg = `
           <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
-            <strong>${payload.new.sender === 'resident' ? 'Resident' : 'You'}:</strong><br>
+            ${payload.new.sender === 'resident' ? '<strong>Resident:</strong><br>' : ''}
             ${escapeHtml(payload.new.message)}
           </div>
         `;
