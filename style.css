@@ -482,9 +482,10 @@ input:focus, select:focus, textarea:focus {
 
 /* Left Panel Logo Image */
 .panel-logo-img {
-  height: 55px;
+  height: 65px;
   width: 55px;
   margin-bottom: 12px;
+  display: block;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
 }
 
