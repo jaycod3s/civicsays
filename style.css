@@ -898,6 +898,35 @@ input:focus, select:focus, textarea:focus {
   display: none;
 }
 
+/* Better chat message styling */
+.chat-message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  word-wrap: break-word;
+  margin-bottom: 4px;
+}
+
+.chat-message.resident {
+  background: #e67e22;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-message.official {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  align-self: flex-start;
+}
+
+.chat-message strong {
+  font-size: 11px;
+  opacity: 0.8;
+  display: block;
+  margin-bottom: 4px;
+}
+
 /* ==================== TICKET DETAIL PAGE ==================== */
 
 .ticket-layout {
