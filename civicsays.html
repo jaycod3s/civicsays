@@ -8,11 +8,12 @@
   <meta http-equiv="Expires" content="0">
   <title>CivicSays - Resident & Official Portal</title>
   <link rel="icon" type="image/png" href="logonobg.png">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
   <div class="bg-animation"></div>
   
+  <!-- Top Navbar -->
   <nav class="navbar">
     <div class="logo">
       <img src="logonobg.png" alt="CivicSays Logo">
@@ -100,26 +101,22 @@
           <button class="chat-close" onclick="closeChatBox()">✕</button>
         </div>
         <div id="chatBody" class="chat-body">
-          <!-- Step 1: Name and Phone -->
           <div id="chatStep1" class="chat-form-step">
             <input type="text" id="chatName" placeholder="Your Full Name *">
             <input type="tel" id="chatPhone" placeholder="Phone Number *">
             <button class="btn btn-primary" onclick="goToStep2()" style="width:100%">Continue</button>
           </div>
           
-          <!-- Step 2: Subject and Question -->
           <div id="chatStep2" class="chat-form-step" style="display:none">
             <input type="text" id="chatSubject" placeholder="Subject *">
             <textarea id="chatQuestion" rows="4" placeholder="Your question *"></textarea>
             <button class="btn btn-primary" onclick="submitInquiry()" style="width:100%">Submit Question</button>
           </div>
           
-          <!-- Waiting for Official -->
           <div id="chatWaiting" class="waiting-message" style="display:none">
             ⏳ Waiting for officials to answer your question...
           </div>
           
-          <!-- Chat Messages -->
           <div id="chatMessages" style="display:none; flex-direction:column; flex:1;">
             <div id="chatMessagesList" style="flex:1; overflow-y: auto; padding: 8px;"></div>
             <div class="chat-input-area">
@@ -128,7 +125,6 @@
             </div>
           </div>
           
-          <!-- Resolved Message -->
           <div id="chatResolved" class="waiting-message" style="display:none">
             ✅ This inquiry has been resolved. The chat will be permanently deleted.
           </div>
@@ -138,17 +134,32 @@
     
     <!-- ==================== OFFICIAL VIEW ==================== -->
     <div id="officialView" style="display: none;">
-      <!-- Two Column Layout for Official View -->
-      <div class="official-two-column">
+      <!-- Two Column Layout: Left Panel + Right Content -->
+      <div class="official-layout">
         
-        <!-- LEFT SIDEBAR - Inquiries Panel (Officials Only) -->
+        <!-- LEFT PANEL - Inquiries (Permanently Visible) -->
         <div class="official-left-panel">
-          <div class="inquiries-header">
-            <h3>📬 Resident Inquiries</h3>
-            <div class="inquiries-count" id="inquiriesCount">0</div>
+          <!-- Logo at top of left panel -->
+          <div class="panel-logo">
+            <img src="logonobg.png" alt="CivicSays Logo">
+            <h3>Resident Inquiries</h3>
+          </div>
+          <div class="inquiries-stats">
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesTotal">0</span>
+              <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesPending">0</span>
+              <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesActive">0</span>
+              <span class="stat-label">Active</span>
+            </div>
           </div>
           <div id="inquiriesList" class="inquiries-list">
-            <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5);">Loading inquiries...</div>
+            <div class="loading-placeholder">Loading inquiries...</div>
           </div>
         </div>
         
@@ -253,7 +264,7 @@
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
   <script>
     document.addEventListener('DOMContentLoaded', initCivicSays);
   </script>
