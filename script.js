@@ -651,6 +651,7 @@ async function loadInquiries() {
 }
 
 function openFloatingChat(inquiryId, residentName, subject) {
+  console.log('openFloatingChat called', inquiryId);
   currentFloatingInquiryId = inquiryId;
   
   const chatBox = document.getElementById('officialFloatingChat');
@@ -663,6 +664,9 @@ function openFloatingChat(inquiryId, residentName, subject) {
   if (chatBox) {
     chatBox.style.display = 'flex';
     chatBox.classList.remove('minimized');
+    console.log('Chat box displayed');
+  } else {
+    console.error('Chat box element not found');
   }
   
   // Update status to active if waiting
