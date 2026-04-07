@@ -20,13 +20,15 @@ let currentMediaFile = null;
 
 // Inquiry/Chat variables
 let currentInquiryId = null;
-let currentChatSubscription = null;
 let currentResidentName = '';
 let currentResidentPhone = '';
 
 // Floating Chat variables
 let currentFloatingInquiryId = null;
-let floatingChatSubscription = null;
+
+// Channel subscriptions
+let activeResidentChannel = null;
+let activeOfficialChannel = null;
 
 function getStatusText(status) {
   const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
@@ -386,7 +388,7 @@ function closeSuccessModal() {
   if (successModal) successModal.style.display = 'none';
 }
 
-// ==================== ASK A QUESTION FUNCTIONS (Resident) ====================
+// ==================== RESIDENT CHAT FUNCTIONS ====================
 
 function openChatBox() {
   const chatOverlay = document.getElementById('chatOverlay');
@@ -397,8 +399,9 @@ function openChatBox() {
 function closeChatBox() {
   const chatOverlay = document.getElementById('chatOverlay');
   if (chatOverlay) chatOverlay.style.display = 'none';
-  if (currentChatSubscription) {
-    currentChatSubscription.unsubscribe();
+  if (activeResidentChannel) {
+    supabaseClient.removeChannel(activeResidentChannel);
+    activeResidentChannel = null;
   }
   resetChatBox();
 }
@@ -476,35 +479,32 @@ async function submitInquiry() {
   if (chatStep2) chatStep2.style.display = 'none';
   if (chatWaiting) chatWaiting.style.display = 'block';
   
-  // Start listening for status changes
-  listenForInquiryStatus(currentInquiryId);
+  // Subscribe to status changes
+  subscribeToInquiryStatus(currentInquiryId);
   loadInquiries();
-  
-  showToast('Your question has been sent! Waiting for an official to respond.', '#2ecc71');
 }
 
-// Listen for status changes on the inquiry
-function listenForInquiryStatus(inquiryId) {
-  supabaseClient
-    .channel(`inquiry_status_${inquiryId}`)
+async function subscribeToInquiryStatus(inquiryId) {
+  if (activeResidentChannel) {
+    await supabaseClient.removeChannel(activeResidentChannel);
+  }
+  
+  activeResidentChannel = supabaseClient
+    .channel(`resident_inquiry_${inquiryId}`)
     .on('postgres_changes', 
       { event: 'UPDATE', schema: 'public', table: 'inquiries', filter: `id=eq.${inquiryId}` },
-      (payload) => {
-        console.log('Status update received:', payload.new.status);
+      async (payload) => {
+        console.log('Status update:', payload.new.status);
         if (payload.new.status === 'active') {
-          // Official has joined the chat
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
           
           if (chatWaiting) chatWaiting.style.display = 'none';
-          if (chatMessages) {
-            chatMessages.style.display = 'flex';
-            // Clear and reload messages
-            loadChatMessages(inquiryId);
-            subscribeToChatMessages(inquiryId);
-          }
+          if (chatMessages) chatMessages.style.display = 'flex';
           
-          showToast('✨ An official has joined the conversation! You can now chat.', '#2ecc71');
+          await loadChatMessages(inquiryId);
+          subscribeToChatMessages(inquiryId);
+          showToast('✨ An official has joined the conversation!', '#2ecc71');
         } else if (payload.new.status === 'resolved') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
@@ -513,10 +513,6 @@ function listenForInquiryStatus(inquiryId) {
           if (chatWaiting) chatWaiting.style.display = 'none';
           if (chatMessages) chatMessages.style.display = 'none';
           if (chatResolved) chatResolved.style.display = 'block';
-          
-          if (currentChatSubscription) {
-            currentChatSubscription.unsubscribe();
-          }
         }
       }
     )
@@ -549,19 +545,18 @@ async function loadChatMessages(inquiryId) {
 }
 
 function subscribeToChatMessages(inquiryId) {
-  if (currentChatSubscription) {
-    currentChatSubscription.unsubscribe();
+  if (activeResidentChannel) {
+    // Don't replace, just add message listener
   }
   
-  currentChatSubscription = supabaseClient
-    .channel(`chat_messages_${inquiryId}`)
+  const messageChannel = supabaseClient
+    .channel(`resident_msgs_${inquiryId}`)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
       (payload) => {
         const messagesList = document.getElementById('chatMessagesList');
         if (!messagesList) return;
         
-        // Remove placeholder if exists
         if (messagesList.innerHTML.includes('No messages yet')) {
           messagesList.innerHTML = '';
         }
@@ -680,7 +675,7 @@ function openFloatingChat(inquiryId, residentName, subject, originalQuestion) {
   // Update status to active if waiting
   updateInquiryStatusToActive(inquiryId);
   
-  // Load messages and show original question
+  // Load messages
   loadOfficialChatMessages(inquiryId, originalQuestion);
   subscribeToOfficialChat(inquiryId);
 }
@@ -705,8 +700,9 @@ function closeFloatingChat() {
   const chatBox = document.getElementById('officialFloatingChat');
   if (chatBox) chatBox.style.display = 'none';
   
-  if (floatingChatSubscription) {
-    floatingChatSubscription.unsubscribe();
+  if (activeOfficialChannel) {
+    supabaseClient.removeChannel(activeOfficialChannel);
+    activeOfficialChannel = null;
   }
   currentFloatingInquiryId = null;
 }
@@ -737,7 +733,6 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
     <div style="margin: 8px 0; text-align: center; color: #e67e22;">--- Conversation ---</div>
   `;
   
-  // Add existing messages
   if (data.length > 0) {
     messagesHtml += data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
@@ -754,11 +749,11 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
 }
 
 function subscribeToOfficialChat(inquiryId) {
-  if (floatingChatSubscription) {
-    floatingChatSubscription.unsubscribe();
+  if (activeOfficialChannel) {
+    supabaseClient.removeChannel(activeOfficialChannel);
   }
   
-  floatingChatSubscription = supabaseClient
+  activeOfficialChannel = supabaseClient
     .channel(`official_chat_${inquiryId}`)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
@@ -901,7 +896,7 @@ function initCivicSays() {
     }
   }, 5000);
   
-  console.log('CivicSays initialized with real-time chat');
+  console.log('CivicSays initialized');
 }
 
 // Make functions global for HTML onclick
