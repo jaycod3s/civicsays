@@ -773,6 +773,8 @@ input:focus, select:focus, textarea:focus {
 
 /* ==================== FLOATING CHAT BOX (Officials) ==================== */
 
+/* ==================== FLOATING CHAT BOX (Officials) ==================== */
+
 .official-floating-chat {
   position: fixed;
   bottom: 24px;
@@ -904,7 +906,6 @@ input:focus, select:focus, textarea:focus {
 .official-floating-chat.minimized .floating-chat-input {
   display: none;
 }
-
 /* ==================== TICKET DETAIL PAGE ==================== */
 
 .ticket-layout {
