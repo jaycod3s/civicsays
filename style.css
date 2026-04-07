@@ -457,6 +457,8 @@ input:focus, select:focus, textarea:focus {
 
 /* ==================== OFFICIAL LAYOUT - FIXED ALIGNMENT ==================== */
 
+/* ==================== OFFICIAL LAYOUT ==================== */
+
 .official-layout {
   display: flex;
   gap: 32px;
@@ -464,14 +466,14 @@ input:focus, select:focus, textarea:focus {
   width: 100%;
 }
 
-/* Left Panel - Inquiries Panel */
+/* LEFT PANEL - Inquiries Panel (with background) */
 .official-left-panel {
   width: 380px;
   flex-shrink: 0;
-  background: rgba(255,255,255,0.05);
+  background: linear-gradient(135deg, rgba(230,126,34,0.15), rgba(0,0,0,0.3));
   backdrop-filter: blur(10px);
   border-radius: 24px;
-  border: 1px solid rgba(230,126,34,0.2);
+  border: 1px solid rgba(230,126,34,0.3);
   overflow: hidden;
   position: sticky;
   top: 100px;
@@ -480,24 +482,27 @@ input:focus, select:focus, textarea:focus {
   flex-direction: column;
 }
 
-.panel-logo {
+/* Left Panel Logo with Background */
+.panel-logo-bg {
   text-align: center;
   padding: 24px 20px 16px;
-  border-bottom: 1px solid rgba(230,126,34,0.2);
-  background: linear-gradient(135deg, rgba(230,126,34,0.1), rgba(243,156,18,0.05));
+  background: linear-gradient(135deg, rgba(230,126,34,0.2), rgba(243,156,18,0.1));
+  border-bottom: 1px solid rgba(230,126,34,0.3);
 }
 
-.panel-logo img {
-  height: 55px;
+.panel-logo-bg img {
+  height: 60px;
   width: auto;
   margin-bottom: 12px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
 }
 
-.panel-logo h3 {
+.panel-logo-bg h3 {
   font-size: 16px;
-  color: #e67e22;
+  font-weight: 600;
+  color: #f39c12;
   margin: 0;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }
 
 /* Inquiries Stats */
@@ -506,7 +511,7 @@ input:focus, select:focus, textarea:focus {
   justify-content: space-around;
   padding: 16px;
   background: rgba(0,0,0,0.3);
-  border-bottom: 1px solid rgba(230,126,34,0.15);
+  border-bottom: 1px solid rgba(230,126,34,0.2);
 }
 
 .inquiries-stats .stat-item {
@@ -523,8 +528,8 @@ input:focus, select:focus, textarea:focus {
 .inquiries-stats .stat-label {
   font-size: 11px;
   color: rgba(255,255,255,0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 /* Inquiries List */
@@ -532,26 +537,22 @@ input:focus, select:focus, textarea:focus {
   flex: 1;
   overflow-y: auto;
   max-height: calc(100vh - 280px);
-  padding: 8px;
-}
-
-.loading-placeholder {
-  padding: 40px;
-  text-align: center;
-  color: rgba(255,255,255,0.5);
+  padding: 12px;
 }
 
 .inquiry-item {
-  padding: 16px;
+  padding: 14px;
   border-bottom: 1px solid rgba(230,126,34,0.1);
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 12px;
   margin-bottom: 4px;
+  background: rgba(0,0,0,0.2);
 }
 
 .inquiry-item:hover {
-  background: rgba(230,126,34,0.1);
+  background: rgba(230,126,34,0.15);
+  transform: translateX(4px);
 }
 
 .inquiry-subject {
@@ -592,6 +593,12 @@ input:focus, select:focus, textarea:focus {
 .inquiry-status.active {
   background: rgba(46,204,113,0.2);
   color: #58d68d;
+}
+
+.loading-placeholder {
+  padding: 40px;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
 }
 
 /* Right Content */
