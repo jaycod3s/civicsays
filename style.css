@@ -470,9 +470,9 @@ input:focus, select:focus, textarea:focus {
 
 /* LEFT PANEL - Flush to left edge */
 .official-left-panel {
-  width: 380px;
+  width: 320px;
   flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(230,126,34,0.12), rgba(0,0,0,0.3));
+  background: linear-gradient(135deg, rgba(230,126,34,0.08), rgba(0,0,0,0.3));
   backdrop-filter: blur(10px);
   border-right: 1px solid rgba(230,126,34,0.2);
   min-height: calc(100vh - 80px);
@@ -480,23 +480,22 @@ input:focus, select:focus, textarea:focus {
   flex-direction: column;
 }
 
-/* Left Panel Logo Image */
-/* Left Panel Logo Image */
+/* Panel Logo */
+.panel-logo-bg {
+  text-align: center;
+  padding: 24px 20px 16px;
+  background: linear-gradient(135deg, rgba(230,126,34,0.12), rgba(243,156,18,0.04));
+  border-bottom: 1px solid rgba(230,126,34,0.25);
+}
+
 .panel-logo-img {
-  height: 120px;
+  height: 70px;
   width: auto;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
-
-.panel-logo-bg {
-  text-align: center;
-  padding: 24px 20px 20px;
-  background: linear-gradient(135deg, rgba(230,126,34,0.15), rgba(243,156,18,0.05));
-  border-bottom: 1px solid rgba(230,126,34,0.3);
 }
 
 .panel-logo-bg h3 {
@@ -507,36 +506,18 @@ input:focus, select:focus, textarea:focus {
   letter-spacing: 2px;
 }
 
-/* Left Panel - Overall styling with rounded corners */
-.official-left-panel {
-  width: 320px;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(230,126,34,0.1), rgba(0,0,0,0.3));
-  backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(230,126,34,0.2);
-  border-radius: 0;
-  min-height: calc(100vh - 80px);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Add rounded corners to top and bottom of left panel */
-.official-left-panel {
-  border-radius: 0 16px 16px 0;
-}
-
-/* Inquiries Stats */
+/* Inquiries Stats - 3 columns */
 .inquiries-stats {
   display: flex;
   justify-content: space-around;
-  padding: 20px 16px;
-  background: rgba(0,0,0,0.25);
+  padding: 20px 12px;
+  background: rgba(0,0,0,0.3);
   border-bottom: 1px solid rgba(230,126,34,0.15);
-  margin: 0;
 }
 
 .inquiries-stats .stat-item {
   text-align: center;
+  flex: 1;
 }
 
 .inquiries-stats .stat-value {
@@ -544,13 +525,17 @@ input:focus, select:focus, textarea:focus {
   font-size: 28px;
   font-weight: 700;
   color: #f39c12;
+  line-height: 1.2;
 }
 
 .inquiries-stats .stat-label {
+  display: block;
   font-size: 10px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.6);
   font-weight: 600;
   letter-spacing: 1px;
+  margin-top: 6px;
+  text-transform: uppercase;
 }
 
 /* Inquiries List */
@@ -560,7 +545,13 @@ input:focus, select:focus, textarea:focus {
   padding: 12px;
 }
 
-/* Individual Inquiry Items - rounded corners */
+.loading-placeholder {
+  padding: 40px;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Individual Inquiry Items */
 .inquiry-item {
   padding: 14px;
   border-bottom: 1px solid rgba(230,126,34,0.08);
@@ -572,7 +563,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .inquiry-item:hover {
-  background: rgba(230,126,34,0.15);
+  background: rgba(230,126,34,0.12);
   transform: translateX(4px);
 }
 
@@ -615,11 +606,17 @@ input:focus, select:focus, textarea:focus {
   background: rgba(46,204,113,0.2);
   color: #58d68d;
 }
+
+.inquiry-status.solved {
+  background: rgba(46,204,113,0.2);
+  color: #58d68d;
+}
+
 /* Right Content */
 .official-right-content {
   flex: 1;
   min-width: 0;
-  padding: 24px 48px 24px 32px;
+  padding: 24px 40px 24px 32px;
 }
 
 .official-badge-header {
