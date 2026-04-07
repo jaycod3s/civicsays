@@ -110,7 +110,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Container - Remove default padding for official view */
+/* Container */
 .container {
   max-width: 100%;
   margin: 0;
@@ -459,7 +459,7 @@ input:focus, select:focus, textarea:focus {
   flex: 1;
 }
 
-/* ==================== OFFICIAL LAYOUT - FLUSH TO LEFT ==================== */
+/* ==================== OFFICIAL LAYOUT ==================== */
 
 .official-layout {
   display: flex;
@@ -468,7 +468,7 @@ input:focus, select:focus, textarea:focus {
   width: 100%;
 }
 
-/* LEFT PANEL - Flush to left edge */
+/* LEFT PANEL */
 .official-left-panel {
   width: 320px;
   flex-shrink: 0;
@@ -480,7 +480,6 @@ input:focus, select:focus, textarea:focus {
   flex-direction: column;
 }
 
-/* Panel Logo */
 .panel-logo-bg {
   text-align: center;
   padding: 24px 20px 16px;
@@ -489,7 +488,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .panel-logo-img {
-  height: 150px;
+  height: 70px;
   width: auto;
   margin-bottom: 10px;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
@@ -506,7 +505,6 @@ input:focus, select:focus, textarea:focus {
   letter-spacing: 2px;
 }
 
-/* Inquiries Stats - 3 columns */
 .inquiries-stats {
   display: flex;
   justify-content: space-around;
@@ -538,7 +536,6 @@ input:focus, select:focus, textarea:focus {
   text-transform: uppercase;
 }
 
-/* Inquiries List */
 .inquiries-list {
   flex: 1;
   overflow-y: auto;
@@ -551,7 +548,6 @@ input:focus, select:focus, textarea:focus {
   color: rgba(255,255,255,0.5);
 }
 
-/* Individual Inquiry Items */
 .inquiry-item {
   padding: 14px;
   border-bottom: 1px solid rgba(230,126,34,0.08);
@@ -612,7 +608,6 @@ input:focus, select:focus, textarea:focus {
   color: #58d68d;
 }
 
-/* Right Content */
 .official-right-content {
   flex: 1;
   min-width: 0;
@@ -770,10 +765,7 @@ input:focus, select:focus, textarea:focus {
   cursor: pointer;
 }
 
-
-/* ==================== FLOATING CHAT BOX (Officials) ==================== */
-
-/* ==================== FLOATING CHAT BOX (Officials) ==================== */
+/* ==================== OFFICIAL FLOATING CHAT ==================== */
 
 .official-floating-chat {
   position: fixed;
@@ -786,7 +778,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 20px;
   border: 1px solid rgba(230,126,34,0.3);
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  display: flex;
+  display: none;
   flex-direction: column;
   overflow: hidden;
   z-index: 2000;
@@ -897,7 +889,6 @@ input:focus, select:focus, textarea:focus {
   background: #d45a1a;
 }
 
-/* Minimized state */
 .official-floating-chat.minimized {
   height: 50px;
 }
@@ -907,18 +898,6 @@ input:focus, select:focus, textarea:focus {
   display: none;
 }
 
-/* Floating Chat - Hidden by default, only shown in official view */
-#officialFloatingChat {
-  display: none !important;
-}
-
-#officialView #officialFloatingChat {
-  display: none;
-}
-
-#officialView #officialFloatingChat.visible {
-  display: flex !important;
-}
 /* ==================== TICKET DETAIL PAGE ==================== */
 
 .ticket-layout {
@@ -1236,7 +1215,7 @@ input:focus, select:focus, textarea:focus {
     font-size: 12px;
   }
   
-  .chat-overlay {
+  .chat-overlay, .official-floating-chat {
     width: 90%;
     right: 5%;
     left: 5%;
