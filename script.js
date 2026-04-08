@@ -27,9 +27,13 @@ let currentResidentPhone = '';
 let currentFloatingInquiryId = null;
 
 // Channel subscriptions
-let activeResidentStatusChannel = null;
-let activeResidentMessageChannel = null;
-let activeOfficialMessageChannel = null;
+let residentMessageChannel = null;
+let officialMessageChannel = null;
+let residentStatusChannel = null;
+
+// Store channel names
+let currentResidentInquiryId = null;
+let currentOfficialInquiryId = null;
 
 function getStatusText(status) {
   const map = { 'pending': 'Pending', 'in_process': 'In Process', 'hold': 'On Hold', 'solved': 'Solved' };
@@ -408,6 +412,7 @@ async function checkExistingInquiry() {
       .single();
     
     if (inquiry && inquiry.status !== 'resolved') {
+      currentResidentInquiryId = savedInquiryId;
       currentInquiryId = savedInquiryId;
       currentResidentName = inquiry.resident_name;
       currentResidentPhone = inquiry.phone_number;
@@ -417,15 +422,15 @@ async function checkExistingInquiry() {
       document.getElementById('chatWaiting').style.display = 'none';
       document.getElementById('chatMessages').style.display = 'flex';
       
-      await loadChatMessages(savedInquiryId);
-      startResidentMessageListener(savedInquiryId);
+      await loadResidentMessages(savedInquiryId);
+      subscribeToResidentMessages(savedInquiryId);
       
       if (inquiry.status === 'active') {
         showToast('Connected to official. You can chat now!', '#2ecc71');
       } else {
         document.getElementById('chatWaiting').style.display = 'block';
         document.getElementById('chatMessages').style.display = 'none';
-        startResidentStatusListener(savedInquiryId);
+        subscribeToResidentStatus(savedInquiryId);
       }
     }
   }
@@ -435,13 +440,14 @@ function closeChatBox() {
   const chatOverlay = document.getElementById('chatOverlay');
   if (chatOverlay) chatOverlay.style.display = 'none';
   
-  if (activeResidentStatusChannel) {
-    supabaseClient.removeChannel(activeResidentStatusChannel);
-    activeResidentStatusChannel = null;
+  // Clean up subscriptions
+  if (residentMessageChannel) {
+    supabaseClient.removeChannel(residentMessageChannel);
+    residentMessageChannel = null;
   }
-  if (activeResidentMessageChannel) {
-    supabaseClient.removeChannel(activeResidentMessageChannel);
-    activeResidentMessageChannel = null;
+  if (residentStatusChannel) {
+    supabaseClient.removeChannel(residentStatusChannel);
+    residentStatusChannel = null;
   }
   resetChatBox();
 }
@@ -468,6 +474,7 @@ function resetChatBox() {
   if (chatQuestion) chatQuestion.value = '';
   
   currentInquiryId = null;
+  currentResidentInquiryId = null;
 }
 
 function goToStep2() {
@@ -512,9 +519,10 @@ async function submitInquiry() {
     return;
   }
   
+  currentResidentInquiryId = data.id;
   currentInquiryId = data.id;
   
-  localStorage.setItem('activeInquiryId', currentInquiryId);
+  localStorage.setItem('activeInquiryId', currentResidentInquiryId);
   localStorage.setItem('activeInquiryName', currentResidentName);
   localStorage.setItem('activeInquiryPhone', currentResidentPhone);
   
@@ -523,22 +531,22 @@ async function submitInquiry() {
   if (chatStep2) chatStep2.style.display = 'none';
   if (chatWaiting) chatWaiting.style.display = 'block';
   
-  startResidentStatusListener(currentInquiryId);
+  subscribeToResidentStatus(currentResidentInquiryId);
   loadInquiries();
   showToast('Question sent! Waiting for official to respond.', '#2ecc71');
 }
 
-function startResidentStatusListener(inquiryId) {
-  if (activeResidentStatusChannel) {
-    supabaseClient.removeChannel(activeResidentStatusChannel);
+function subscribeToResidentStatus(inquiryId) {
+  if (residentStatusChannel) {
+    supabaseClient.removeChannel(residentStatusChannel);
   }
   
-  activeResidentStatusChannel = supabaseClient
-    .channel(`resident_status_${inquiryId}`)
+  residentStatusChannel = supabaseClient
+    .channel(`resident-status-${inquiryId}`)
     .on('postgres_changes', 
       { event: 'UPDATE', schema: 'public', table: 'inquiries', filter: `id=eq.${inquiryId}` },
       async (payload) => {
-        console.log('Status update:', payload.new.status);
+        console.log('Status update received:', payload.new.status);
         if (payload.new.status === 'active') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
@@ -546,8 +554,8 @@ function startResidentStatusListener(inquiryId) {
           if (chatWaiting) chatWaiting.style.display = 'none';
           if (chatMessages) chatMessages.style.display = 'flex';
           
-          await loadChatMessages(inquiryId);
-          startResidentMessageListener(inquiryId);
+          await loadResidentMessages(inquiryId);
+          subscribeToResidentMessages(inquiryId);
           showToast('✨ An official has joined the conversation! You can now chat.', '#2ecc71');
         } else if (payload.new.status === 'resolved') {
           const chatWaiting = document.getElementById('chatWaiting');
@@ -570,7 +578,7 @@ function startResidentStatusListener(inquiryId) {
     .subscribe();
 }
 
-async function loadChatMessages(inquiryId) {
+async function loadResidentMessages(inquiryId) {
   const { data, error } = await supabaseClient
     .from('chat_messages')
     .select('*')
@@ -595,17 +603,17 @@ async function loadChatMessages(inquiryId) {
   }
 }
 
-function startResidentMessageListener(inquiryId) {
-  if (activeResidentMessageChannel) {
-    supabaseClient.removeChannel(activeResidentMessageChannel);
+function subscribeToResidentMessages(inquiryId) {
+  if (residentMessageChannel) {
+    supabaseClient.removeChannel(residentMessageChannel);
   }
   
-  activeResidentMessageChannel = supabaseClient
-    .channel(`resident_msgs_${inquiryId}`)
+  residentMessageChannel = supabaseClient
+    .channel(`resident-messages-${inquiryId}`)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
       (payload) => {
-        console.log('New message received:', payload.new);
+        console.log('New message for resident:', payload.new);
         const messagesList = document.getElementById('chatMessagesList');
         if (!messagesList) return;
         
@@ -631,18 +639,24 @@ function startResidentMessageListener(inquiryId) {
 }
 
 async function sendChatMessage() {
-  if (!currentInquiryId) return;
+  if (!currentResidentInquiryId) {
+    showToast('No active chat session');
+    return;
+  }
   
   const input = document.getElementById('chatMessageInput');
   if (!input) return;
   
   const message = input.value.trim();
-  if (!message) return;
+  if (!message) {
+    showToast('Please enter a message');
+    return;
+  }
   
   const { error } = await supabaseClient
     .from('chat_messages')
     .insert({
-      inquiry_id: currentInquiryId,
+      inquiry_id: currentResidentInquiryId,
       sender: 'resident',
       sender_name: currentResidentName,
       message: message
@@ -700,7 +714,7 @@ async function loadInquiries() {
       }
       
       return `
-        <div class="inquiry-item" onclick="openFloatingChat('${inquiry.id}', '${escapeHtml(inquiry.resident_name)}', '${escapeHtml(inquiry.subject)}', '${escapeHtml(inquiry.question)}')">
+        <div class="inquiry-item" onclick="openOfficialChat('${inquiry.id}', '${escapeHtml(inquiry.resident_name)}', '${escapeHtml(inquiry.subject)}', '${escapeHtml(inquiry.question)}')">
           <div class="inquiry-subject">${escapeHtml(inquiry.subject)}</div>
           <div class="inquiry-question">${escapeHtml(inquiry.question.length > 100 ? inquiry.question.substring(0, 100) + '...' : inquiry.question)}</div>
           <div class="inquiry-meta">
@@ -714,7 +728,8 @@ async function loadInquiries() {
   }
 }
 
-function openFloatingChat(inquiryId, residentName, subject, originalQuestion) {
+function openOfficialChat(inquiryId, residentName, subject, originalQuestion) {
+  currentOfficialInquiryId = inquiryId;
   currentFloatingInquiryId = inquiryId;
   
   const chatBox = document.getElementById('officialFloatingChat');
@@ -730,8 +745,8 @@ function openFloatingChat(inquiryId, residentName, subject, originalQuestion) {
   }
   
   updateInquiryStatusToActive(inquiryId);
-  loadOfficialChatMessages(inquiryId, originalQuestion);
-  startOfficialMessageListener(inquiryId);
+  loadOfficialMessages(inquiryId, originalQuestion);
+  subscribeToOfficialMessages(inquiryId);
 }
 
 async function updateInquiryStatusToActive(inquiryId) {
@@ -750,23 +765,24 @@ async function updateInquiryStatusToActive(inquiryId) {
   }
 }
 
-function closeFloatingChat() {
+function closeOfficialChat() {
   const chatBox = document.getElementById('officialFloatingChat');
   if (chatBox) chatBox.style.display = 'none';
   
-  if (activeOfficialMessageChannel) {
-    supabaseClient.removeChannel(activeOfficialMessageChannel);
-    activeOfficialMessageChannel = null;
+  if (officialMessageChannel) {
+    supabaseClient.removeChannel(officialMessageChannel);
+    officialMessageChannel = null;
   }
+  currentOfficialInquiryId = null;
   currentFloatingInquiryId = null;
 }
 
-function minimizeFloatingChat() {
+function minimizeOfficialChat() {
   const chatBox = document.getElementById('officialFloatingChat');
   if (chatBox) chatBox.classList.toggle('minimized');
 }
 
-async function loadOfficialChatMessages(inquiryId, originalQuestion) {
+async function loadOfficialMessages(inquiryId, originalQuestion) {
   const { data, error } = await supabaseClient
     .from('chat_messages')
     .select('*')
@@ -782,7 +798,7 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   
   let messagesHtml = `
     <div class="chat-message resident">
-      <strong>${escapeHtml(currentResidentName || 'Resident')}'s Question:</strong><br>
+      <strong>Resident's Question:</strong><br>
       ${escapeHtml(originalQuestion)}
     </div>
     <div style="margin: 8px 0; text-align: center; color: #e67e22;">--- Conversation ---</div>
@@ -791,7 +807,7 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   if (data.length > 0) {
     messagesHtml += data.map(msg => `
       <div class="chat-message ${msg.sender === 'resident' ? 'resident' : 'official'}">
-        <strong>${msg.sender === 'resident' ? escapeHtml(msg.sender_name || 'Resident') : (msg.sender_name || officialName)}:</strong><br>
+        <strong>${msg.sender === 'resident' ? (msg.sender_name || 'Resident') : (msg.sender_name || officialName)}:</strong><br>
         ${escapeHtml(msg.message)}
       </div>
     `).join('');
@@ -803,17 +819,17 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   container.scrollTop = container.scrollHeight;
 }
 
-function startOfficialMessageListener(inquiryId) {
-  if (activeOfficialMessageChannel) {
-    supabaseClient.removeChannel(activeOfficialMessageChannel);
+function subscribeToOfficialMessages(inquiryId) {
+  if (officialMessageChannel) {
+    supabaseClient.removeChannel(officialMessageChannel);
   }
   
-  activeOfficialMessageChannel = supabaseClient
-    .channel(`official_msgs_${inquiryId}`)
+  officialMessageChannel = supabaseClient
+    .channel(`official-messages-${inquiryId}`)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
       (payload) => {
-        console.log('New message received in official chat:', payload.new);
+        console.log('New message for official:', payload.new);
         const container = document.getElementById('floatingChatMessages');
         if (!container) return;
         
@@ -825,7 +841,7 @@ function startOfficialMessageListener(inquiryId) {
         
         const newMsg = `
           <div class="chat-message ${payload.new.sender === 'resident' ? 'resident' : 'official'}">
-            <strong>${payload.new.sender === 'resident' ? escapeHtml(payload.new.sender_name || 'Resident') : (payload.new.sender_name || officialName)}:</strong><br>
+            <strong>${payload.new.sender === 'resident' ? (payload.new.sender_name || 'Resident') : (payload.new.sender_name || officialName)}:</strong><br>
             ${escapeHtml(payload.new.message)}
           </div>
         `;
@@ -840,18 +856,14 @@ function startOfficialMessageListener(inquiryId) {
     .subscribe();
 }
 
-async function sendFloatingChatMessage() {
-  if (!currentFloatingInquiryId) {
-    console.error('No active inquiry');
+async function sendOfficialMessage() {
+  if (!currentOfficialInquiryId) {
     showToast('No active chat session');
     return;
   }
   
   const input = document.getElementById('floatingChatInput');
-  if (!input) {
-    console.error('Chat input not found');
-    return;
-  }
+  if (!input) return;
   
   const message = input.value.trim();
   if (!message) {
@@ -861,35 +873,33 @@ async function sendFloatingChatMessage() {
   
   const officialName = localStorage.getItem('officialName') || 'Official';
   
-  console.log('Sending message:', { inquiry_id: currentFloatingInquiryId, sender: 'official', sender_name: officialName, message });
-  
-  const { data, error } = await supabaseClient
+  const { error } = await supabaseClient
     .from('chat_messages')
     .insert({
-      inquiry_id: currentFloatingInquiryId,
+      inquiry_id: currentOfficialInquiryId,
       sender: 'official',
       sender_name: officialName,
       message: message
     });
   
-  if (error) {
+  if (!error) {
+    input.value = '';
+    console.log('Official message sent successfully');
+  } else {
     console.error('Error sending message:', error);
     showToast('Error sending message: ' + error.message);
-  } else {
-    console.log('Message sent successfully:', data);
-    input.value = '';
   }
 }
 
 async function resolveCurrentInquiry() {
-  if (!currentFloatingInquiryId) return;
+  if (!currentOfficialInquiryId) return;
   
   const currentOfficial = localStorage.getItem('officialName') || 'System';
   
   await supabaseClient
     .from('chat_messages')
     .insert({
-      inquiry_id: currentFloatingInquiryId,
+      inquiry_id: currentOfficialInquiryId,
       sender: 'official',
       sender_name: currentOfficial,
       message: 'This inquiry has been resolved. Thank you for reaching out!'
@@ -902,9 +912,9 @@ async function resolveCurrentInquiry() {
       resolved_by: currentOfficial,
       updated_at: new Date().toISOString() 
     })
-    .eq('id', currentFloatingInquiryId);
+    .eq('id', currentOfficialInquiryId);
   
-  closeFloatingChat();
+  closeOfficialChat();
   loadInquiries();
   showToast('Inquiry marked as resolved');
 }
@@ -936,7 +946,7 @@ function setupEventListeners() {
         const input = document.getElementById('floatingChatInput');
         if (document.activeElement === input) {
           e.preventDefault();
-          sendFloatingChatMessage();
+          sendOfficialMessage();
         }
       }
     }
@@ -958,7 +968,7 @@ function initCivicSays() {
     if (isOfficialLoggedIn) {
       loadInquiries();
     }
-  }, 3000);
+  }, 5000);
   
   console.log('CivicSays initialized with real-time chat');
 }
@@ -975,8 +985,8 @@ window.closeChatBox = closeChatBox;
 window.goToStep2 = goToStep2;
 window.submitInquiry = submitInquiry;
 window.sendChatMessage = sendChatMessage;
-window.openFloatingChat = openFloatingChat;
-window.closeFloatingChat = closeFloatingChat;
-window.minimizeFloatingChat = minimizeFloatingChat;
-window.sendFloatingChatMessage = sendFloatingChatMessage;
+window.openOfficialChat = openOfficialChat;
+window.closeOfficialChat = closeOfficialChat;
+window.minimizeOfficialChat = minimizeOfficialChat;
+window.sendOfficialMessage = sendOfficialMessage;
 window.resolveCurrentInquiry = resolveCurrentInquiry;
