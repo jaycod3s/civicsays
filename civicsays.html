@@ -3,662 +3,270 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CivicSays - Your Voice Will Be Heard</title>
-  <link rel="icon" type="image/png" href="Logo.png">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0a0c0a;
-      color: #ffffff;
-      overflow-x: hidden;
-    }
-    
-    /* Animated Background */
-    .bg-animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      background: linear-gradient(135deg, #0a0c0a 0%, #1a2a1a 50%, #0e1a0e 100%);
-    }
-    
-    .bg-animation::before {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background: radial-gradient(circle, rgba(230,126,34,0.1) 0%, transparent 70%);
-      animation: rotate 30s linear infinite;
-    }
-    
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    /* Glassmorphism Navbar */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 20px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(10, 12, 10, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(230,126,34,0.2);
-      z-index: 1000;
-      animation: slideDown 0.6s ease-out;
-    }
-    
-    @keyframes slideDown {
-      from {
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-    
-    .logo-text {
-      font-size: 28px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #e67e22, #f39c12);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
-    
-    .logo-text span {
-      background: linear-gradient(135deg, #f39c12, #e67e22);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .nav-buttons {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .nav-btn {
-      padding: 10px 28px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-size: 14px;
-    }
-    
-    .nav-btn-outline {
-      border: 2px solid rgba(230,126,34,0.5);
-      color: #e67e22;
-      background: transparent;
-    }
-    
-    .nav-btn-outline:hover {
-      border-color: #e67e22;
-      background: rgba(230,126,34,0.1);
-      transform: translateY(-2px);
-    }
-    
-    .nav-btn-primary {
-      background: linear-gradient(135deg, #e67e22, #f39c12);
-      color: white;
-      box-shadow: 0 4px 15px rgba(230,126,34,0.3);
-    }
-    
-    .nav-btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(230,126,34,0.4);
-    }
-    
-    /* Hero Section */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 120px 48px 60px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    
-    .hero-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-      width: 100%;
-    }
-    
-    .hero-content {
-      animation: fadeInUp 0.8s ease-out 0.2s both;
-    }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .hero-badge {
-      display: inline-block;
-      background: rgba(230,126,34,0.2);
-      backdrop-filter: blur(10px);
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #e67e22;
-      margin-bottom: 24px;
-      border: 1px solid rgba(230,126,34,0.3);
-      letter-spacing: 1px;
-    }
-    
-    .hero-content h1 {
-      font-size: 68px;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-    
-    .gradient-text {
-      background: linear-gradient(135deg, #e67e22, #f39c12, #ffb347);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: inline-block;
-    }
-    
-    .hero-content p {
-      font-size: 18px;
-      line-height: 1.6;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 32px;
-    }
-    
-    .cta-group {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    
-    .cta-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: linear-gradient(135deg, #e67e22, #f39c12);
-      color: white;
-      padding: 16px 36px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 16px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 8px 25px rgba(230,126,34,0.4);
-    }
-    
-    .cta-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(230,126,34,0.5);
-      gap: 16px;
-    }
-    
-    .cta-button svg {
-      transition: transform 0.3s;
-    }
-    
-    .cta-button:hover svg {
-      transform: translateX(5px);
-    }
-    
-    .hero-stats {
-      display: flex;
-      gap: 32px;
-      margin-top: 40px;
-      padding-top: 32px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .stat-number {
-      font-size: 28px;
-      font-weight: 800;
-      color: #e67e22;
-    }
-    
-    .stat-label {
-      font-size: 12px;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 0.5px;
-    }
-    
-    /* Logo on Right Side */
-    .hero-logo {
-      position: relative;
-      animation: fadeInRight 0.8s ease-out 0.4s both;
-    }
-    
-    @keyframes fadeInRight {
-      from {
-        opacity: 0;
-        transform: translateX(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    
-    .logo-card {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(20px);
-      border-radius: 40px;
-      padding: 40px;
-      text-align: center;
-      border: 1px solid rgba(230,126,34,0.2);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-      transition: transform 0.3s ease;
-    }
-    
-    .logo-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(230,126,34,0.5);
-    }
-    
-    .logo-card img {
-      max-width: 280px;
-      width: 100%;
-      height: auto;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-    }
-    
-    .floating-elements {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      pointer-events: none;
-      overflow: hidden;
-      border-radius: 40px;
-    }
-    
-    .floating-element {
-      position: absolute;
-      background: radial-gradient(circle, rgba(230,126,34,0.3), transparent);
-      border-radius: 50%;
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    .floating-element:nth-child(1) {
-      width: 150px;
-      height: 150px;
-      top: -50px;
-      right: -50px;
-      animation-delay: 0s;
-    }
-    
-    .floating-element:nth-child(2) {
-      width: 100px;
-      height: 100px;
-      bottom: -30px;
-      left: -30px;
-      animation-delay: 2s;
-      animation-duration: 8s;
-    }
-    
-    .floating-element:nth-child(3) {
-      width: 80px;
-      height: 80px;
-      top: 50%;
-      right: 20%;
-      animation-delay: 4s;
-      animation-duration: 7s;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-20px) scale(1.1); }
-    }
-    
-    /* Features Section */
-    .features {
-      padding: 100px 48px;
-      background: linear-gradient(180deg, transparent 0%, rgba(230,126,34,0.05) 100%);
-    }
-    
-    .section-header {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 60px;
-    }
-    
-    .section-badge {
-      display: inline-block;
-      background: rgba(230,126,34,0.2);
-      padding: 6px 16px;
-      border-radius: 50px;
-      font-size: 12px;
-      color: #e67e22;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    
-    .section-header h2 {
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    
-    .section-header p {
-      font-size: 18px;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.6;
-    }
-    
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .feature-card {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 40px 32px;
-      border: 1px solid rgba(230,126,34,0.2);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-align: center;
-    }
-    
-    .feature-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(230,126,34,0.5);
-      background: rgba(230,126,34,0.05);
-    }
-    
-    .feature-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, rgba(230,126,34,0.2), rgba(243,156,18,0.1));
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      font-size: 32px;
-    }
-    
-    .feature-card h3 {
-      font-size: 22px;
-      margin-bottom: 16px;
-      color: #e67e22;
-    }
-    
-    .feature-card p {
-      color: rgba(255,255,255,0.7);
-      line-height: 1.6;
-    }
-    
-    /* Footer */
-    .footer {
-      padding: 60px 48px 30px;
-      border-top: 1px solid rgba(230,126,34,0.2);
-      background: rgba(0,0,0,0.3);
-    }
-    
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-    
-    .footer-section h4 {
-      color: #e67e22;
-      margin-bottom: 16px;
-      font-size: 18px;
-    }
-    
-    .footer-section p {
-      color: rgba(255,255,255,0.6);
-      line-height: 1.6;
-      font-size: 14px;
-    }
-    
-    .footer-section a {
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    
-    .footer-section a:hover {
-      color: #e67e22;
-    }
-    
-    .footer-bottom {
-      text-align: center;
-      padding-top: 30px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.5);
-      font-size: 14px;
-    }
-    
-    @media (max-width: 968px) {
-      .hero-container {
-        grid-template-columns: 1fr;
-        gap: 50px;
-      }
-      
-      .hero-content h1 {
-        font-size: 48px;
-      }
-      
-      .navbar {
-        padding: 16px 24px;
-      }
-      
-      .hero {
-        padding: 100px 24px 60px;
-      }
-      
-      .features {
-        padding: 60px 24px;
-      }
-      
-      .section-header h2 {
-        font-size: 36px;
-      }
-      
-      .logo-card {
-        padding: 30px;
-      }
-      
-      .logo-card img {
-        max-width: 200px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .hero-content h1 {
-        font-size: 36px;
-      }
-      
-      .cta-group {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .cta-button {
-        justify-content: center;
-      }
-      
-      .hero-stats {
-        justify-content: center;
-      }
-    }
-  </style>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>CivicSays - Resident & Official Portal</title>
+  <link rel="icon" type="image/png" href="logonobg.png">
+  <link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
   <div class="bg-animation"></div>
   
+  <!-- Top Navbar -->
   <nav class="navbar">
-    <div class="logo-text">CIVIC<span>SAYS</span></div>
+    <div class="logo">
+      <img src="logonobg.png" alt="CivicSays Logo">
+    </div>
     <div class="nav-buttons">
-      <a href="index.html" class="nav-btn nav-btn-outline">Home</a>
-      <a href="civicsays.html" class="nav-btn nav-btn-primary">Submit a Ticket →</a>
+      <a href="index.html" class="nav-btn nav-btn-outline">← Back to Home</a>
+      <button id="loginBtn" class="nav-btn nav-btn-primary">🔐 Log in as Official</button>
+      <button id="logoutBtn" class="nav-btn nav-btn-danger" style="display: none;">🚪 Logout</button>
     </div>
   </nav>
-
-  <section class="hero">
-    <div class="hero-container">
-      <div class="hero-content">
-        <div class="hero-badge">✨ YOUR VOICE MATTERS</div>
-        <h1>
-          Your Voice<br>
-          <span class="gradient-text">Will Be Heard</span>
-        </h1>
-        <p>CivicSays is a local government request and complaint tracking system that bridges the gap between residents and local officials. Residents can submit requests or complaints with photos and videos, receiving a unique tracking ID to monitor progress. Government officials can manage tickets, update statuses, and communicate with residents through comments, creating a transparent and efficient feedback system for community issues.</p>
-        <div class="cta-group">
-          <a href="civicsays.html" class="cta-button">
-            Submit a Ticket
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+  
+  <div class="container" id="mainContainer">
+    <!-- ==================== RESIDENT VIEW ==================== -->
+    <div id="residentView">
+      <div class="resident-container">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <h2>📝 Submit New Request or Complaint</h2>
+            </div>
+            <form id="ticketForm">
+              <div class="form-group">
+                <label>Full Name <span class="required">*</span></label>
+                <input type="text" id="residentName" required placeholder="Enter your full name">
+              </div>
+              <div class="form-group">
+                <label>Phone Number <span class="required">*</span></label>
+                <input type="tel" id="residentPhone" required placeholder="09123456789" maxlength="11" pattern="[0-9]{11}" title="Please enter 11 digits" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)">
+              </div>
+              <div class="form-group">
+                <label>Email Address <span class="required">*</span></label>
+                <input type="email" id="residentEmail" required placeholder="your@email.com">
+              </div>
+              <div class="form-group">
+                <label>Type <span class="required">*</span></label>
+                <select id="ticketType" required>
+                  <option value="request">Request</option>
+                  <option value="complaint">Complaint</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Location / Address <span class="required">*</span></label>
+                <input type="text" id="ticketLocation" required placeholder="Street address or intersection">
+              </div>
+              <div class="form-group">
+                <label>Title <span class="required">*</span></label>
+                <input type="text" id="ticketTitle" required placeholder="Brief summary">
+              </div>
+              <div class="form-group">
+                <label>Description <span class="required">*</span></label>
+                <textarea id="ticketDescription" rows="4" required placeholder="Provide detailed description..."></textarea>
+              </div>
+              <div class="form-group">
+                <label>Photo (Optional)</label>
+                <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/gif,image/webp">
+              </div>
+              <div class="form-group">
+                <label>Video Link (Optional)</label>
+                <input type="url" id="videoLink" placeholder="Paste YouTube or Google Drive link">
+                <small style="color: rgba(255,255,255,0.5); font-size: 11px;">For large videos, upload to YouTube as "Unlisted" and paste link here</small>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Ticket</button>
+            </form>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h2>🔍 Track Your Ticket</h2>
+            </div>
+            <div class="form-group">
+              <label>Enter Your Ticket ID</label>
+              <input type="text" id="searchTicketId" placeholder="Enter your Ticket ID (e.g., CIV-ABC123)">
+              <button class="btn btn-primary" onclick="searchTicketById()" style="margin-top: 12px; width: 100%;">Track Ticket</button>
+            </div>
+            <div id="searchResult" style="margin-top: 20px;"></div>
+          </div>
         </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Transparent</span>
+        
+        <!-- RESIDENT ONLY: Ask a Question Button -->
+        <button class="btn-ask" onclick="openChatBox()">💬 Ask a Question</button>
+        
+        <!-- RESIDENT ONLY: Chat Box -->
+        <div id="chatOverlay" class="chat-overlay">
+          <div class="chat-header">
+            <h4>Ask a Question</h4>
+            <button class="chat-close" onclick="closeChatBox()">✕</button>
           </div>
-          <div class="stat-item">
-            <span class="stat-number">24/7</span>
-            <span class="stat-label">Tracking</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">Real-time</span>
-            <span class="stat-label">Updates</span>
+          <div id="chatBody" class="chat-body">
+            <div id="chatStep1" class="chat-form-step">
+              <input type="text" id="chatName" placeholder="Your Full Name *">
+              <input type="tel" id="chatPhone" placeholder="Phone Number *" maxlength="11" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)">
+              <button class="btn btn-primary" onclick="goToStep2()" style="width:100%">Continue</button>
+            </div>
+            
+            <div id="chatStep2" class="chat-form-step" style="display:none">
+              <input type="text" id="chatSubject" placeholder="Subject *">
+              <textarea id="chatQuestion" rows="4" placeholder="Your question *"></textarea>
+              <button class="btn btn-primary" onclick="submitInquiry()" style="width:100%">Submit Question</button>
+            </div>
+            
+            <div id="chatWaiting" class="waiting-message" style="display:none">
+              ⏳ Waiting for officials to answer your question...
+            </div>
+            
+            <div id="chatMessages" style="display:none; flex-direction:column; flex:1;">
+              <div id="chatMessagesList" style="flex:1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px;"></div>
+              <div class="chat-input-area">
+                <input type="text" id="chatMessageInput" placeholder="Type your message...">
+                <button onclick="sendChatMessage()">Send</button>
+              </div>
+            </div>
+            
+            <div id="chatResolved" class="waiting-message" style="display:none">
+              ✅ This inquiry has been resolved. The chat will be permanently deleted.
+            </div>
           </div>
         </div>
       </div>
-      <div class="hero-logo">
-        <div class="logo-card">
-          <img src="Logo.png" alt="CivicSays Logo" onerror="this.src='https://via.placeholder.com/280x280?text=CivicSays'">
-          <div class="floating-elements">
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
+    </div>
+    
+    <!-- ==================== OFFICIAL VIEW ==================== -->
+    <div id="officialView" style="display: none;">
+      <div class="official-layout">
+        
+        <!-- LEFT PANEL - Inquiries -->
+        <div class="official-left-panel">
+          <div class="panel-logo-bg">
+            <img src="Logo.png" alt="CivicSays Logo" class="panel-logo-img">
+            <h3>RESIDENT INQUIRIES</h3>
+          </div>
+          <div class="inquiries-stats">
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesWaiting">0</span>
+              <span class="stat-label">WAITING</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesActive">0</span>
+              <span class="stat-label">ACTIVE</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="inquiriesSolved">0</span>
+              <span class="stat-label">SOLVED</span>
+            </div>
+          </div>
+          <div id="inquiriesList" class="inquiries-list">
+            <div class="loading-placeholder">Loading inquiries...</div>
+          </div>
+        </div>
+        
+        <!-- RIGHT CONTENT - Tickets Management -->
+        <div class="official-right-content">
+          <div class="official-badge-header">
+            👔 Official Mode | Managing all community tickets
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h2>📊 Dashboard Overview</h2>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total Tickets</div></div>
+              <div class="stat-card"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
+              <div class="stat-card"><div class="stat-number" id="statInProcess">0</div><div class="stat-label">In Process</div></div>
+              <div class="stat-card"><div class="stat-number" id="statSolved">0</div><div class="stat-label">Solved</div></div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h2>📋 Manage Tickets</h2>
+            </div>
+            <div class="search-box">
+              <input type="text" id="officialSearchInput" placeholder="Search by Ticket ID, Name, Email, or Title..." onkeyup="searchOfficialTickets()">
+              <button class="btn btn-outline" onclick="clearOfficialSearch()">Clear</button>
+            </div>
+            <div class="tabs">
+              <button class="tab active" onclick="switchOfficialTab(event, 'all')">All</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'pending')">Pending</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'in_process')">In Process</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'hold')">On Hold</button>
+              <button class="tab" onclick="switchOfficialTab(event, 'solved')">Solved</button>
+            </div>
+            <div id="officialTicketsList" class="ticket-list">
+              <div class="loading">Loading tickets...</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="features">
-    <div class="section-header">
-      <div class="section-badge">WHY CHOOSE US</div>
-      <h2>Modern Solution for<br><span class="gradient-text">Community Issues</span></h2>
-      <p>Experience a new way of connecting with your local government</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📝</div>
-        <h3>Easy Submission</h3>
-        <p>Submit requests or complaints with photos and videos in just a few clicks</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔍</div>
-        <h3>Track Progress</h3>
-        <p>Get a unique tracking ID to monitor your ticket status anytime, anywhere</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">💬</div>
-        <h3>Real Communication</h3>
-        <p>Officials respond and update statuses with transparent comments</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Dashboard Analytics</h3>
-        <p>Comprehensive view of all community issues for government officials</p>
+      
+      <!-- OFFICIAL FLOATING CHAT BOX -->
+      <div id="officialFloatingChat" class="official-floating-chat">
+        <div class="floating-chat-header">
+          <div class="floating-chat-title">
+            <span>💬 Chat with Resident</span>
+            <span id="floatingChatResidentName"></span>
+          </div>
+          <div class="floating-chat-actions">
+            <button class="resolve-chat-btn" onclick="resolveCurrentInquiry()">✓ Resolved</button>
+            <button class="minimize-chat-btn" onclick="minimizeFloatingChat()">−</button>
+            <button class="close-chat-btn" onclick="closeFloatingChat()">✕</button>
+          </div>
+        </div>
+        <div id="floatingChatMessages" class="floating-chat-messages">
+          <div class="loading-messages">Loading messages...</div>
+        </div>
+        <div class="floating-chat-input">
+          <input type="text" id="floatingChatInput" placeholder="Type your message...">
+          <button onclick="sendFloatingChatMessage()">Send</button>
+        </div>
       </div>
     </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>CivicSays</h4>
-        <p>Your voice will be heard. Bridging the gap between residents and local government.</p>
+  </div>
+  
+  <!-- Login Modal -->
+  <div id="loginModal" class="login-modal">
+    <div class="login-card">
+      <h2>🔐 Official Login</h2>
+      <div class="login-subtitle">Enter your credentials to access the official dashboard</div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUsername" placeholder="Enter username">
       </div>
-      <div class="footer-section">
-        <h4>Quick Links</h4>
-        <p><a href="civicsays.html">Submit a Ticket</a></p>
-        <p><a href="civicsays.html">Track Your Ticket</a></p>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password">
       </div>
-      <div class="footer-section">
-        <h4>Contact</h4>
-        <p>support@civicsays.com</p>
-        <p>(555) 123-4567</p>
+      <button class="btn btn-primary" onclick="attemptLogin()" style="width: 100%;">Login →</button>
+      <div id="loginError" class="login-error"></div>
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(230,126,34,0.2);">
+        <div class="login-subtitle" style="font-size: 12px;">Demo Credentials:</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: admin | Password: civic2024</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: juan | Password: juan123</div>
+        <div class="login-subtitle" style="font-size: 11px; color: #e67e22;">Username: pedro | Password: pedro123</div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 CivicSays. All rights reserved. Your Voice Will Be Heard.</p>
+  </div>
+  
+  <!-- Success Modal -->
+  <div id="successModal" class="modal-overlay">
+    <div class="success-modal">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Ticket Submitted!</div>
+      <div class="success-message">Your request has been successfully submitted.</div>
+      <div class="tracking-id" id="successTrackingId"></div>
+      <div class="success-message">Please save this tracking ID to check your ticket status.</div>
+      <button class="btn btn-primary" onclick="closeSuccessModal()" style="margin-top: 16px;">OK</button>
     </div>
-  </footer>
-
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js?v=18"></script>
   <script>
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: "0px 0px -50px 0px"
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = "1";
-          entry.target.style.transform = "translateY(0)";
-        }
-      });
-    }, observerOptions);
-    
-    document.querySelectorAll('.feature-card').forEach(el => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(30px)";
-      el.style.transition = "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
-      observer.observe(el);
-    });
+    document.addEventListener('DOMContentLoaded', initCivicSays);
   </script>
 </body>
 </html>
