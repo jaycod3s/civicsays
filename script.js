@@ -648,6 +648,10 @@ async function sendChatMessage() {
   
   if (!error) {
     input.value = '';
+    console.log('Message sent successfully');
+  } else {
+    console.error('Error sending message:', error);
+    showToast('Error sending message: ' + error.message);
   }
 }
 
@@ -834,17 +838,29 @@ function subscribeToOfficialMessages(inquiryId) {
 }
 
 async function sendFloatingChatMessage() {
-  if (!currentFloatingInquiryId) return;
+  if (!currentFloatingInquiryId) {
+    console.error('No active inquiry');
+    showToast('No active chat session');
+    return;
+  }
   
   const input = document.getElementById('floatingChatInput');
-  if (!input) return;
+  if (!input) {
+    console.error('Chat input not found');
+    return;
+  }
   
   const message = input.value.trim();
-  if (!message) return;
+  if (!message) {
+    showToast('Please enter a message');
+    return;
+  }
   
   const officialName = localStorage.getItem('officialName') || 'Official';
   
-  const { error } = await supabaseClient
+  console.log('Sending message:', { inquiry_id: currentFloatingInquiryId, sender: 'official', sender_name: officialName, message });
+  
+  const { data, error } = await supabaseClient
     .from('chat_messages')
     .insert({
       inquiry_id: currentFloatingInquiryId,
@@ -853,7 +869,11 @@ async function sendFloatingChatMessage() {
       message: message
     });
   
-  if (!error) {
+  if (error) {
+    console.error('Error sending message:', error);
+    showToast('Error sending message: ' + error.message);
+  } else {
+    console.log('Message sent successfully:', data);
     input.value = '';
   }
 }
@@ -953,7 +973,4 @@ window.goToStep2 = goToStep2;
 window.submitInquiry = submitInquiry;
 window.sendChatMessage = sendChatMessage;
 window.openFloatingChat = openFloatingChat;
-window.closeFloatingChat = closeFloatingChat;
-window.minimizeFloatingChat = minimizeFloatingChat;
-window.sendFloatingChatMessage = sendFloatingChatMessage;
-window.resolveCurrentInquiry = resolveCurrentInquiry;
+window.closeFloatingChat = closeF
