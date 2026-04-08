@@ -418,14 +418,14 @@ async function checkExistingInquiry() {
       document.getElementById('chatMessages').style.display = 'flex';
       
       await loadChatMessages(savedInquiryId);
-      subscribeToResidentMessages(savedInquiryId);
+      startResidentMessageListener(savedInquiryId);
       
       if (inquiry.status === 'active') {
         showToast('Connected to official. You can chat now!', '#2ecc71');
       } else {
         document.getElementById('chatWaiting').style.display = 'block';
         document.getElementById('chatMessages').style.display = 'none';
-        subscribeToInquiryStatus(savedInquiryId);
+        startResidentStatusListener(savedInquiryId);
       }
     }
   }
@@ -523,14 +523,14 @@ async function submitInquiry() {
   if (chatStep2) chatStep2.style.display = 'none';
   if (chatWaiting) chatWaiting.style.display = 'block';
   
-  subscribeToInquiryStatus(currentInquiryId);
+  startResidentStatusListener(currentInquiryId);
   loadInquiries();
   showToast('Question sent! Waiting for official to respond.', '#2ecc71');
 }
 
-async function subscribeToInquiryStatus(inquiryId) {
+function startResidentStatusListener(inquiryId) {
   if (activeResidentStatusChannel) {
-    await supabaseClient.removeChannel(activeResidentStatusChannel);
+    supabaseClient.removeChannel(activeResidentStatusChannel);
   }
   
   activeResidentStatusChannel = supabaseClient
@@ -538,6 +538,7 @@ async function subscribeToInquiryStatus(inquiryId) {
     .on('postgres_changes', 
       { event: 'UPDATE', schema: 'public', table: 'inquiries', filter: `id=eq.${inquiryId}` },
       async (payload) => {
+        console.log('Status update:', payload.new.status);
         if (payload.new.status === 'active') {
           const chatWaiting = document.getElementById('chatWaiting');
           const chatMessages = document.getElementById('chatMessages');
@@ -546,7 +547,7 @@ async function subscribeToInquiryStatus(inquiryId) {
           if (chatMessages) chatMessages.style.display = 'flex';
           
           await loadChatMessages(inquiryId);
-          subscribeToResidentMessages(inquiryId);
+          startResidentMessageListener(inquiryId);
           showToast('✨ An official has joined the conversation! You can now chat.', '#2ecc71');
         } else if (payload.new.status === 'resolved') {
           const chatWaiting = document.getElementById('chatWaiting');
@@ -594,7 +595,7 @@ async function loadChatMessages(inquiryId) {
   }
 }
 
-function subscribeToResidentMessages(inquiryId) {
+function startResidentMessageListener(inquiryId) {
   if (activeResidentMessageChannel) {
     supabaseClient.removeChannel(activeResidentMessageChannel);
   }
@@ -604,6 +605,7 @@ function subscribeToResidentMessages(inquiryId) {
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
       (payload) => {
+        console.log('New message received:', payload.new);
         const messagesList = document.getElementById('chatMessagesList');
         if (!messagesList) return;
         
@@ -729,7 +731,7 @@ function openFloatingChat(inquiryId, residentName, subject, originalQuestion) {
   
   updateInquiryStatusToActive(inquiryId);
   loadOfficialChatMessages(inquiryId, originalQuestion);
-  subscribeToOfficialMessages(inquiryId);
+  startOfficialMessageListener(inquiryId);
 }
 
 async function updateInquiryStatusToActive(inquiryId) {
@@ -801,7 +803,7 @@ async function loadOfficialChatMessages(inquiryId, originalQuestion) {
   container.scrollTop = container.scrollHeight;
 }
 
-function subscribeToOfficialMessages(inquiryId) {
+function startOfficialMessageListener(inquiryId) {
   if (activeOfficialMessageChannel) {
     supabaseClient.removeChannel(activeOfficialMessageChannel);
   }
@@ -811,6 +813,7 @@ function subscribeToOfficialMessages(inquiryId) {
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `inquiry_id=eq.${inquiryId}` },
       (payload) => {
+        console.log('New message received in official chat:', payload.new);
         const container = document.getElementById('floatingChatMessages');
         if (!container) return;
         
@@ -957,7 +960,7 @@ function initCivicSays() {
     }
   }, 3000);
   
-  console.log('CivicSays initialized');
+  console.log('CivicSays initialized with real-time chat');
 }
 
 // Make functions global
