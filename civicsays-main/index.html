@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicSays - Your Voice Will Be Heard</title>
+  <link rel="icon" type="image/png" href="Logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #A8FBD3;
+      --secondary: #4FB7B3;
+      --third: #637AB9;
+      --fourth: #31326F;
+      --dark: #0a0c15;
+      --darker: #050508;
+    }
+
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--darker);
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* Warm Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(79, 183, 179, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(99, 122, 185, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(168, 251, 211, 0.05) 0%, transparent 60%),
+        linear-gradient(180deg, #0d1020 0%, #08080f 40%, #0d1020 100%);
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background:
+        radial-gradient(circle at 25% 30%, rgba(168, 251, 211, 0.08) 0%, transparent 35%),
+        radial-gradient(circle at 75% 70%, rgba(79, 183, 179, 0.06) 0%, transparent 35%);
+      animation: rotate 45s linear infinite;
+    }
+
+    .bg-animation::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Floating Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 50%;
+      opacity: 0.25;
+      animation: particle-float 20s infinite ease-in-out;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 22s; }
+    .particle:nth-child(2) { left: 25%; animation-delay: 3s; animation-duration: 18s; }
+    .particle:nth-child(3) { left: 40%; animation-delay: 6s; animation-duration: 25s; }
+    .particle:nth-child(4) { left: 55%; animation-delay: 2s; animation-duration: 20s; }
+    .particle:nth-child(5) { left: 70%; animation-delay: 5s; animation-duration: 24s; }
+    .particle:nth-child(6) { left: 85%; animation-delay: 1s; animation-duration: 19s; }
+
+    @keyframes particle-float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.25; }
+      90% { opacity: 0.25; }
+      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+    }
+
+    /* Glassmorphism Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 18, 0.88);
+      backdrop-filter: blur(20px) saturate(150%);
+      border-bottom: 1px solid rgba(168, 251, 211, 0.15);
+      z-index: 1000;
+      animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #A8FBD3, #4FB7B3, #637AB9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      background: linear-gradient(135deg, #4FB7B3, #637AB9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-btn {
+      padding: 10px 28px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+    }
+
+    .nav-btn:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .nav-btn-outline {
+      border: 2px solid rgba(168, 251, 211, 0.5);
+      color: #A8FBD3;
+      background: transparent;
+    }
+
+    .nav-btn-outline:hover {
+      border-color: #A8FBD3;
+      background: rgba(168, 251, 211, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(168, 251, 211, 0.15);
+    }
+
+    .nav-btn-primary {
+      background: linear-gradient(135deg, #4FB7B3, #637AB9);
+      color: white;
+      box-shadow: 0 4px 18px rgba(79, 183, 179, 0.35);
+    }
+
+    .nav-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(79, 183, 179, 0.45);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 48px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-content {
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(168, 251, 211, 0.12);
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #A8FBD3;
+      margin-bottom: 24px;
+      border: 1px solid rgba(168, 251, 211, 0.25);
+      letter-spacing: 1px;
+    }
+
+    .hero-content h1 {
+      font-size: 68px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #A8FBD3, #4FB7B3, #637AB9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+
+    .hero-content p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 32px;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #4FB7B3, #637AB9);
+      background-size: 200% 200%;
+      color: white;
+      padding: 16px 36px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 28px rgba(79, 183, 179, 0.4);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(79, 183, 179, 0.5);
+      background-position: 100% 100%;
+      gap: 16px;
+    }
+
+    .cta-button svg {
+      transition: transform 0.3s;
+    }
+
+    .cta-button:hover svg {
+      transform: translateX(5px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #A8FBD3, #4FB7B3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* Logo on Right Side */
+    .hero-logo {
+      position: relative;
+      animation: fadeInRight 0.8s ease-out 0.4s both;
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .logo-card {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+        rgba(15, 18, 30, 0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 40px;
+      padding: 40px;
+      text-align: center;
+      border: 1px solid rgba(168, 251, 211, 0.2);
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(79, 183, 179, 0.06);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(168, 251, 211, 0.4);
+      box-shadow:
+        0 30px 60px -12px rgba(0, 0, 0, 0.55),
+        0 0 100px rgba(79, 183, 179, 0.1);
+    }
+
+    .logo-card img {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 30px rgba(79, 183, 179, 0.12));
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .logo-card:hover img {
+      transform: scale(1.03);
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 40px rgba(79, 183, 179, 0.18));
+    }
+
+    .floating-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 40px;
+    }
+
+    .floating-element {
+      position: absolute;
+      background: radial-gradient(circle, rgba(79, 183, 179, 0.2), transparent);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-element:nth-child(1) {
+      width: 150px;
+      height: 150px;
+      top: -50px;
+      right: -50px;
+      animation-delay: 0s;
+    }
+
+    .floating-element:nth-child(2) {
+      width: 100px;
+      height: 100px;
+      bottom: -30px;
+      left: -30px;
+      animation-delay: 2s;
+      animation-duration: 8s;
+    }
+
+    .floating-element:nth-child(3) {
+      width: 80px;
+      height: 80px;
+      top: 50%;
+      right: 20%;
+      animation-delay: 4s;
+      animation-duration: 7s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.1); }
+    }
+
+    /* Features Section */
+    .features {
+      padding: 100px 48px;
+      background:
+        linear-gradient(180deg, transparent 0%, rgba(79, 183, 179, 0.03) 50%, rgba(99, 122, 185, 0.05) 100%);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 60px;
+    }
+
+    .section-badge {
+      display: inline-block;
+      background: rgba(79, 183, 179, 0.12);
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      color: #4FB7B3;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      font-weight: 600;
+      border: 1px solid rgba(79, 183, 179, 0.2);
+    }
+
+    .section-header h2 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .section-header p {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+        rgba(15, 18, 30, 0.85);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 40px 32px;
+      border: 1px solid rgba(168, 251, 211, 0.15);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(168, 251, 211, 0.4);
+      background:
+        linear-gradient(135deg, rgba(79, 183, 179, 0.06), rgba(255, 255, 255, 0.04)),
+        rgba(15, 18, 30, 0.9);
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.35),
+        0 0 40px rgba(79, 183, 179, 0.08);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      background:
+        linear-gradient(135deg, rgba(79, 183, 179, 0.15), rgba(99, 122, 185, 0.08));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .feature-card h3 {
+      font-size: 22px;
+      margin-bottom: 16px;
+      color: #A8FBD3;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 60px 48px 30px;
+      border-top: 1px solid rgba(168, 251, 211, 0.15);
+      background: rgba(5, 5, 10, 0.9);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-section h4 {
+      color: #A8FBD3;
+      margin-bottom: 16px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .footer-section p {
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .footer-section a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-section a:hover {
+      color: #A8FBD3;
+      padding-left: 4px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 14px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #4FB7B3, #637AB9);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #5FC7C3, #7389C4);
+    }
+
+    /* Selection */
+    ::selection {
+      background: rgba(168, 251, 211, 0.35);
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+
+      .hero-content h1 {
+        font-size: 48px;
+      }
+
+      .navbar {
+        padding: 16px 24px;
+      }
+
+      .hero {
+        padding: 100px 24px 60px;
+      }
+
+      .features {
+        padding: 60px 24px;
+      }
+
+      .section-header h2 {
+        font-size: 36px;
+      }
+
+      .logo-card {
+        padding: 30px;
+      }
+
+      .logo-card img {
+        max-width: 200px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 36px;
+      }
+
+      .cta-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cta-button {
+        justify-content: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <nav class="navbar">
+    <div class="logo-text">CIVIC<span>SAYS</span></div>
+    <div class="nav-buttons">
+      <a href="index.html" class="nav-btn nav-btn-outline">Home</a>
+      <a href="civicsays.html" class="nav-btn nav-btn-primary">Submit a Ticket</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">YOUR VOICE MATTERS</div>
+        <h1>
+          Your Voice<br>
+          <span class="gradient-text">Will Be Heard</span>
+        </h1>
+        <p>CivicSays is a local government request and complaint tracking system that bridges the gap between residents and local officials. Residents can submit requests or complaints with photos and videos, receiving a unique tracking ID to monitor progress. Government officials can manage tickets, update statuses, and communicate with residents through comments, creating a transparent and efficient feedback system for community issues.</p>
+        <div class="cta-group">
+          <a href="civicsays.html" class="cta-button">
+            Submit a Ticket
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Transparent</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Tracking</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">Real-time</span>
+            <span class="stat-label">Updates</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-logo">
+        <div class="logo-card">
+          <img src="Logo.png" alt="CivicSays Logo" onerror="this.src='https://via.placeholder.com/280x280?text=CivicSays'">
+          <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="section-header">
+      <div class="section-badge">WHY CHOOSE US</div>
+      <h2>Modern Solution for<br><span class="gradient-text">Community Issues</span></h2>
+      <p>Experience a new way of connecting with your local government</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Easy Submission</h3>
+        <p>Submit requests or complaints with photos and videos in just a few clicks</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Track Progress</h3>
+        <p>Get a unique tracking ID to monitor your ticket status anytime, anywhere</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Real Communication</h3>
+        <p>Officials respond and update statuses with transparent comments</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Dashboard Analytics</h3>
+        <p>Comprehensive view of all community issues for government officials</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>CivicSays</h4>
+        <p>Your voice will be heard. Bridging the gap between residents and local government.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <p><a href="civicsays.html">Submit a Ticket</a></p>
+        <p><a href="civicsays.html">Track Your Ticket</a></p>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>support@civicsays.com</p>
+        <p>(555) 123-4567</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 CivicSays. All rights reserved. Your Voice Will Be Heard.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.feature-card').forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(30px)";
+      el.style.transition = "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
