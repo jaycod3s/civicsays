@@ -24,6 +24,18 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function formatFileSize(bytes) {
+  if (!bytes) return null;
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let size = bytes;
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
+
 function showToast(msg) {
   const toast = document.createElement('div');
   toast.className = 'toast';
@@ -258,30 +270,28 @@ async function renderTicket() {
   
   // Escape the media URL for safe use in onclick
   const escapedMediaUrl = ticket.media ? ticket.media.replace(/'/g, "\\'") : '';
-  
-  // Media HTML - Click image to view full size
+  const escapedFileName = ticket.media_filename || 'attachment';
+
+  // Media HTML - Downloadable file link instead of preview
   let mediaHtml = '';
   if (ticket.media) {
-    if (ticket.media_type === 'image') {
-      mediaHtml = `
-        <div class="media-container">
-          <div class="info-label">Attachment (Click image to view full size)</div>
-          <div class="clickable-attachment" onclick="viewImage('${escapedMediaUrl}')">
-            <img src="${ticket.media}" alt="Attachment">
-            <div class="attachment-overlay">🔍 Click to view full size</div>
-          </div>
-        </div>
-      `;
-    } else if (ticket.media_type === 'video') {
-      mediaHtml = `
-        <div class="media-container">
-          <div class="info-label">Video Attachment</div>
-          <video controls src="${ticket.media}" style="max-width: 100%; border-radius: 12px;">
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      `;
-    }
+    const fileIcon = ticket.media_type === 'image' ? '🖼️' : '📎';
+    const fileType = ticket.media_type === 'image' ? 'Image File' : 'File Attachment';
+    const fileSize = ticket.media_size ? formatFileSize(ticket.media_size) : '';
+
+    mediaHtml = `
+      <div class="media-container">
+        <div class="info-label">${fileType}</div>
+        <a href="${escapedMediaUrl}" download="${escapedFileName}" class="file-download-btn">
+          <span class="file-icon">${fileIcon}</span>
+          <span class="file-info">
+            <span class="file-name">${escapeHtml(fileSize ? fileSize.name : escapedFileName)}</span>
+            ${fileSize ? `<span class="file-size">${fileSize}</span>` : ''}
+          </span>
+          <span class="download-icon">⬇️</span>
+        </a>
+      </div>
+    `;
   }
   
   const videoHtml = ticket.video_url ? `
